@@ -1,0 +1,69 @@
+---
+description: Domain-specific rules for barbershop booking system
+alwaysApply: true
+---
+
+# Barbershop Booking System Rules
+
+## Business Logic
+
+### Booking Constraints
+
+- Bookings must be in the future (no past dates)
+- Minimum advance booking: 1 hour
+- Maximum advance booking: 30 days
+- Operating hours: 9:00 AM - 8:00 PM (configurable)
+- Time slots: 30-minute intervals
+- No double bookings for same barber at same time
+
+### Data Models
+
+```typescript
+// ✅ GOOD - Clear booking structure
+interface Booking {
+  id: string;
+  customerName: string;
+  customerPhone: string;
+  customerEmail?: string;
+  serviceId: string;
+  barberId: string;
+  dateTime: Date;
+  duration: number; // minutes
+  status: 'pending' | 'confirmed' | 'completed' | 'cancelled';
+  notes?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface Service {
+  id: string;
+  name: string;
+  duration: number; // minutes
+  price: number;
+  description?: string;
+}
+
+interface Barber {
+  id: string;
+  name: string;
+  specialties: string[];
+  isAvailable: boolean;
+}
+```
+
+## Validation Rules
+
+- Customer name: required, min 2 characters, max 50
+- Phone: required, valid format (country-specific)
+- Email: optional, must be valid if provided
+- Date/Time: must be within operating hours, not in past
+- Service: must exist and be active
+- Barber: must exist and be available
+
+## User Experience
+
+- Show available time slots only
+- Display barber availability in real-time
+- Send confirmation after booking
+- Allow cancellation with reasonable notice (e.g., 2 hours)
+- Show booking history for customers

@@ -1,0 +1,84 @@
+---
+description: Data validation and sanitization patterns
+alwaysApply: true
+---
+
+# Data Validation Standards
+
+## Input Validation
+
+- Validate all user inputs on both client and server
+- Use schema validation library (Zod recommended)
+- Sanitize inputs to prevent XSS
+
+```typescript
+// ✅ GOOD - Zod schema
+import { z } from 'zod';
+
+export const bookingFormSchema = z.object({
+  customerName: z
+    .string()
+    .min(2, 'El nombre debe tener al menos 2 caracteres')
+    .max(50, 'El nombre no puede exceder 50 caracteres')
+    .trim(),
+  customerPhone: z
+    .string()
+    .regex(
+      /^\+?[\d\s-]+$/,
+      'Formato de teléfono inválido'
+    ),
+  customerEmail: z
+    .string()
+    .email('Email inválido')
+    .optional()
+    .or(z.literal('')),
+  serviceId: z.string().uuid('ID de servicio inválido'),
+  barberId: z.string().uuid('ID de barbero inválido'),
+  dateTime: z.coerce.date().refine(
+    (date) => date > new Date(),
+    'La fecha debe ser en el futuro'
+  ),
+});
+
+export type BookingFormData = z.infer<typeof bookingFormSchema>;
+```
+
+## Date/Time Validation
+
+- Always validate dates are in the future
+- Check against operating hours
+- Validate time slot availability
+
+```typescript
+// ✅ GOOD
+function isValidBookingTime(dateTime: Date): boolean {
+  const now = new Date();
+  const minAdvance = new Date(now.getTime() + 60 * 60 * 1000); // 1 hour
+  
+  if (dateTime < minAdvance) {
+    return false;
+  }
+  
+  const hour = dateTime.getHours();
+  const isWithinHours = hour >= 9 && hour < 20;
+  
+  return isWithinHours;
+}
+```
+
+## Sanitization
+
+- Sanitize user-generated content
+- Escape HTML in user inputs
+- Use parameterized queries for database operations
+
+```typescript
+// ✅ GOOD - Sanitize before storing
+import DOMPurify from 'isomorphic-dompurify';
+
+function sanitizeInput(input: string): string {
+  return DOMPurify.sanitize(input, { 
+    ALLOWED_TAGS: [] // Remove all HTML
+  });
+}
+```

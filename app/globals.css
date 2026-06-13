@@ -1,0 +1,200 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ===== Animaciones de entrada ===== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Clases de animación */
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+.animate-slide-in-top {
+  opacity: 0;
+  animation: slideInFromTop 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-in-bottom {
+  opacity: 0;
+  animation: slideInFromBottom 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-in-right {
+  opacity: 0;
+  animation: slideInFromRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-scale-in {
+  opacity: 0;
+  animation: scaleIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Delays de animación */
+.animation-delay-100 { animation-delay: 100ms; }
+.animation-delay-200 { animation-delay: 200ms; }
+.animation-delay-300 { animation-delay: 300ms; }
+.animation-delay-400 { animation-delay: 400ms; }
+.animation-delay-500 { animation-delay: 500ms; }
+.animation-delay-600 { animation-delay: 600ms; }
+.animation-delay-700 { animation-delay: 700ms; }
+.animation-delay-800 { animation-delay: 800ms; }
+.animation-delay-900 { animation-delay: 900ms; }
+.animation-delay-1000 { animation-delay: 1000ms; }
+
+/* ===== Animación de hint de swipe ===== */
+@keyframes swipeHint {
+  0% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-45vw); /* Se mueve bastante para mostrar el siguiente barbero */
+  }
+  50% {
+    transform: translateX(15vw); /* Rebote hacia el otro lado */
+  }
+  70% {
+    transform: translateX(-8vw);
+  }
+  85% {
+    transform: translateX(3vw);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes swipeArrowPulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: translateX(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(5px);
+  }
+}
+
+@keyframes textGlow {
+  0%, 100% {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.6), 0 0 30px rgba(255, 255, 255, 0.3);
+  }
+}
+
+.animate-swipe-hint {
+  animation: swipeHint 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.animate-arrow-pulse {
+  animation: swipeArrowPulse 1.5s ease-in-out infinite;
+}
+
+.animate-text-glow {
+  animation: textGlow 2s ease-in-out infinite;
+}
+
+/* ===== Animación sutil de pulso para botón Reservar ===== */
+@keyframes pulseSubtle {
+  0%, 100% {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), 0 0 0 0 rgba(255, 255, 255, 0.4);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 0 0 6px rgba(255, 255, 255, 0.1);
+  }
+}
+
+.animate-pulse-subtle {
+  animation: pulseSubtle 2.5s ease-in-out infinite;
+}
+
+/* ===== Animación de rebote suave para flechas indicadoras ===== */
+@keyframes bounceGentle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-bounce-gentle {
+  animation: bounceGentle 1.5s ease-in-out infinite;
+}

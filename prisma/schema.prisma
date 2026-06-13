@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String    @id @default(uuid())
+  name      String
+  username  String    @unique
+  password  String    // hash, nunca texto plano
+  photo     String?   // ruta o URL de la foto
+  email     String?
+  phone     String?   // número de teléfono con código de país (ej: +573001234567)
+  role      String    @default("barbero") // admin, dueno, barbero
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  // Reservas asignadas a este barbero (solo aplica si role = 'barbero')
+  bookings     Booking[]
+  blockedSlots BlockedSlot[] @relation("blockedSlots")
+}
+
+model Booking {
+  id              String    @id @default(uuid())
+  barberId        String
+  barber          User      @relation(fields: [barberId], references: [id], onDelete: Cascade)
+  customerName    String
+  customerPhone   String
+  dateTime        DateTime
+  status          String    @default("pending") // pending, confirmed, completed, cancelled
+  reminderSentAt  DateTime? // WhatsApp recordatorio ~3h antes; null = pendiente de enviar
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([barberId, dateTime])
+  @@index([dateTime])
+  @@index([reminderSentAt, dateTime])
+}
+
+model BlockedSlot {
+  id        String   @id @default(uuid())
+  barberId  String
+  barber    User     @relation("blockedSlots", fields: [barberId], references: [id], onDelete: Cascade)
+  date      DateTime // Fecha del bloqueo (solo se usa año-mes-día)
+  isFullDay Boolean  @default(false) // true = día completo, false = turno específico
+  time      String?  // Hora del turno bloqueado en formato AM/PM (ej: "8:00 AM"), null si isFullDay=true
+  reason    String?  // Razón del bloqueo (opcional)
+  createdAt DateTime @default(now())
+
+  @@index([barberId, date])
+  @@unique([barberId, date, time]) // No duplicar bloqueo de mismo turno
+}

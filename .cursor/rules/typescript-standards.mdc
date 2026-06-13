@@ -1,0 +1,71 @@
+---
+description: TypeScript coding standards and type safety
+globs: **/*.{ts,tsx}
+alwaysApply: false
+---
+
+# TypeScript Standards
+
+## Type Safety
+
+- Always define explicit types for function parameters and return values
+- Use interfaces for object shapes, types for unions/intersections
+- Avoid `any` - use `unknown` if type is truly unknown
+
+```typescript
+// ❌ BAD
+function createBooking(data: any) {
+  return data;
+}
+
+// ✅ GOOD
+interface BookingData {
+  customerName: string;
+  serviceId: string;
+  dateTime: Date;
+  barberId: string;
+}
+
+function createBooking(data: BookingData): Promise<Booking> {
+  // Implementation
+}
+```
+
+## Error Handling
+
+- Use custom error classes for domain-specific errors
+- Always handle errors explicitly
+
+```typescript
+// ✅ GOOD
+class BookingError extends Error {
+  constructor(message: string, public code: string) {
+    super(message);
+    this.name = 'BookingError';
+  }
+}
+
+try {
+  await createBooking(data);
+} catch (error) {
+  if (error instanceof BookingError) {
+    // Handle booking-specific error
+  }
+  throw error;
+}
+```
+
+## Type Guards
+
+- Use type guards for runtime type checking
+
+```typescript
+function isBooking(data: unknown): data is Booking {
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    'id' in data &&
+    'customerName' in data
+  );
+}
+```

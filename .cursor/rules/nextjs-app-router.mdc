@@ -1,0 +1,59 @@
+---
+description: Next.js App Router best practices and conventions
+globs: **/app/**/*.{ts,tsx,js,jsx}
+alwaysApply: false
+---
+
+# Next.js App Router Standards
+
+## File Organization
+
+- Use App Router structure (`app/` directory)
+- Route files: `page.tsx` for pages, `layout.tsx` for layouts
+- Server Components by default, use `'use client'` only when needed
+- Colocate components, styles, and utilities with routes
+
+## Server vs Client Components
+
+```tsx
+// ✅ GOOD - Server Component (default)
+export default async function BookingPage() {
+  const bookings = await getBookings();
+  return <BookingList bookings={bookings} />;
+}
+
+// ✅ GOOD - Client Component (only when needed)
+'use client';
+export function BookingForm() {
+  const [date, setDate] = useState(new Date());
+  // Interactive logic here
+}
+```
+
+## Data Fetching
+
+- Use `async/await` in Server Components
+- Fetch data directly in Server Components, not in `useEffect`
+- Use `fetch` with proper caching strategies
+
+```tsx
+// ✅ GOOD
+async function getBookings() {
+  const res = await fetch('https://api.example.com/bookings', {
+    next: { revalidate: 3600 } // ISR
+  });
+  return res.json();
+}
+```
+
+## Metadata and SEO
+
+- Export `metadata` object from page files
+- Use dynamic metadata when needed
+
+```tsx
+export const metadata = {
+  title: 'Reservar Cita - Barbería',
+  description: 'Sistema de reservas para barbería',
+};
+```

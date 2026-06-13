@@ -1,0 +1,75 @@
+---
+description: React component patterns and best practices
+globs: **/*.{tsx,jsx}
+alwaysApply: false
+---
+
+# React Component Standards
+
+## Component Structure
+
+- Use functional components with hooks
+- Extract reusable logic into custom hooks
+- Keep components small and focused (single responsibility)
+
+```tsx
+// ✅ GOOD - Small, focused component
+export function TimeSlotButton({ 
+  time, 
+  isAvailable, 
+  onSelect 
+}: TimeSlotButtonProps) {
+  return (
+    <button
+      onClick={() => onSelect(time)}
+      disabled={!isAvailable}
+      className={cn(
+        'px-4 py-2 rounded',
+        isAvailable ? 'bg-blue-500' : 'bg-gray-300'
+      )}
+    >
+      {time}
+    </button>
+  );
+}
+```
+
+## Props and State
+
+- Use TypeScript interfaces for props
+- Prefer composition over prop drilling
+- Use React Context for deeply nested state
+
+```tsx
+// ✅ GOOD
+interface BookingFormProps {
+  onSubmit: (data: BookingData) => Promise<void>;
+  initialDate?: Date;
+}
+
+export function BookingForm({ onSubmit, initialDate }: BookingFormProps) {
+  // Component logic
+}
+```
+
+## Performance
+
+- Use `React.memo` for expensive components
+- Extract callbacks with `useCallback` when passing to memoized children
+- Use `useMemo` for expensive computations
+
+```tsx
+// ✅ GOOD
+const TimeSlotList = React.memo(function TimeSlotList({ 
+  slots, 
+  onSelect 
+}: TimeSlotListProps) {
+  return (
+    <div>
+      {slots.map(slot => (
+        <TimeSlotButton key={slot.id} {...slot} onSelect={onSelect} />
+      ))}
+    </div>
+  );
+});
+```

@@ -1,0 +1,99 @@
+---
+description: API route handlers and backend patterns
+globs: **/app/api/**/*.{ts,js}
+alwaysApply: false
+---
+
+# API Route Standards
+
+## Route Handlers
+
+- Use TypeScript for all API routes
+- Implement proper HTTP methods (GET, POST, PUT, DELETE)
+- Return consistent response formats
+- Handle errors gracefully
+
+```typescript
+// ✅ GOOD
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    
+    // Validate input
+    const validated = validateBookingData(body);
+    
+    // Business logic
+    const booking = await createBooking(validated);
+    
+    return NextResponse.json(
+      { success: true, data: booking },
+      { status: 201 }
+    );
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      return NextResponse.json(
+        { success: false, error: error.message },
+        { status: 400 }
+      );
+    }
+    
+    console.error('Booking creation failed:', error);
+    return NextResponse.json(
+      { success: false, error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+```
+
+## Response Format
+
+- Always use consistent response structure
+- Include success/error status
+- Provide meaningful error messages
+
+```typescript
+// ✅ GOOD - Consistent format
+{
+  success: true,
+  data: { /* response data */ }
+}
+
+// ❌ BAD - Inconsistent
+{ booking: {...} } // Sometimes
+{ data: {...} }    // Other times
+```
+
+## Validation
+
+- Validate all inputs at API boundary
+- Use schema validation (Zod, Yup, etc.)
+- Return 400 for validation errors
+
+```typescript
+import { z } from 'zod';
+
+const bookingSchema = z.object({
+  customerName: z.string().min(2).max(50),
+  customerPhone: z.string().regex(/^\+?[\d\s-]+$/),
+  serviceId: z.string().uuid(),
+  barberId: z.string().uuid(),
+  dateTime: z.coerce.date(),
+});
+
+export async function POST(request: NextRequest) {
+  const body = await request.json();
+  const result = bookingSchema.safeParse(body);
+  
+  if (!result.success) {
+    return NextResponse.json(
+      { success: false, errors: result.error.errors },
+      { status: 400 }
+    );
+  }
+  
+  // Use result.data (validated)
+}
+```
