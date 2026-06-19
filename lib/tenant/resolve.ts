@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import type { Tenant } from '../../prisma/generated/prisma/client';
+import { extractSubdomain, isPlatformHost } from './host';
 
 export type TenantStatus = 'pending' | 'active' | 'suspended' | 'rejected';
 
@@ -59,13 +60,17 @@ export async function resolveTenantFromHost(
     if (byDomain) return byDomain;
   }
 
-  const parts = hostname.split('.');
-  if (parts.length >= 3 && !['app', 'www'].includes(parts[0])) {
-    return findTenantBySlug(parts[0]);
+  const sub = extractSubdomain(host);
+  if (sub) {
+    return findTenantBySlug(sub);
   }
 
   if (hostname === 'localhost' || hostname.startsWith('127.0.0.1')) {
     return findTenantBySlug(process.env.DEFAULT_TENANT_SLUG ?? 'the-barber-house');
+  }
+
+  if (isPlatformHost(host, tenantQueryParam)) {
+    return null;
   }
 
   return null;
