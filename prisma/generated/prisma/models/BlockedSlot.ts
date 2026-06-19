@@ -26,6 +26,7 @@ export type AggregateBlockedSlot = {
 
 export type BlockedSlotMinAggregateOutputType = {
   id: string | null
+  tenantId: string | null
   barberId: string | null
   date: Date | null
   isFullDay: boolean | null
@@ -36,6 +37,7 @@ export type BlockedSlotMinAggregateOutputType = {
 
 export type BlockedSlotMaxAggregateOutputType = {
   id: string | null
+  tenantId: string | null
   barberId: string | null
   date: Date | null
   isFullDay: boolean | null
@@ -46,6 +48,7 @@ export type BlockedSlotMaxAggregateOutputType = {
 
 export type BlockedSlotCountAggregateOutputType = {
   id: number
+  tenantId: number
   barberId: number
   date: number
   isFullDay: number
@@ -58,6 +61,7 @@ export type BlockedSlotCountAggregateOutputType = {
 
 export type BlockedSlotMinAggregateInputType = {
   id?: true
+  tenantId?: true
   barberId?: true
   date?: true
   isFullDay?: true
@@ -68,6 +72,7 @@ export type BlockedSlotMinAggregateInputType = {
 
 export type BlockedSlotMaxAggregateInputType = {
   id?: true
+  tenantId?: true
   barberId?: true
   date?: true
   isFullDay?: true
@@ -78,6 +83,7 @@ export type BlockedSlotMaxAggregateInputType = {
 
 export type BlockedSlotCountAggregateInputType = {
   id?: true
+  tenantId?: true
   barberId?: true
   date?: true
   isFullDay?: true
@@ -161,6 +167,7 @@ export type BlockedSlotGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
 
 export type BlockedSlotGroupByOutputType = {
   id: string
+  tenantId: string
   barberId: string
   date: Date
   isFullDay: boolean
@@ -192,23 +199,27 @@ export type BlockedSlotWhereInput = {
   OR?: Prisma.BlockedSlotWhereInput[]
   NOT?: Prisma.BlockedSlotWhereInput | Prisma.BlockedSlotWhereInput[]
   id?: Prisma.StringFilter<"BlockedSlot"> | string
+  tenantId?: Prisma.StringFilter<"BlockedSlot"> | string
   barberId?: Prisma.StringFilter<"BlockedSlot"> | string
   date?: Prisma.DateTimeFilter<"BlockedSlot"> | Date | string
   isFullDay?: Prisma.BoolFilter<"BlockedSlot"> | boolean
   time?: Prisma.StringNullableFilter<"BlockedSlot"> | string | null
   reason?: Prisma.StringNullableFilter<"BlockedSlot"> | string | null
   createdAt?: Prisma.DateTimeFilter<"BlockedSlot"> | Date | string
+  tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   barber?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
 export type BlockedSlotOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  tenantId?: Prisma.SortOrder
   barberId?: Prisma.SortOrder
   date?: Prisma.SortOrder
   isFullDay?: Prisma.SortOrder
   time?: Prisma.SortOrderInput | Prisma.SortOrder
   reason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  tenant?: Prisma.TenantOrderByWithRelationInput
   barber?: Prisma.UserOrderByWithRelationInput
 }
 
@@ -218,17 +229,20 @@ export type BlockedSlotWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.BlockedSlotWhereInput | Prisma.BlockedSlotWhereInput[]
   OR?: Prisma.BlockedSlotWhereInput[]
   NOT?: Prisma.BlockedSlotWhereInput | Prisma.BlockedSlotWhereInput[]
+  tenantId?: Prisma.StringFilter<"BlockedSlot"> | string
   barberId?: Prisma.StringFilter<"BlockedSlot"> | string
   date?: Prisma.DateTimeFilter<"BlockedSlot"> | Date | string
   isFullDay?: Prisma.BoolFilter<"BlockedSlot"> | boolean
   time?: Prisma.StringNullableFilter<"BlockedSlot"> | string | null
   reason?: Prisma.StringNullableFilter<"BlockedSlot"> | string | null
   createdAt?: Prisma.DateTimeFilter<"BlockedSlot"> | Date | string
+  tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   barber?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id" | "barberId_date_time">
 
 export type BlockedSlotOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  tenantId?: Prisma.SortOrder
   barberId?: Prisma.SortOrder
   date?: Prisma.SortOrder
   isFullDay?: Prisma.SortOrder
@@ -245,6 +259,7 @@ export type BlockedSlotScalarWhereWithAggregatesInput = {
   OR?: Prisma.BlockedSlotScalarWhereWithAggregatesInput[]
   NOT?: Prisma.BlockedSlotScalarWhereWithAggregatesInput | Prisma.BlockedSlotScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"BlockedSlot"> | string
+  tenantId?: Prisma.StringWithAggregatesFilter<"BlockedSlot"> | string
   barberId?: Prisma.StringWithAggregatesFilter<"BlockedSlot"> | string
   date?: Prisma.DateTimeWithAggregatesFilter<"BlockedSlot"> | Date | string
   isFullDay?: Prisma.BoolWithAggregatesFilter<"BlockedSlot"> | boolean
@@ -260,11 +275,13 @@ export type BlockedSlotCreateInput = {
   time?: string | null
   reason?: string | null
   createdAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutBlockedSlotsInput
   barber: Prisma.UserCreateNestedOneWithoutBlockedSlotsInput
 }
 
 export type BlockedSlotUncheckedCreateInput = {
   id?: string
+  tenantId: string
   barberId: string
   date: Date | string
   isFullDay?: boolean
@@ -280,11 +297,13 @@ export type BlockedSlotUpdateInput = {
   time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutBlockedSlotsNestedInput
   barber?: Prisma.UserUpdateOneRequiredWithoutBlockedSlotsNestedInput
 }
 
 export type BlockedSlotUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   barberId?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isFullDay?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -295,6 +314,7 @@ export type BlockedSlotUncheckedUpdateInput = {
 
 export type BlockedSlotCreateManyInput = {
   id?: string
+  tenantId: string
   barberId: string
   date: Date | string
   isFullDay?: boolean
@@ -314,6 +334,7 @@ export type BlockedSlotUpdateManyMutationInput = {
 
 export type BlockedSlotUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   barberId?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isFullDay?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -340,6 +361,7 @@ export type BlockedSlotBarberIdDateTimeCompoundUniqueInput = {
 
 export type BlockedSlotCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  tenantId?: Prisma.SortOrder
   barberId?: Prisma.SortOrder
   date?: Prisma.SortOrder
   isFullDay?: Prisma.SortOrder
@@ -350,6 +372,7 @@ export type BlockedSlotCountOrderByAggregateInput = {
 
 export type BlockedSlotMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  tenantId?: Prisma.SortOrder
   barberId?: Prisma.SortOrder
   date?: Prisma.SortOrder
   isFullDay?: Prisma.SortOrder
@@ -360,12 +383,55 @@ export type BlockedSlotMaxOrderByAggregateInput = {
 
 export type BlockedSlotMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  tenantId?: Prisma.SortOrder
   barberId?: Prisma.SortOrder
   date?: Prisma.SortOrder
   isFullDay?: Prisma.SortOrder
   time?: Prisma.SortOrder
   reason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+}
+
+export type BlockedSlotCreateNestedManyWithoutTenantInput = {
+  create?: Prisma.XOR<Prisma.BlockedSlotCreateWithoutTenantInput, Prisma.BlockedSlotUncheckedCreateWithoutTenantInput> | Prisma.BlockedSlotCreateWithoutTenantInput[] | Prisma.BlockedSlotUncheckedCreateWithoutTenantInput[]
+  connectOrCreate?: Prisma.BlockedSlotCreateOrConnectWithoutTenantInput | Prisma.BlockedSlotCreateOrConnectWithoutTenantInput[]
+  createMany?: Prisma.BlockedSlotCreateManyTenantInputEnvelope
+  connect?: Prisma.BlockedSlotWhereUniqueInput | Prisma.BlockedSlotWhereUniqueInput[]
+}
+
+export type BlockedSlotUncheckedCreateNestedManyWithoutTenantInput = {
+  create?: Prisma.XOR<Prisma.BlockedSlotCreateWithoutTenantInput, Prisma.BlockedSlotUncheckedCreateWithoutTenantInput> | Prisma.BlockedSlotCreateWithoutTenantInput[] | Prisma.BlockedSlotUncheckedCreateWithoutTenantInput[]
+  connectOrCreate?: Prisma.BlockedSlotCreateOrConnectWithoutTenantInput | Prisma.BlockedSlotCreateOrConnectWithoutTenantInput[]
+  createMany?: Prisma.BlockedSlotCreateManyTenantInputEnvelope
+  connect?: Prisma.BlockedSlotWhereUniqueInput | Prisma.BlockedSlotWhereUniqueInput[]
+}
+
+export type BlockedSlotUpdateManyWithoutTenantNestedInput = {
+  create?: Prisma.XOR<Prisma.BlockedSlotCreateWithoutTenantInput, Prisma.BlockedSlotUncheckedCreateWithoutTenantInput> | Prisma.BlockedSlotCreateWithoutTenantInput[] | Prisma.BlockedSlotUncheckedCreateWithoutTenantInput[]
+  connectOrCreate?: Prisma.BlockedSlotCreateOrConnectWithoutTenantInput | Prisma.BlockedSlotCreateOrConnectWithoutTenantInput[]
+  upsert?: Prisma.BlockedSlotUpsertWithWhereUniqueWithoutTenantInput | Prisma.BlockedSlotUpsertWithWhereUniqueWithoutTenantInput[]
+  createMany?: Prisma.BlockedSlotCreateManyTenantInputEnvelope
+  set?: Prisma.BlockedSlotWhereUniqueInput | Prisma.BlockedSlotWhereUniqueInput[]
+  disconnect?: Prisma.BlockedSlotWhereUniqueInput | Prisma.BlockedSlotWhereUniqueInput[]
+  delete?: Prisma.BlockedSlotWhereUniqueInput | Prisma.BlockedSlotWhereUniqueInput[]
+  connect?: Prisma.BlockedSlotWhereUniqueInput | Prisma.BlockedSlotWhereUniqueInput[]
+  update?: Prisma.BlockedSlotUpdateWithWhereUniqueWithoutTenantInput | Prisma.BlockedSlotUpdateWithWhereUniqueWithoutTenantInput[]
+  updateMany?: Prisma.BlockedSlotUpdateManyWithWhereWithoutTenantInput | Prisma.BlockedSlotUpdateManyWithWhereWithoutTenantInput[]
+  deleteMany?: Prisma.BlockedSlotScalarWhereInput | Prisma.BlockedSlotScalarWhereInput[]
+}
+
+export type BlockedSlotUncheckedUpdateManyWithoutTenantNestedInput = {
+  create?: Prisma.XOR<Prisma.BlockedSlotCreateWithoutTenantInput, Prisma.BlockedSlotUncheckedCreateWithoutTenantInput> | Prisma.BlockedSlotCreateWithoutTenantInput[] | Prisma.BlockedSlotUncheckedCreateWithoutTenantInput[]
+  connectOrCreate?: Prisma.BlockedSlotCreateOrConnectWithoutTenantInput | Prisma.BlockedSlotCreateOrConnectWithoutTenantInput[]
+  upsert?: Prisma.BlockedSlotUpsertWithWhereUniqueWithoutTenantInput | Prisma.BlockedSlotUpsertWithWhereUniqueWithoutTenantInput[]
+  createMany?: Prisma.BlockedSlotCreateManyTenantInputEnvelope
+  set?: Prisma.BlockedSlotWhereUniqueInput | Prisma.BlockedSlotWhereUniqueInput[]
+  disconnect?: Prisma.BlockedSlotWhereUniqueInput | Prisma.BlockedSlotWhereUniqueInput[]
+  delete?: Prisma.BlockedSlotWhereUniqueInput | Prisma.BlockedSlotWhereUniqueInput[]
+  connect?: Prisma.BlockedSlotWhereUniqueInput | Prisma.BlockedSlotWhereUniqueInput[]
+  update?: Prisma.BlockedSlotUpdateWithWhereUniqueWithoutTenantInput | Prisma.BlockedSlotUpdateWithWhereUniqueWithoutTenantInput[]
+  updateMany?: Prisma.BlockedSlotUpdateManyWithWhereWithoutTenantInput | Prisma.BlockedSlotUpdateManyWithWhereWithoutTenantInput[]
+  deleteMany?: Prisma.BlockedSlotScalarWhereInput | Prisma.BlockedSlotScalarWhereInput[]
 }
 
 export type BlockedSlotCreateNestedManyWithoutBarberInput = {
@@ -410,8 +476,19 @@ export type BlockedSlotUncheckedUpdateManyWithoutBarberNestedInput = {
   deleteMany?: Prisma.BlockedSlotScalarWhereInput | Prisma.BlockedSlotScalarWhereInput[]
 }
 
-export type BlockedSlotCreateWithoutBarberInput = {
+export type BlockedSlotCreateWithoutTenantInput = {
   id?: string
+  date: Date | string
+  isFullDay?: boolean
+  time?: string | null
+  reason?: string | null
+  createdAt?: Date | string
+  barber: Prisma.UserCreateNestedOneWithoutBlockedSlotsInput
+}
+
+export type BlockedSlotUncheckedCreateWithoutTenantInput = {
+  id?: string
+  barberId: string
   date: Date | string
   isFullDay?: boolean
   time?: string | null
@@ -419,8 +496,59 @@ export type BlockedSlotCreateWithoutBarberInput = {
   createdAt?: Date | string
 }
 
+export type BlockedSlotCreateOrConnectWithoutTenantInput = {
+  where: Prisma.BlockedSlotWhereUniqueInput
+  create: Prisma.XOR<Prisma.BlockedSlotCreateWithoutTenantInput, Prisma.BlockedSlotUncheckedCreateWithoutTenantInput>
+}
+
+export type BlockedSlotCreateManyTenantInputEnvelope = {
+  data: Prisma.BlockedSlotCreateManyTenantInput | Prisma.BlockedSlotCreateManyTenantInput[]
+  skipDuplicates?: boolean
+}
+
+export type BlockedSlotUpsertWithWhereUniqueWithoutTenantInput = {
+  where: Prisma.BlockedSlotWhereUniqueInput
+  update: Prisma.XOR<Prisma.BlockedSlotUpdateWithoutTenantInput, Prisma.BlockedSlotUncheckedUpdateWithoutTenantInput>
+  create: Prisma.XOR<Prisma.BlockedSlotCreateWithoutTenantInput, Prisma.BlockedSlotUncheckedCreateWithoutTenantInput>
+}
+
+export type BlockedSlotUpdateWithWhereUniqueWithoutTenantInput = {
+  where: Prisma.BlockedSlotWhereUniqueInput
+  data: Prisma.XOR<Prisma.BlockedSlotUpdateWithoutTenantInput, Prisma.BlockedSlotUncheckedUpdateWithoutTenantInput>
+}
+
+export type BlockedSlotUpdateManyWithWhereWithoutTenantInput = {
+  where: Prisma.BlockedSlotScalarWhereInput
+  data: Prisma.XOR<Prisma.BlockedSlotUpdateManyMutationInput, Prisma.BlockedSlotUncheckedUpdateManyWithoutTenantInput>
+}
+
+export type BlockedSlotScalarWhereInput = {
+  AND?: Prisma.BlockedSlotScalarWhereInput | Prisma.BlockedSlotScalarWhereInput[]
+  OR?: Prisma.BlockedSlotScalarWhereInput[]
+  NOT?: Prisma.BlockedSlotScalarWhereInput | Prisma.BlockedSlotScalarWhereInput[]
+  id?: Prisma.StringFilter<"BlockedSlot"> | string
+  tenantId?: Prisma.StringFilter<"BlockedSlot"> | string
+  barberId?: Prisma.StringFilter<"BlockedSlot"> | string
+  date?: Prisma.DateTimeFilter<"BlockedSlot"> | Date | string
+  isFullDay?: Prisma.BoolFilter<"BlockedSlot"> | boolean
+  time?: Prisma.StringNullableFilter<"BlockedSlot"> | string | null
+  reason?: Prisma.StringNullableFilter<"BlockedSlot"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"BlockedSlot"> | Date | string
+}
+
+export type BlockedSlotCreateWithoutBarberInput = {
+  id?: string
+  date: Date | string
+  isFullDay?: boolean
+  time?: string | null
+  reason?: string | null
+  createdAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutBlockedSlotsInput
+}
+
 export type BlockedSlotUncheckedCreateWithoutBarberInput = {
   id?: string
+  tenantId: string
   date: Date | string
   isFullDay?: boolean
   time?: string | null
@@ -454,21 +582,49 @@ export type BlockedSlotUpdateManyWithWhereWithoutBarberInput = {
   data: Prisma.XOR<Prisma.BlockedSlotUpdateManyMutationInput, Prisma.BlockedSlotUncheckedUpdateManyWithoutBarberInput>
 }
 
-export type BlockedSlotScalarWhereInput = {
-  AND?: Prisma.BlockedSlotScalarWhereInput | Prisma.BlockedSlotScalarWhereInput[]
-  OR?: Prisma.BlockedSlotScalarWhereInput[]
-  NOT?: Prisma.BlockedSlotScalarWhereInput | Prisma.BlockedSlotScalarWhereInput[]
-  id?: Prisma.StringFilter<"BlockedSlot"> | string
-  barberId?: Prisma.StringFilter<"BlockedSlot"> | string
-  date?: Prisma.DateTimeFilter<"BlockedSlot"> | Date | string
-  isFullDay?: Prisma.BoolFilter<"BlockedSlot"> | boolean
-  time?: Prisma.StringNullableFilter<"BlockedSlot"> | string | null
-  reason?: Prisma.StringNullableFilter<"BlockedSlot"> | string | null
-  createdAt?: Prisma.DateTimeFilter<"BlockedSlot"> | Date | string
+export type BlockedSlotCreateManyTenantInput = {
+  id?: string
+  barberId: string
+  date: Date | string
+  isFullDay?: boolean
+  time?: string | null
+  reason?: string | null
+  createdAt?: Date | string
+}
+
+export type BlockedSlotUpdateWithoutTenantInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isFullDay?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  barber?: Prisma.UserUpdateOneRequiredWithoutBlockedSlotsNestedInput
+}
+
+export type BlockedSlotUncheckedUpdateWithoutTenantInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  barberId?: Prisma.StringFieldUpdateOperationsInput | string
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isFullDay?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type BlockedSlotUncheckedUpdateManyWithoutTenantInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  barberId?: Prisma.StringFieldUpdateOperationsInput | string
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isFullDay?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BlockedSlotCreateManyBarberInput = {
   id?: string
+  tenantId: string
   date: Date | string
   isFullDay?: boolean
   time?: string | null
@@ -483,10 +639,12 @@ export type BlockedSlotUpdateWithoutBarberInput = {
   time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutBlockedSlotsNestedInput
 }
 
 export type BlockedSlotUncheckedUpdateWithoutBarberInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isFullDay?: Prisma.BoolFieldUpdateOperationsInput | boolean
   time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -496,6 +654,7 @@ export type BlockedSlotUncheckedUpdateWithoutBarberInput = {
 
 export type BlockedSlotUncheckedUpdateManyWithoutBarberInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isFullDay?: Prisma.BoolFieldUpdateOperationsInput | boolean
   time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -507,39 +666,46 @@ export type BlockedSlotUncheckedUpdateManyWithoutBarberInput = {
 
 export type BlockedSlotSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  tenantId?: boolean
   barberId?: boolean
   date?: boolean
   isFullDay?: boolean
   time?: boolean
   reason?: boolean
   createdAt?: boolean
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   barber?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["blockedSlot"]>
 
 export type BlockedSlotSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  tenantId?: boolean
   barberId?: boolean
   date?: boolean
   isFullDay?: boolean
   time?: boolean
   reason?: boolean
   createdAt?: boolean
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   barber?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["blockedSlot"]>
 
 export type BlockedSlotSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  tenantId?: boolean
   barberId?: boolean
   date?: boolean
   isFullDay?: boolean
   time?: boolean
   reason?: boolean
   createdAt?: boolean
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   barber?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["blockedSlot"]>
 
 export type BlockedSlotSelectScalar = {
   id?: boolean
+  tenantId?: boolean
   barberId?: boolean
   date?: boolean
   isFullDay?: boolean
@@ -548,24 +714,29 @@ export type BlockedSlotSelectScalar = {
   createdAt?: boolean
 }
 
-export type BlockedSlotOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "barberId" | "date" | "isFullDay" | "time" | "reason" | "createdAt", ExtArgs["result"]["blockedSlot"]>
+export type BlockedSlotOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantId" | "barberId" | "date" | "isFullDay" | "time" | "reason" | "createdAt", ExtArgs["result"]["blockedSlot"]>
 export type BlockedSlotInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   barber?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type BlockedSlotIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   barber?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type BlockedSlotIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   barber?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 
 export type $BlockedSlotPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "BlockedSlot"
   objects: {
+    tenant: Prisma.$TenantPayload<ExtArgs>
     barber: Prisma.$UserPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    tenantId: string
     barberId: string
     date: Date
     isFullDay: boolean
@@ -966,6 +1137,7 @@ readonly fields: BlockedSlotFieldRefs;
  */
 export interface Prisma__BlockedSlotClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  tenant<T extends Prisma.TenantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TenantDefaultArgs<ExtArgs>>): Prisma.Prisma__TenantClient<runtime.Types.Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   barber<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -997,6 +1169,7 @@ export interface Prisma__BlockedSlotClient<T, Null = never, ExtArgs extends runt
  */
 export interface BlockedSlotFieldRefs {
   readonly id: Prisma.FieldRef<"BlockedSlot", 'String'>
+  readonly tenantId: Prisma.FieldRef<"BlockedSlot", 'String'>
   readonly barberId: Prisma.FieldRef<"BlockedSlot", 'String'>
   readonly date: Prisma.FieldRef<"BlockedSlot", 'DateTime'>
   readonly isFullDay: Prisma.FieldRef<"BlockedSlot", 'Boolean'>

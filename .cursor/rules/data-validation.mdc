@@ -8,77 +8,33 @@ alwaysApply: true
 ## Input Validation
 
 - Validate all user inputs on both client and server
-- Use schema validation library (Zod recommended)
+- Use Zod schema validation (`lib/validations/`)
 - Sanitize inputs to prevent XSS
 
-```typescript
-// ✅ GOOD - Zod schema
-import { z } from 'zod';
+## Tenant Schemas
 
-export const bookingFormSchema = z.object({
-  customerName: z
-    .string()
-    .min(2, 'El nombre debe tener al menos 2 caracteres')
-    .max(50, 'El nombre no puede exceder 50 caracteres')
-    .trim(),
-  customerPhone: z
-    .string()
-    .regex(
-      /^\+?[\d\s-]+$/,
-      'Formato de teléfono inválido'
-    ),
-  customerEmail: z
-    .string()
-    .email('Email inválido')
-    .optional()
-    .or(z.literal('')),
-  serviceId: z.string().uuid('ID de servicio inválido'),
-  barberId: z.string().uuid('ID de barbero inválido'),
-  dateTime: z.coerce.date().refine(
-    (date) => date > new Date(),
-    'La fecha debe ser en el futuro'
-  ),
-});
+Use schemas from [`lib/validations/tenant.ts`](lib/validations/tenant.ts):
 
-export type BookingFormData = z.infer<typeof bookingFormSchema>;
-```
+- `onboardingSchema` — registro de barbería (`/api/onboarding`)
+- `tenantSettingsSchema` — config tenant (`/api/admin/settings`)
+- `slugSchema` — subdominio: `^[a-z0-9-]{3,30}$`, reservados: app, www, api, admin, platform, registro
+- `customDomainSchema` — dominio Pro
+
+## Booking Validation
+
+- Server: [`app/api/bookings/route.ts`](app/api/bookings/route.ts) — `bookingSchema`
+- Client: [`components/BookingFormNew.tsx`](components/BookingFormNew.tsx)
+- Phone Colombia: 10 dígitos client-side, `+57` prefix server-side
+- Dates: `isValidBookingDateTime()` with tenant `scheduleJson`
 
 ## Date/Time Validation
 
-- Always validate dates are in the future
-- Check against operating hours
-- Validate time slot availability
+- Always validate dates are in the future (min 1h advance)
+- Check against tenant operating hours (`TenantSettings.scheduleJson`)
+- Max advance: `maxAdvanceDays` from tenant settings (default 30)
 
-```typescript
-// ✅ GOOD
-function isValidBookingTime(dateTime: Date): boolean {
-  const now = new Date();
-  const minAdvance = new Date(now.getTime() + 60 * 60 * 1000); // 1 hour
-  
-  if (dateTime < minAdvance) {
-    return false;
-  }
-  
-  const hour = dateTime.getHours();
-  const isWithinHours = hour >= 9 && hour < 20;
-  
-  return isWithinHours;
-}
-```
+## Multitenant Validation
 
-## Sanitization
-
-- Sanitize user-generated content
-- Escape HTML in user inputs
-- Use parameterized queries for database operations
-
-```typescript
-// ✅ GOOD - Sanitize before storing
-import DOMPurify from 'isomorphic-dompurify';
-
-function sanitizeInput(input: string): string {
-  return DOMPurify.sanitize(input, { 
-    ALLOWED_TAGS: [] // Remove all HTML
-  });
-}
-```
+- Resolve tenant before validating tenant-scoped data
+- Verify FK ownership: `barberId` must belong to resolved `tenantId`
+- Never accept `tenantId` from client body — use middleware header

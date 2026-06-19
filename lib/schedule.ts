@@ -1,19 +1,32 @@
 import { colombiaToUTC, getColombiaComponents } from './date-utils';
+import { DEFAULT_SCHEDULE, SLOT_STEP_MINUTES } from './tenant/defaults';
+import { fitsInSchedule } from './slot-availability';
+
+export type TimeBlock = { start: number; end: number };
+
+export const SLOT_DURATION_MINUTES = 40;
+
+export type ScheduleConfig = Record<string, TimeBlock[] | null>;
+
+/** Get schedule blocks for a day from tenant config or defaults */
+export function getScheduleForDayFromConfig(
+  dayOfWeek: number,
+  scheduleJson?: ScheduleConfig | null
+): TimeBlock[] | null {
+  const config = scheduleJson ?? DEFAULT_SCHEDULE;
+  const key = String(dayOfWeek);
+  if (key in config) return config[key];
+  return getScheduleForDay(dayOfWeek);
+}
 
 /**
- * Configuración de horarios de la barbería
+ * Configuración de horarios de la barbería (default — used when no tenant config)
  *
  * Lunes, Martes, Jueves y Viernes: 7:40 AM - 11:40 AM | 2:00 PM - 7:30 PM | 8:00 PM - 10:00 PM
  * Miércoles: No trabaja
  * Sábado:   7:00 AM - 1:00 PM  | 1:40 PM - 10:00 PM
  * Domingo:  7:00 AM - 1:00 PM  | 1:40 PM - 10:00 PM
- *
- * Turnos de 40 minutos
- * Pausa comida Lun-Vie: 7:30 PM - 8:00 PM
- * Pausa Sáb-Dom: 1:00 PM - 1:40 PM (almuerza en el negocio)
  */
-
-export const SLOT_DURATION_MINUTES = 40;
 
 /**
  * Convierte minutos desde medianoche a formato AM/PM
@@ -68,8 +81,6 @@ export function parseAmPmToHour(timeStr: string): number {
   return Math.floor(parseAmPmToMinutes(timeStr) / 60);
 }
 
-export type TimeBlock = { start: number; end: number };
-
 /**
  * Obtiene la configuración de horario para un día de la semana
  * Retorna un array de bloques de tiempo (start/end en minutos desde medianoche),
@@ -102,47 +113,43 @@ export function getScheduleForDay(dayOfWeek: number): TimeBlock[] | null {
 }
 
 /**
- * Genera los horarios disponibles para un día dado
- * Turnos de 40 minutos dentro de cada bloque horario configurado
- * Retorna en formato AM/PM
+ * Genera horarios candidatos cada SLOT_STEP_MINUTES dentro de los bloques del día
  */
-export function getAvailableTimeSlots(date: Date): string[] {
-  const dayOfWeek = date.getDay(); // 0 = Domingo, 1 = Lunes, ..., 6 = Sábado
-  const blocks = getScheduleForDay(dayOfWeek);
-
+export function getAvailableTimeSlots(
+  date: Date,
+  scheduleJson?: ScheduleConfig | null,
+  durationMinutes = SLOT_DURATION_MINUTES
+): string[] {
+  const dayOfWeek = date.getDay();
+  const blocks = getScheduleForDayFromConfig(dayOfWeek, scheduleJson);
   if (!blocks) return [];
 
   const slots: string[] = [];
   for (const block of blocks) {
-    for (let m = block.start; m + SLOT_DURATION_MINUTES <= block.end; m += SLOT_DURATION_MINUTES) {
+    for (let m = block.start; m + durationMinutes <= block.end; m += SLOT_STEP_MINUTES) {
       slots.push(formatMinutesToAmPm(m));
     }
   }
-
   return slots;
 }
 
 /**
- * Verifica si una fecha y hora es válida para reservar.
- * dateTime debe ser un Date UTC; se convierte a Colombia para validar horario.
+ * Verifica si fecha/hora + duración caben en el horario del tenant
  */
-export function isValidBookingDateTime(dateTime: Date): boolean {
+export function isValidBookingDateTime(
+  dateTime: Date,
+  scheduleJson?: ScheduleConfig | null,
+  durationMinutes = SLOT_DURATION_MINUTES
+): boolean {
   const now = new Date();
   const minAdvance = new Date(now.getTime() + 60 * 60 * 1000);
 
-  if (dateTime < minAdvance) {
-    return false;
-  }
+  if (dateTime < minAdvance) return false;
 
-  const { dayOfWeek, hours, minutes } = getColombiaComponents(dateTime);
-  const blocks = getScheduleForDay(dayOfWeek);
-
-  if (!blocks) return false;
-
+  const { year, month, day, hours, minutes } = getColombiaComponents(dateTime);
+  const localDate = new Date(year, month, day);
   const totalMinutes = hours * 60 + minutes;
-  return blocks.some(
-    (block) => totalMinutes >= block.start && totalMinutes + SLOT_DURATION_MINUTES <= block.end
-  );
+  return fitsInSchedule(totalMinutes, durationMinutes, localDate, scheduleJson);
 }
 
 /**

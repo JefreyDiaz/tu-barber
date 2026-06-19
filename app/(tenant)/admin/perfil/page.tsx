@@ -1,0 +1,168 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import PhotoUploadField from '@/components/PhotoUploadField';
+import { tenantApiUrl } from '@/lib/tenant/client-api';
+
+type Profile = {
+  id: string;
+  name: string;
+  username: string;
+  photo: string | null;
+  phone: string | null;
+  role: string;
+};
+
+export default function AdminPerfilPage() {
+  const { data: session, update } = useSession();
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [form, setForm] = useState({ name: '', phone: '', password: '' });
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch(tenantApiUrl('/api/admin/me'))
+      .then(async (r) => {
+        if (!r.ok) throw new Error('Error al cargar perfil');
+        return r.json();
+      })
+      .then((json) => {
+        if (json.success && json.data) {
+          setProfile(json.data);
+          setForm({
+            name: json.data.name,
+            phone: json.data.phone?.replace('+57', '') ?? '',
+            password: '',
+          });
+          setPhotoUrl(json.data.photo);
+        }
+      })
+      .catch(() => setError('No se pudo cargar tu perfil'))
+      .finally(() => setLoading(false));
+  }, []);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setSaving(true);
+    setError(null);
+    setSuccess(null);
+    try {
+      const res = await fetch(tenantApiUrl('/api/admin/me'), {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.name.trim(),
+          phone: form.phone.trim(),
+          photo: photoUrl ?? '',
+          ...(form.password ? { password: form.password } : {}),
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        setError(json.error ?? 'Error al guardar');
+        return;
+      }
+      setSuccess('Perfil actualizado');
+      setProfile(json.data);
+      await update({ name: json.data.name, image: json.data.photo });
+    } catch {
+      setError('Error de conexión');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  if (loading) {
+    return <p className="text-neutral-500">Cargando...</p>;
+  }
+
+  if (!profile) {
+    return <p className="text-red-600">{error ?? 'Perfil no encontrado'}</p>;
+  }
+
+  return (
+    <div className="mx-auto max-w-lg space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-neutral-800">Mi perfil</h1>
+        <p className="mt-1 text-sm text-neutral-600">
+          Tu foto aparece en el sitio público cuando eres barbero o dueño. Usuario: @{profile.username}
+        </p>
+      </div>
+
+      {error && (
+        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">{error}</div>
+      )}
+      {success && (
+        <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-2 text-sm text-green-700">{success}</div>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-6 rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
+        <PhotoUploadField
+          userId={profile.id}
+          currentPhoto={photoUrl}
+          onUploaded={async (url) => {
+            setPhotoUrl(url);
+            setSuccess('Foto actualizada');
+            await update({ image: url });
+          }}
+        />
+
+        <div>
+          <label htmlFor="profile-name" className="mb-1 block text-sm font-medium text-neutral-700">
+            Nombre *
+          </label>
+          <input
+            id="profile-name"
+            required
+            value={form.name}
+            onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+            className="w-full rounded-lg border border-neutral-300 px-3 py-2"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="profile-phone" className="mb-1 block text-sm font-medium text-neutral-700">
+            Teléfono (WhatsApp) *
+          </label>
+          <input
+            id="profile-phone"
+            type="tel"
+            required
+            maxLength={10}
+            value={form.phone}
+            onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value.replace(/\D/g, '') }))}
+            className="w-full rounded-lg border border-neutral-300 px-3 py-2"
+            placeholder="3001234567"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="profile-password" className="mb-1 block text-sm font-medium text-neutral-700">
+            Nueva contraseña
+          </label>
+          <input
+            id="profile-password"
+            type="password"
+            minLength={8}
+            value={form.password}
+            onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
+            className="w-full rounded-lg border border-neutral-300 px-3 py-2"
+            placeholder="Opcional"
+          />
+        </div>
+
+        <button
+          type="submit"
+          disabled={saving}
+          className="rounded-lg bg-neutral-800 px-4 py-2 text-sm font-medium text-white hover:bg-neutral-700 disabled:opacity-50"
+        >
+          {saving ? 'Guardando...' : 'Guardar cambios'}
+        </button>
+      </form>
+    </div>
+  );
+}

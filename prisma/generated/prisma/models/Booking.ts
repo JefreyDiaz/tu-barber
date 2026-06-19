@@ -20,13 +20,26 @@ export type BookingModel = runtime.Types.Result.DefaultSelection<Prisma.$Booking
 
 export type AggregateBooking = {
   _count: BookingCountAggregateOutputType | null
+  _avg: BookingAvgAggregateOutputType | null
+  _sum: BookingSumAggregateOutputType | null
   _min: BookingMinAggregateOutputType | null
   _max: BookingMaxAggregateOutputType | null
 }
 
+export type BookingAvgAggregateOutputType = {
+  durationMinutes: number | null
+}
+
+export type BookingSumAggregateOutputType = {
+  durationMinutes: number | null
+}
+
 export type BookingMinAggregateOutputType = {
   id: string | null
+  tenantId: string | null
   barberId: string | null
+  serviceId: string | null
+  durationMinutes: number | null
   customerName: string | null
   customerPhone: string | null
   dateTime: Date | null
@@ -38,7 +51,10 @@ export type BookingMinAggregateOutputType = {
 
 export type BookingMaxAggregateOutputType = {
   id: string | null
+  tenantId: string | null
   barberId: string | null
+  serviceId: string | null
+  durationMinutes: number | null
   customerName: string | null
   customerPhone: string | null
   dateTime: Date | null
@@ -50,7 +66,10 @@ export type BookingMaxAggregateOutputType = {
 
 export type BookingCountAggregateOutputType = {
   id: number
+  tenantId: number
   barberId: number
+  serviceId: number
+  durationMinutes: number
   customerName: number
   customerPhone: number
   dateTime: number
@@ -62,9 +81,20 @@ export type BookingCountAggregateOutputType = {
 }
 
 
+export type BookingAvgAggregateInputType = {
+  durationMinutes?: true
+}
+
+export type BookingSumAggregateInputType = {
+  durationMinutes?: true
+}
+
 export type BookingMinAggregateInputType = {
   id?: true
+  tenantId?: true
   barberId?: true
+  serviceId?: true
+  durationMinutes?: true
   customerName?: true
   customerPhone?: true
   dateTime?: true
@@ -76,7 +106,10 @@ export type BookingMinAggregateInputType = {
 
 export type BookingMaxAggregateInputType = {
   id?: true
+  tenantId?: true
   barberId?: true
+  serviceId?: true
+  durationMinutes?: true
   customerName?: true
   customerPhone?: true
   dateTime?: true
@@ -88,7 +121,10 @@ export type BookingMaxAggregateInputType = {
 
 export type BookingCountAggregateInputType = {
   id?: true
+  tenantId?: true
   barberId?: true
+  serviceId?: true
+  durationMinutes?: true
   customerName?: true
   customerPhone?: true
   dateTime?: true
@@ -137,6 +173,18 @@ export type BookingAggregateArgs<ExtArgs extends runtime.Types.Extensions.Intern
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: BookingAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: BookingSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: BookingMinAggregateInputType
@@ -167,13 +215,18 @@ export type BookingGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   _count?: BookingCountAggregateInputType | true
+  _avg?: BookingAvgAggregateInputType
+  _sum?: BookingSumAggregateInputType
   _min?: BookingMinAggregateInputType
   _max?: BookingMaxAggregateInputType
 }
 
 export type BookingGroupByOutputType = {
   id: string
+  tenantId: string
   barberId: string
+  serviceId: string | null
+  durationMinutes: number
   customerName: string
   customerPhone: string
   dateTime: Date
@@ -182,6 +235,8 @@ export type BookingGroupByOutputType = {
   createdAt: Date
   updatedAt: Date
   _count: BookingCountAggregateOutputType | null
+  _avg: BookingAvgAggregateOutputType | null
+  _sum: BookingSumAggregateOutputType | null
   _min: BookingMinAggregateOutputType | null
   _max: BookingMaxAggregateOutputType | null
 }
@@ -206,7 +261,10 @@ export type BookingWhereInput = {
   OR?: Prisma.BookingWhereInput[]
   NOT?: Prisma.BookingWhereInput | Prisma.BookingWhereInput[]
   id?: Prisma.StringFilter<"Booking"> | string
+  tenantId?: Prisma.StringFilter<"Booking"> | string
   barberId?: Prisma.StringFilter<"Booking"> | string
+  serviceId?: Prisma.StringNullableFilter<"Booking"> | string | null
+  durationMinutes?: Prisma.IntFilter<"Booking"> | number
   customerName?: Prisma.StringFilter<"Booking"> | string
   customerPhone?: Prisma.StringFilter<"Booking"> | string
   dateTime?: Prisma.DateTimeFilter<"Booking"> | Date | string
@@ -214,12 +272,17 @@ export type BookingWhereInput = {
   reminderSentAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
+  tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   barber?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  service?: Prisma.XOR<Prisma.ServiceNullableScalarRelationFilter, Prisma.ServiceWhereInput> | null
 }
 
 export type BookingOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  tenantId?: Prisma.SortOrder
   barberId?: Prisma.SortOrder
+  serviceId?: Prisma.SortOrderInput | Prisma.SortOrder
+  durationMinutes?: Prisma.SortOrder
   customerName?: Prisma.SortOrder
   customerPhone?: Prisma.SortOrder
   dateTime?: Prisma.SortOrder
@@ -227,7 +290,9 @@ export type BookingOrderByWithRelationInput = {
   reminderSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  tenant?: Prisma.TenantOrderByWithRelationInput
   barber?: Prisma.UserOrderByWithRelationInput
+  service?: Prisma.ServiceOrderByWithRelationInput
 }
 
 export type BookingWhereUniqueInput = Prisma.AtLeast<{
@@ -235,7 +300,10 @@ export type BookingWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.BookingWhereInput | Prisma.BookingWhereInput[]
   OR?: Prisma.BookingWhereInput[]
   NOT?: Prisma.BookingWhereInput | Prisma.BookingWhereInput[]
+  tenantId?: Prisma.StringFilter<"Booking"> | string
   barberId?: Prisma.StringFilter<"Booking"> | string
+  serviceId?: Prisma.StringNullableFilter<"Booking"> | string | null
+  durationMinutes?: Prisma.IntFilter<"Booking"> | number
   customerName?: Prisma.StringFilter<"Booking"> | string
   customerPhone?: Prisma.StringFilter<"Booking"> | string
   dateTime?: Prisma.DateTimeFilter<"Booking"> | Date | string
@@ -243,12 +311,17 @@ export type BookingWhereUniqueInput = Prisma.AtLeast<{
   reminderSentAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
+  tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   barber?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  service?: Prisma.XOR<Prisma.ServiceNullableScalarRelationFilter, Prisma.ServiceWhereInput> | null
 }, "id">
 
 export type BookingOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  tenantId?: Prisma.SortOrder
   barberId?: Prisma.SortOrder
+  serviceId?: Prisma.SortOrderInput | Prisma.SortOrder
+  durationMinutes?: Prisma.SortOrder
   customerName?: Prisma.SortOrder
   customerPhone?: Prisma.SortOrder
   dateTime?: Prisma.SortOrder
@@ -257,8 +330,10 @@ export type BookingOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.BookingCountOrderByAggregateInput
+  _avg?: Prisma.BookingAvgOrderByAggregateInput
   _max?: Prisma.BookingMaxOrderByAggregateInput
   _min?: Prisma.BookingMinOrderByAggregateInput
+  _sum?: Prisma.BookingSumOrderByAggregateInput
 }
 
 export type BookingScalarWhereWithAggregatesInput = {
@@ -266,7 +341,10 @@ export type BookingScalarWhereWithAggregatesInput = {
   OR?: Prisma.BookingScalarWhereWithAggregatesInput[]
   NOT?: Prisma.BookingScalarWhereWithAggregatesInput | Prisma.BookingScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Booking"> | string
+  tenantId?: Prisma.StringWithAggregatesFilter<"Booking"> | string
   barberId?: Prisma.StringWithAggregatesFilter<"Booking"> | string
+  serviceId?: Prisma.StringNullableWithAggregatesFilter<"Booking"> | string | null
+  durationMinutes?: Prisma.IntWithAggregatesFilter<"Booking"> | number
   customerName?: Prisma.StringWithAggregatesFilter<"Booking"> | string
   customerPhone?: Prisma.StringWithAggregatesFilter<"Booking"> | string
   dateTime?: Prisma.DateTimeWithAggregatesFilter<"Booking"> | Date | string
@@ -278,6 +356,7 @@ export type BookingScalarWhereWithAggregatesInput = {
 
 export type BookingCreateInput = {
   id?: string
+  durationMinutes?: number
   customerName: string
   customerPhone: string
   dateTime: Date | string
@@ -285,12 +364,17 @@ export type BookingCreateInput = {
   reminderSentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutBookingsInput
   barber: Prisma.UserCreateNestedOneWithoutBookingsInput
+  service?: Prisma.ServiceCreateNestedOneWithoutBookingsInput
 }
 
 export type BookingUncheckedCreateInput = {
   id?: string
+  tenantId: string
   barberId: string
+  serviceId?: string | null
+  durationMinutes?: number
   customerName: string
   customerPhone: string
   dateTime: Date | string
@@ -302,6 +386,7 @@ export type BookingUncheckedCreateInput = {
 
 export type BookingUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
   customerPhone?: Prisma.StringFieldUpdateOperationsInput | string
   dateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -309,12 +394,17 @@ export type BookingUpdateInput = {
   reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutBookingsNestedInput
   barber?: Prisma.UserUpdateOneRequiredWithoutBookingsNestedInput
+  service?: Prisma.ServiceUpdateOneWithoutBookingsNestedInput
 }
 
 export type BookingUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   barberId?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
   customerPhone?: Prisma.StringFieldUpdateOperationsInput | string
   dateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -326,7 +416,10 @@ export type BookingUncheckedUpdateInput = {
 
 export type BookingCreateManyInput = {
   id?: string
+  tenantId: string
   barberId: string
+  serviceId?: string | null
+  durationMinutes?: number
   customerName: string
   customerPhone: string
   dateTime: Date | string
@@ -338,6 +431,7 @@ export type BookingCreateManyInput = {
 
 export type BookingUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
   customerPhone?: Prisma.StringFieldUpdateOperationsInput | string
   dateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -349,7 +443,10 @@ export type BookingUpdateManyMutationInput = {
 
 export type BookingUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   barberId?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
   customerPhone?: Prisma.StringFieldUpdateOperationsInput | string
   dateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -371,7 +468,10 @@ export type BookingOrderByRelationAggregateInput = {
 
 export type BookingCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  tenantId?: Prisma.SortOrder
   barberId?: Prisma.SortOrder
+  serviceId?: Prisma.SortOrder
+  durationMinutes?: Prisma.SortOrder
   customerName?: Prisma.SortOrder
   customerPhone?: Prisma.SortOrder
   dateTime?: Prisma.SortOrder
@@ -381,9 +481,16 @@ export type BookingCountOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
+export type BookingAvgOrderByAggregateInput = {
+  durationMinutes?: Prisma.SortOrder
+}
+
 export type BookingMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  tenantId?: Prisma.SortOrder
   barberId?: Prisma.SortOrder
+  serviceId?: Prisma.SortOrder
+  durationMinutes?: Prisma.SortOrder
   customerName?: Prisma.SortOrder
   customerPhone?: Prisma.SortOrder
   dateTime?: Prisma.SortOrder
@@ -395,7 +502,10 @@ export type BookingMaxOrderByAggregateInput = {
 
 export type BookingMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  tenantId?: Prisma.SortOrder
   barberId?: Prisma.SortOrder
+  serviceId?: Prisma.SortOrder
+  durationMinutes?: Prisma.SortOrder
   customerName?: Prisma.SortOrder
   customerPhone?: Prisma.SortOrder
   dateTime?: Prisma.SortOrder
@@ -403,6 +513,52 @@ export type BookingMinOrderByAggregateInput = {
   reminderSentAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type BookingSumOrderByAggregateInput = {
+  durationMinutes?: Prisma.SortOrder
+}
+
+export type BookingCreateNestedManyWithoutTenantInput = {
+  create?: Prisma.XOR<Prisma.BookingCreateWithoutTenantInput, Prisma.BookingUncheckedCreateWithoutTenantInput> | Prisma.BookingCreateWithoutTenantInput[] | Prisma.BookingUncheckedCreateWithoutTenantInput[]
+  connectOrCreate?: Prisma.BookingCreateOrConnectWithoutTenantInput | Prisma.BookingCreateOrConnectWithoutTenantInput[]
+  createMany?: Prisma.BookingCreateManyTenantInputEnvelope
+  connect?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[]
+}
+
+export type BookingUncheckedCreateNestedManyWithoutTenantInput = {
+  create?: Prisma.XOR<Prisma.BookingCreateWithoutTenantInput, Prisma.BookingUncheckedCreateWithoutTenantInput> | Prisma.BookingCreateWithoutTenantInput[] | Prisma.BookingUncheckedCreateWithoutTenantInput[]
+  connectOrCreate?: Prisma.BookingCreateOrConnectWithoutTenantInput | Prisma.BookingCreateOrConnectWithoutTenantInput[]
+  createMany?: Prisma.BookingCreateManyTenantInputEnvelope
+  connect?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[]
+}
+
+export type BookingUpdateManyWithoutTenantNestedInput = {
+  create?: Prisma.XOR<Prisma.BookingCreateWithoutTenantInput, Prisma.BookingUncheckedCreateWithoutTenantInput> | Prisma.BookingCreateWithoutTenantInput[] | Prisma.BookingUncheckedCreateWithoutTenantInput[]
+  connectOrCreate?: Prisma.BookingCreateOrConnectWithoutTenantInput | Prisma.BookingCreateOrConnectWithoutTenantInput[]
+  upsert?: Prisma.BookingUpsertWithWhereUniqueWithoutTenantInput | Prisma.BookingUpsertWithWhereUniqueWithoutTenantInput[]
+  createMany?: Prisma.BookingCreateManyTenantInputEnvelope
+  set?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[]
+  disconnect?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[]
+  delete?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[]
+  connect?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[]
+  update?: Prisma.BookingUpdateWithWhereUniqueWithoutTenantInput | Prisma.BookingUpdateWithWhereUniqueWithoutTenantInput[]
+  updateMany?: Prisma.BookingUpdateManyWithWhereWithoutTenantInput | Prisma.BookingUpdateManyWithWhereWithoutTenantInput[]
+  deleteMany?: Prisma.BookingScalarWhereInput | Prisma.BookingScalarWhereInput[]
+}
+
+export type BookingUncheckedUpdateManyWithoutTenantNestedInput = {
+  create?: Prisma.XOR<Prisma.BookingCreateWithoutTenantInput, Prisma.BookingUncheckedCreateWithoutTenantInput> | Prisma.BookingCreateWithoutTenantInput[] | Prisma.BookingUncheckedCreateWithoutTenantInput[]
+  connectOrCreate?: Prisma.BookingCreateOrConnectWithoutTenantInput | Prisma.BookingCreateOrConnectWithoutTenantInput[]
+  upsert?: Prisma.BookingUpsertWithWhereUniqueWithoutTenantInput | Prisma.BookingUpsertWithWhereUniqueWithoutTenantInput[]
+  createMany?: Prisma.BookingCreateManyTenantInputEnvelope
+  set?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[]
+  disconnect?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[]
+  delete?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[]
+  connect?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[]
+  update?: Prisma.BookingUpdateWithWhereUniqueWithoutTenantInput | Prisma.BookingUpdateWithWhereUniqueWithoutTenantInput[]
+  updateMany?: Prisma.BookingUpdateManyWithWhereWithoutTenantInput | Prisma.BookingUpdateManyWithWhereWithoutTenantInput[]
+  deleteMany?: Prisma.BookingScalarWhereInput | Prisma.BookingScalarWhereInput[]
 }
 
 export type BookingCreateNestedManyWithoutBarberInput = {
@@ -447,12 +603,67 @@ export type BookingUncheckedUpdateManyWithoutBarberNestedInput = {
   deleteMany?: Prisma.BookingScalarWhereInput | Prisma.BookingScalarWhereInput[]
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
+export type BookingCreateNestedManyWithoutServiceInput = {
+  create?: Prisma.XOR<Prisma.BookingCreateWithoutServiceInput, Prisma.BookingUncheckedCreateWithoutServiceInput> | Prisma.BookingCreateWithoutServiceInput[] | Prisma.BookingUncheckedCreateWithoutServiceInput[]
+  connectOrCreate?: Prisma.BookingCreateOrConnectWithoutServiceInput | Prisma.BookingCreateOrConnectWithoutServiceInput[]
+  createMany?: Prisma.BookingCreateManyServiceInputEnvelope
+  connect?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[]
 }
 
-export type BookingCreateWithoutBarberInput = {
+export type BookingUncheckedCreateNestedManyWithoutServiceInput = {
+  create?: Prisma.XOR<Prisma.BookingCreateWithoutServiceInput, Prisma.BookingUncheckedCreateWithoutServiceInput> | Prisma.BookingCreateWithoutServiceInput[] | Prisma.BookingUncheckedCreateWithoutServiceInput[]
+  connectOrCreate?: Prisma.BookingCreateOrConnectWithoutServiceInput | Prisma.BookingCreateOrConnectWithoutServiceInput[]
+  createMany?: Prisma.BookingCreateManyServiceInputEnvelope
+  connect?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[]
+}
+
+export type BookingUpdateManyWithoutServiceNestedInput = {
+  create?: Prisma.XOR<Prisma.BookingCreateWithoutServiceInput, Prisma.BookingUncheckedCreateWithoutServiceInput> | Prisma.BookingCreateWithoutServiceInput[] | Prisma.BookingUncheckedCreateWithoutServiceInput[]
+  connectOrCreate?: Prisma.BookingCreateOrConnectWithoutServiceInput | Prisma.BookingCreateOrConnectWithoutServiceInput[]
+  upsert?: Prisma.BookingUpsertWithWhereUniqueWithoutServiceInput | Prisma.BookingUpsertWithWhereUniqueWithoutServiceInput[]
+  createMany?: Prisma.BookingCreateManyServiceInputEnvelope
+  set?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[]
+  disconnect?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[]
+  delete?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[]
+  connect?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[]
+  update?: Prisma.BookingUpdateWithWhereUniqueWithoutServiceInput | Prisma.BookingUpdateWithWhereUniqueWithoutServiceInput[]
+  updateMany?: Prisma.BookingUpdateManyWithWhereWithoutServiceInput | Prisma.BookingUpdateManyWithWhereWithoutServiceInput[]
+  deleteMany?: Prisma.BookingScalarWhereInput | Prisma.BookingScalarWhereInput[]
+}
+
+export type BookingUncheckedUpdateManyWithoutServiceNestedInput = {
+  create?: Prisma.XOR<Prisma.BookingCreateWithoutServiceInput, Prisma.BookingUncheckedCreateWithoutServiceInput> | Prisma.BookingCreateWithoutServiceInput[] | Prisma.BookingUncheckedCreateWithoutServiceInput[]
+  connectOrCreate?: Prisma.BookingCreateOrConnectWithoutServiceInput | Prisma.BookingCreateOrConnectWithoutServiceInput[]
+  upsert?: Prisma.BookingUpsertWithWhereUniqueWithoutServiceInput | Prisma.BookingUpsertWithWhereUniqueWithoutServiceInput[]
+  createMany?: Prisma.BookingCreateManyServiceInputEnvelope
+  set?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[]
+  disconnect?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[]
+  delete?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[]
+  connect?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[]
+  update?: Prisma.BookingUpdateWithWhereUniqueWithoutServiceInput | Prisma.BookingUpdateWithWhereUniqueWithoutServiceInput[]
+  updateMany?: Prisma.BookingUpdateManyWithWhereWithoutServiceInput | Prisma.BookingUpdateManyWithWhereWithoutServiceInput[]
+  deleteMany?: Prisma.BookingScalarWhereInput | Prisma.BookingScalarWhereInput[]
+}
+
+export type BookingCreateWithoutTenantInput = {
   id?: string
+  durationMinutes?: number
+  customerName: string
+  customerPhone: string
+  dateTime: Date | string
+  status?: string
+  reminderSentAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  barber: Prisma.UserCreateNestedOneWithoutBookingsInput
+  service?: Prisma.ServiceCreateNestedOneWithoutBookingsInput
+}
+
+export type BookingUncheckedCreateWithoutTenantInput = {
+  id?: string
+  barberId: string
+  serviceId?: string | null
+  durationMinutes?: number
   customerName: string
   customerPhone: string
   dateTime: Date | string
@@ -462,8 +673,69 @@ export type BookingCreateWithoutBarberInput = {
   updatedAt?: Date | string
 }
 
+export type BookingCreateOrConnectWithoutTenantInput = {
+  where: Prisma.BookingWhereUniqueInput
+  create: Prisma.XOR<Prisma.BookingCreateWithoutTenantInput, Prisma.BookingUncheckedCreateWithoutTenantInput>
+}
+
+export type BookingCreateManyTenantInputEnvelope = {
+  data: Prisma.BookingCreateManyTenantInput | Prisma.BookingCreateManyTenantInput[]
+  skipDuplicates?: boolean
+}
+
+export type BookingUpsertWithWhereUniqueWithoutTenantInput = {
+  where: Prisma.BookingWhereUniqueInput
+  update: Prisma.XOR<Prisma.BookingUpdateWithoutTenantInput, Prisma.BookingUncheckedUpdateWithoutTenantInput>
+  create: Prisma.XOR<Prisma.BookingCreateWithoutTenantInput, Prisma.BookingUncheckedCreateWithoutTenantInput>
+}
+
+export type BookingUpdateWithWhereUniqueWithoutTenantInput = {
+  where: Prisma.BookingWhereUniqueInput
+  data: Prisma.XOR<Prisma.BookingUpdateWithoutTenantInput, Prisma.BookingUncheckedUpdateWithoutTenantInput>
+}
+
+export type BookingUpdateManyWithWhereWithoutTenantInput = {
+  where: Prisma.BookingScalarWhereInput
+  data: Prisma.XOR<Prisma.BookingUpdateManyMutationInput, Prisma.BookingUncheckedUpdateManyWithoutTenantInput>
+}
+
+export type BookingScalarWhereInput = {
+  AND?: Prisma.BookingScalarWhereInput | Prisma.BookingScalarWhereInput[]
+  OR?: Prisma.BookingScalarWhereInput[]
+  NOT?: Prisma.BookingScalarWhereInput | Prisma.BookingScalarWhereInput[]
+  id?: Prisma.StringFilter<"Booking"> | string
+  tenantId?: Prisma.StringFilter<"Booking"> | string
+  barberId?: Prisma.StringFilter<"Booking"> | string
+  serviceId?: Prisma.StringNullableFilter<"Booking"> | string | null
+  durationMinutes?: Prisma.IntFilter<"Booking"> | number
+  customerName?: Prisma.StringFilter<"Booking"> | string
+  customerPhone?: Prisma.StringFilter<"Booking"> | string
+  dateTime?: Prisma.DateTimeFilter<"Booking"> | Date | string
+  status?: Prisma.StringFilter<"Booking"> | string
+  reminderSentAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
+  createdAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
+}
+
+export type BookingCreateWithoutBarberInput = {
+  id?: string
+  durationMinutes?: number
+  customerName: string
+  customerPhone: string
+  dateTime: Date | string
+  status?: string
+  reminderSentAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutBookingsInput
+  service?: Prisma.ServiceCreateNestedOneWithoutBookingsInput
+}
+
 export type BookingUncheckedCreateWithoutBarberInput = {
   id?: string
+  tenantId: string
+  serviceId?: string | null
+  durationMinutes?: number
   customerName: string
   customerPhone: string
   dateTime: Date | string
@@ -499,23 +771,121 @@ export type BookingUpdateManyWithWhereWithoutBarberInput = {
   data: Prisma.XOR<Prisma.BookingUpdateManyMutationInput, Prisma.BookingUncheckedUpdateManyWithoutBarberInput>
 }
 
-export type BookingScalarWhereInput = {
-  AND?: Prisma.BookingScalarWhereInput | Prisma.BookingScalarWhereInput[]
-  OR?: Prisma.BookingScalarWhereInput[]
-  NOT?: Prisma.BookingScalarWhereInput | Prisma.BookingScalarWhereInput[]
-  id?: Prisma.StringFilter<"Booking"> | string
-  barberId?: Prisma.StringFilter<"Booking"> | string
-  customerName?: Prisma.StringFilter<"Booking"> | string
-  customerPhone?: Prisma.StringFilter<"Booking"> | string
-  dateTime?: Prisma.DateTimeFilter<"Booking"> | Date | string
-  status?: Prisma.StringFilter<"Booking"> | string
-  reminderSentAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
-  createdAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
+export type BookingCreateWithoutServiceInput = {
+  id?: string
+  durationMinutes?: number
+  customerName: string
+  customerPhone: string
+  dateTime: Date | string
+  status?: string
+  reminderSentAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutBookingsInput
+  barber: Prisma.UserCreateNestedOneWithoutBookingsInput
+}
+
+export type BookingUncheckedCreateWithoutServiceInput = {
+  id?: string
+  tenantId: string
+  barberId: string
+  durationMinutes?: number
+  customerName: string
+  customerPhone: string
+  dateTime: Date | string
+  status?: string
+  reminderSentAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type BookingCreateOrConnectWithoutServiceInput = {
+  where: Prisma.BookingWhereUniqueInput
+  create: Prisma.XOR<Prisma.BookingCreateWithoutServiceInput, Prisma.BookingUncheckedCreateWithoutServiceInput>
+}
+
+export type BookingCreateManyServiceInputEnvelope = {
+  data: Prisma.BookingCreateManyServiceInput | Prisma.BookingCreateManyServiceInput[]
+  skipDuplicates?: boolean
+}
+
+export type BookingUpsertWithWhereUniqueWithoutServiceInput = {
+  where: Prisma.BookingWhereUniqueInput
+  update: Prisma.XOR<Prisma.BookingUpdateWithoutServiceInput, Prisma.BookingUncheckedUpdateWithoutServiceInput>
+  create: Prisma.XOR<Prisma.BookingCreateWithoutServiceInput, Prisma.BookingUncheckedCreateWithoutServiceInput>
+}
+
+export type BookingUpdateWithWhereUniqueWithoutServiceInput = {
+  where: Prisma.BookingWhereUniqueInput
+  data: Prisma.XOR<Prisma.BookingUpdateWithoutServiceInput, Prisma.BookingUncheckedUpdateWithoutServiceInput>
+}
+
+export type BookingUpdateManyWithWhereWithoutServiceInput = {
+  where: Prisma.BookingScalarWhereInput
+  data: Prisma.XOR<Prisma.BookingUpdateManyMutationInput, Prisma.BookingUncheckedUpdateManyWithoutServiceInput>
+}
+
+export type BookingCreateManyTenantInput = {
+  id?: string
+  barberId: string
+  serviceId?: string | null
+  durationMinutes?: number
+  customerName: string
+  customerPhone: string
+  dateTime: Date | string
+  status?: string
+  reminderSentAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type BookingUpdateWithoutTenantInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  customerName?: Prisma.StringFieldUpdateOperationsInput | string
+  customerPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  barber?: Prisma.UserUpdateOneRequiredWithoutBookingsNestedInput
+  service?: Prisma.ServiceUpdateOneWithoutBookingsNestedInput
+}
+
+export type BookingUncheckedUpdateWithoutTenantInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  barberId?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  customerName?: Prisma.StringFieldUpdateOperationsInput | string
+  customerPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type BookingUncheckedUpdateManyWithoutTenantInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  barberId?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  customerName?: Prisma.StringFieldUpdateOperationsInput | string
+  customerPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BookingCreateManyBarberInput = {
   id?: string
+  tenantId: string
+  serviceId?: string | null
+  durationMinutes?: number
   customerName: string
   customerPhone: string
   dateTime: Date | string
@@ -527,6 +897,7 @@ export type BookingCreateManyBarberInput = {
 
 export type BookingUpdateWithoutBarberInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
   customerPhone?: Prisma.StringFieldUpdateOperationsInput | string
   dateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -534,10 +905,15 @@ export type BookingUpdateWithoutBarberInput = {
   reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutBookingsNestedInput
+  service?: Prisma.ServiceUpdateOneWithoutBookingsNestedInput
 }
 
 export type BookingUncheckedUpdateWithoutBarberInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
   customerPhone?: Prisma.StringFieldUpdateOperationsInput | string
   dateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -549,6 +925,65 @@ export type BookingUncheckedUpdateWithoutBarberInput = {
 
 export type BookingUncheckedUpdateManyWithoutBarberInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  customerName?: Prisma.StringFieldUpdateOperationsInput | string
+  customerPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type BookingCreateManyServiceInput = {
+  id?: string
+  tenantId: string
+  barberId: string
+  durationMinutes?: number
+  customerName: string
+  customerPhone: string
+  dateTime: Date | string
+  status?: string
+  reminderSentAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type BookingUpdateWithoutServiceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  customerName?: Prisma.StringFieldUpdateOperationsInput | string
+  customerPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutBookingsNestedInput
+  barber?: Prisma.UserUpdateOneRequiredWithoutBookingsNestedInput
+}
+
+export type BookingUncheckedUpdateWithoutServiceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  barberId?: Prisma.StringFieldUpdateOperationsInput | string
+  durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  customerName?: Prisma.StringFieldUpdateOperationsInput | string
+  customerPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type BookingUncheckedUpdateManyWithoutServiceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  barberId?: Prisma.StringFieldUpdateOperationsInput | string
+  durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
   customerPhone?: Prisma.StringFieldUpdateOperationsInput | string
   dateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -562,7 +997,10 @@ export type BookingUncheckedUpdateManyWithoutBarberInput = {
 
 export type BookingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  tenantId?: boolean
   barberId?: boolean
+  serviceId?: boolean
+  durationMinutes?: boolean
   customerName?: boolean
   customerPhone?: boolean
   dateTime?: boolean
@@ -570,12 +1008,17 @@ export type BookingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   reminderSentAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   barber?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  service?: boolean | Prisma.Booking$serviceArgs<ExtArgs>
 }, ExtArgs["result"]["booking"]>
 
 export type BookingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  tenantId?: boolean
   barberId?: boolean
+  serviceId?: boolean
+  durationMinutes?: boolean
   customerName?: boolean
   customerPhone?: boolean
   dateTime?: boolean
@@ -583,12 +1026,17 @@ export type BookingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   reminderSentAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   barber?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  service?: boolean | Prisma.Booking$serviceArgs<ExtArgs>
 }, ExtArgs["result"]["booking"]>
 
 export type BookingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  tenantId?: boolean
   barberId?: boolean
+  serviceId?: boolean
+  durationMinutes?: boolean
   customerName?: boolean
   customerPhone?: boolean
   dateTime?: boolean
@@ -596,12 +1044,17 @@ export type BookingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   reminderSentAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   barber?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  service?: boolean | Prisma.Booking$serviceArgs<ExtArgs>
 }, ExtArgs["result"]["booking"]>
 
 export type BookingSelectScalar = {
   id?: boolean
+  tenantId?: boolean
   barberId?: boolean
+  serviceId?: boolean
+  durationMinutes?: boolean
   customerName?: boolean
   customerPhone?: boolean
   dateTime?: boolean
@@ -611,25 +1064,36 @@ export type BookingSelectScalar = {
   updatedAt?: boolean
 }
 
-export type BookingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "barberId" | "customerName" | "customerPhone" | "dateTime" | "status" | "reminderSentAt" | "createdAt" | "updatedAt", ExtArgs["result"]["booking"]>
+export type BookingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantId" | "barberId" | "serviceId" | "durationMinutes" | "customerName" | "customerPhone" | "dateTime" | "status" | "reminderSentAt" | "createdAt" | "updatedAt", ExtArgs["result"]["booking"]>
 export type BookingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   barber?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  service?: boolean | Prisma.Booking$serviceArgs<ExtArgs>
 }
 export type BookingIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   barber?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  service?: boolean | Prisma.Booking$serviceArgs<ExtArgs>
 }
 export type BookingIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   barber?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  service?: boolean | Prisma.Booking$serviceArgs<ExtArgs>
 }
 
 export type $BookingPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Booking"
   objects: {
+    tenant: Prisma.$TenantPayload<ExtArgs>
     barber: Prisma.$UserPayload<ExtArgs>
+    service: Prisma.$ServicePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    tenantId: string
     barberId: string
+    serviceId: string | null
+    durationMinutes: number
     customerName: string
     customerPhone: string
     dateTime: Date
@@ -1031,7 +1495,9 @@ readonly fields: BookingFieldRefs;
  */
 export interface Prisma__BookingClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  tenant<T extends Prisma.TenantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TenantDefaultArgs<ExtArgs>>): Prisma.Prisma__TenantClient<runtime.Types.Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   barber<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  service<T extends Prisma.Booking$serviceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Booking$serviceArgs<ExtArgs>>): Prisma.Prisma__ServiceClient<runtime.Types.Result.GetResult<Prisma.$ServicePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1062,7 +1528,10 @@ export interface Prisma__BookingClient<T, Null = never, ExtArgs extends runtime.
  */
 export interface BookingFieldRefs {
   readonly id: Prisma.FieldRef<"Booking", 'String'>
+  readonly tenantId: Prisma.FieldRef<"Booking", 'String'>
   readonly barberId: Prisma.FieldRef<"Booking", 'String'>
+  readonly serviceId: Prisma.FieldRef<"Booking", 'String'>
+  readonly durationMinutes: Prisma.FieldRef<"Booking", 'Int'>
   readonly customerName: Prisma.FieldRef<"Booking", 'String'>
   readonly customerPhone: Prisma.FieldRef<"Booking", 'String'>
   readonly dateTime: Prisma.FieldRef<"Booking", 'DateTime'>
@@ -1463,6 +1932,25 @@ export type BookingDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Bookings to delete.
    */
   limit?: number
+}
+
+/**
+ * Booking.service
+ */
+export type Booking$serviceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Service
+   */
+  select?: Prisma.ServiceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Service
+   */
+  omit?: Prisma.ServiceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ServiceInclude<ExtArgs> | null
+  where?: Prisma.ServiceWhereInput
 }
 
 /**

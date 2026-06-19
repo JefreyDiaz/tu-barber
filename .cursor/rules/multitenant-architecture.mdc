@@ -1,0 +1,27 @@
+---
+description: Multi-tenant SaaS architecture rules for TuBarber
+alwaysApply: true
+---
+
+# Multitenant Architecture
+
+## Strategy
+
+- Shared PostgreSQL database with `tenantId` column on tenant-scoped tables
+- Tenant resolution via subdomain (`{slug}.tubarber.com`) or custom domain (Pro plan)
+- Platform routes at `app.tubarber.com` under `(platform)` route group
+- Tenant routes under `(tenant)` route group
+
+## Roles
+
+- `super_admin`: platform level, no tenantId, manages all tenants
+- `admin`: tenant administrator
+- `dueno`: shop owner within tenant
+- `barbero`: barber within tenant
+
+## Rules
+
+- Never hardcode shop branding, hours, or messaging config globally
+- All tenant-scoped data must include `tenantId`
+- ManyChat config lives in `TenantSettings`; use platform fallback for Basic plan
+- Cancel URLs must use tenant domain: `https://{slug}.tubarber.com/cancelar/{id}`

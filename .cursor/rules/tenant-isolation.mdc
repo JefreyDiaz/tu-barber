@@ -1,0 +1,39 @@
+---
+description: Tenant data isolation — critical security rules
+globs: "**/app/api/**/*.{ts,js},**/lib/**/*.{ts,js},**/prisma/**"
+alwaysApply: false
+---
+
+# Tenant Isolation
+
+## Golden Rule
+
+**Never query tenant-scoped tables without `where: { tenantId }`.**
+
+## Required Patterns
+
+```typescript
+// ✅ GOOD
+const bookings = await prisma.booking.findMany({
+  where: { tenantId, status: { not: 'cancelled' } },
+});
+
+// ❌ BAD — leaks cross-tenant data
+const bookings = await prisma.booking.findMany();
+```
+
+## FK Validation
+
+Before creating/updating bookings or blocked slots, verify `barberId` belongs to the same `tenantId`.
+
+## API Handlers
+
+1. Resolve tenant with `getTenantFromRequest()` at the start
+2. Return 404 if tenant not found, 403 if suspended
+3. Never expose other tenants' data in error messages
+
+## Auth
+
+- Staff login scoped to tenant: `username + password + tenantId`
+- JWT/session must include `tenantId` and `tenantSlug`
+- `super_admin` has `tenantId = null`

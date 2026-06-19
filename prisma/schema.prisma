@@ -10,50 +10,133 @@ datasource db {
   provider = "postgresql"
 }
 
+model Tenant {
+  id           String   @id @default(uuid())
+  slug         String   @unique
+  name         String
+  customDomain String?  @unique
+  status             String    @default("pending") // pending | active | suspended | rejected
+  plan               String    @default("basic")   // basic | pro
+  subscriptionStatus String    @default("none")    // none | trialing | active | past_due | canceled
+  trialEndsAt        DateTime?
+  timezone           String    @default("America/Bogota")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  settings     TenantSettings?
+  onboarding   TenantOnboarding?
+  users        User[]
+  bookings     Booking[]
+  blockedSlots BlockedSlot[]
+  services     Service[]
+}
+
+model TenantSettings {
+  tenantId            String  @id
+  tenant              Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  logoUrl             String?
+  primaryColor        String?
+  slotDurationMinutes Int     @default(40)
+  minAdvanceHours     Int     @default(1)
+  maxAdvanceDays      Int     @default(30)
+  cancelNoticeHours   Int     @default(2)
+  scheduleJson        Json?
+  manychatApiKey      String?
+  manychatPageId      String?
+  manychatFlowBooking String?
+  manychatFlowBarber  String?
+  manychatFlowReminder String?
+  manychatFieldMap    Json?
+}
+
+model TenantOnboarding {
+  tenantId      String    @id
+  tenant        Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  ownerName     String
+  ownerEmail    String
+  ownerPhone    String
+  submittedAt   DateTime  @default(now())
+  reviewedAt    DateTime?
+  reviewedById  String?
+  rejectionNote String?
+}
+
 model User {
-  id        String    @id @default(uuid())
+  id        String   @id @default(uuid())
+  tenantId  String?
+  tenant    Tenant?  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   name      String
-  username  String    @unique
-  password  String    // hash, nunca texto plano
-  photo     String?   // ruta o URL de la foto
+  username  String
+  password  String
+  photo     String?
   email     String?
-  phone     String?   // número de teléfono con código de país (ej: +573001234567)
-  role      String    @default("barbero") // admin, dueno, barbero
-  isActive  Boolean   @default(true)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  // Reservas asignadas a este barbero (solo aplica si role = 'barbero')
+  phone     String?
+  role      String   @default("barbero") // super_admin, admin, dueno, barbero
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   bookings     Booking[]
   blockedSlots BlockedSlot[] @relation("blockedSlots")
+
+  @@unique([tenantId, username])
+  @@index([tenantId])
 }
 
 model Booking {
   id              String    @id @default(uuid())
+  tenantId        String
+  tenant          Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   barberId        String
   barber          User      @relation(fields: [barberId], references: [id], onDelete: Cascade)
+  serviceId       String?
+  service         Service?  @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  durationMinutes Int       @default(40)
   customerName    String
   customerPhone   String
   dateTime        DateTime
-  status          String    @default("pending") // pending, confirmed, completed, cancelled
-  reminderSentAt  DateTime? // WhatsApp recordatorio ~3h antes; null = pendiente de enviar
+  status          String    @default("pending")
+  reminderSentAt  DateTime?
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
+  @@index([tenantId, barberId, dateTime])
   @@index([barberId, dateTime])
   @@index([dateTime])
   @@index([reminderSentAt, dateTime])
+  @@index([tenantId])
+}
+
+model Service {
+  id              String    @id @default(uuid())
+  tenantId        String
+  tenant          Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  name            String
+  durationMinutes Int
+  sortOrder       Int       @default(0)
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  bookings Booking[]
+
+  @@unique([tenantId, name])
+  @@index([tenantId, isActive])
 }
 
 model BlockedSlot {
   id        String   @id @default(uuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   barberId  String
   barber    User     @relation("blockedSlots", fields: [barberId], references: [id], onDelete: Cascade)
-  date      DateTime // Fecha del bloqueo (solo se usa año-mes-día)
-  isFullDay Boolean  @default(false) // true = día completo, false = turno específico
-  time      String?  // Hora del turno bloqueado en formato AM/PM (ej: "8:00 AM"), null si isFullDay=true
-  reason    String?  // Razón del bloqueo (opcional)
+  date      DateTime
+  isFullDay Boolean  @default(false)
+  time      String?
+  reason    String?
   createdAt DateTime @default(now())
 
+  @@index([tenantId, barberId, date])
   @@index([barberId, date])
-  @@unique([barberId, date, time]) // No duplicar bloqueo de mismo turno
+  @@unique([barberId, date, time])
 }

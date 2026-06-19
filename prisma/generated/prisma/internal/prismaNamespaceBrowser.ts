@@ -51,8 +51,12 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  Tenant: 'Tenant',
+  TenantSettings: 'TenantSettings',
+  TenantOnboarding: 'TenantOnboarding',
   User: 'User',
   Booking: 'Booking',
+  Service: 'Service',
   BlockedSlot: 'BlockedSlot'
 } as const
 
@@ -72,8 +76,60 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const TenantScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  name: 'name',
+  customDomain: 'customDomain',
+  status: 'status',
+  plan: 'plan',
+  subscriptionStatus: 'subscriptionStatus',
+  trialEndsAt: 'trialEndsAt',
+  timezone: 'timezone',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TenantScalarFieldEnum = (typeof TenantScalarFieldEnum)[keyof typeof TenantScalarFieldEnum]
+
+
+export const TenantSettingsScalarFieldEnum = {
+  tenantId: 'tenantId',
+  logoUrl: 'logoUrl',
+  primaryColor: 'primaryColor',
+  slotDurationMinutes: 'slotDurationMinutes',
+  minAdvanceHours: 'minAdvanceHours',
+  maxAdvanceDays: 'maxAdvanceDays',
+  cancelNoticeHours: 'cancelNoticeHours',
+  scheduleJson: 'scheduleJson',
+  manychatApiKey: 'manychatApiKey',
+  manychatPageId: 'manychatPageId',
+  manychatFlowBooking: 'manychatFlowBooking',
+  manychatFlowBarber: 'manychatFlowBarber',
+  manychatFlowReminder: 'manychatFlowReminder',
+  manychatFieldMap: 'manychatFieldMap'
+} as const
+
+export type TenantSettingsScalarFieldEnum = (typeof TenantSettingsScalarFieldEnum)[keyof typeof TenantSettingsScalarFieldEnum]
+
+
+export const TenantOnboardingScalarFieldEnum = {
+  tenantId: 'tenantId',
+  ownerName: 'ownerName',
+  ownerEmail: 'ownerEmail',
+  ownerPhone: 'ownerPhone',
+  submittedAt: 'submittedAt',
+  reviewedAt: 'reviewedAt',
+  reviewedById: 'reviewedById',
+  rejectionNote: 'rejectionNote'
+} as const
+
+export type TenantOnboardingScalarFieldEnum = (typeof TenantOnboardingScalarFieldEnum)[keyof typeof TenantOnboardingScalarFieldEnum]
+
+
 export const UserScalarFieldEnum = {
   id: 'id',
+  tenantId: 'tenantId',
   name: 'name',
   username: 'username',
   password: 'password',
@@ -91,7 +147,10 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 
 export const BookingScalarFieldEnum = {
   id: 'id',
+  tenantId: 'tenantId',
   barberId: 'barberId',
+  serviceId: 'serviceId',
+  durationMinutes: 'durationMinutes',
   customerName: 'customerName',
   customerPhone: 'customerPhone',
   dateTime: 'dateTime',
@@ -104,8 +163,23 @@ export const BookingScalarFieldEnum = {
 export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
 
 
+export const ServiceScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  name: 'name',
+  durationMinutes: 'durationMinutes',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ServiceScalarFieldEnum = (typeof ServiceScalarFieldEnum)[keyof typeof ServiceScalarFieldEnum]
+
+
 export const BlockedSlotScalarFieldEnum = {
   id: 'id',
+  tenantId: 'tenantId',
   barberId: 'barberId',
   date: 'date',
   isFullDay: 'isFullDay',
@@ -125,6 +199,14 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -139,4 +221,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
