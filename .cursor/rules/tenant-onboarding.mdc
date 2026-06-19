@@ -1,0 +1,33 @@
+---
+description: Tenant onboarding flow rules
+globs: "**/app/api/onboarding/**/*.{ts,js},**/app/registro/**/*.{ts,tsx},**/app/api/platform/**/*.{ts,js}"
+alwaysApply: false
+---
+
+# Tenant Onboarding
+
+## Flow
+
+1. Owner submits `/registro` form → `POST /api/onboarding`
+2. Creates `Tenant` with `status: pending`
+3. Creates `TenantOnboarding` record
+4. Creates first `User` (dueno) with `isActive: false`
+5. Super-admin approves via `PATCH /api/platform/tenants/[id]` action `approve`
+
+## Slug Rules
+
+- Pattern: `^[a-z0-9-]{3,30}$`
+- Reserved: `app`, `www`, `api`, `admin`, `platform`, `registro`
+
+## Status Transitions
+
+- `pending` → `active` (approve)
+- `pending` → `rejected` (reject with note)
+- `active` → `suspended`
+- `suspended` → `active` (reactivate)
+
+## On Approval
+
+- Set tenant `status: active`
+- Activate dueno user (`isActive: true`)
+- Record `reviewedAt` and `reviewedById` in onboarding

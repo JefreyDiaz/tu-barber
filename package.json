@@ -6,11 +6,18 @@
     "dev": "next dev",
     "build": "npx prisma generate && next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:migrate": "prisma migrate deploy",
+    "db:push": "prisma db push",
+    "db:seed": "tsx scripts/seed-super-admin.ts",
+    "db:seed-services": "tsx scripts/seed-tenant-services.ts",
+    "db:migrate-tenant": "tsx scripts/migrate-to-multitenant.ts",
+    "test:tenant-isolation": "tsx scripts/test-tenant-isolation.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.3.0",
     "@prisma/client": "^7.3.0",
+    "@supabase/supabase-js": "^2.108.2",
     "next": "16.1.5",
     "next-auth": "^5.0.0-beta.30",
     "pg": "^8.18.0",
@@ -18,7 +25,6 @@
     "react": "19.2.3",
     "react-day-picker": "^9.13.0",
     "react-dom": "19.2.3",
-    "twilio": "^5.12.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {
@@ -30,6 +36,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.5",
     "tailwindcss": "^4",
+    "tsx": "^4.22.4",
     "typescript": "^5"
   }
 }

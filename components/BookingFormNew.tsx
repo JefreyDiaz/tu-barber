@@ -3,6 +3,9 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
+import { tenantApiUrl } from '@/lib/tenant/client-api';
+
+type ServiceOption = { id: string; name: string; durationMinutes: number };
 
 const MESES_ES = [
   'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
@@ -40,6 +43,9 @@ interface BookingFormProps {
 
 export default function BookingForm({ barberId, barberName, onSuccess }: BookingFormProps) {
   const router = useRouter();
+  const [selectedServiceId, setSelectedServiceId] = useState<string>('');
+  const [services, setServices] = useState<ServiceOption[]>([]);
+  const [servicesLoading, setServicesLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [selectedTime, setSelectedTime] = useState<string>('');
   const [availableSlots, setAvailableSlots] = useState<string[]>([]);
@@ -64,14 +70,31 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
     (displayMonth.getFullYear() === maxDate.getFullYear() && displayMonth.getMonth() < maxDate.getMonth());
 
   useEffect(() => {
-    if (!selectedDate) {
+    setServicesLoading(true);
+    fetch(tenantApiUrl('/api/services'))
+      .then((res) => res.json())
+      .then((data) => {
+        const list = data?.success ? (data.data as ServiceOption[]) : [];
+        setServices(list);
+        if (list.length > 0) setSelectedServiceId(list[0].id);
+      })
+      .catch(console.error)
+      .finally(() => setServicesLoading(false));
+  }, []);
+
+  useEffect(() => {
+    if (!selectedDate || !selectedServiceId) {
       setAvailableSlots([]);
       setSelectedTime('');
       return;
     }
     setLoading(true);
     const dateStr = selectedDate.toISOString().split('T')[0];
-    fetch(`/api/bookings/available?barberId=${encodeURIComponent(barberId)}&date=${dateStr}`)
+    fetch(
+      tenantApiUrl(
+        `/api/bookings/available?barberId=${encodeURIComponent(barberId)}&date=${dateStr}&serviceId=${encodeURIComponent(selectedServiceId)}`
+      )
+    )
       .then(res => res.json())
       .then(data => {
         const slots = data?.success ? (data.data || []) : [];
@@ -85,13 +108,18 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
       })
       .catch(err => console.error(err))
       .finally(() => setLoading(false));
-  }, [selectedDate, barberId]);
+  }, [selectedDate, barberId, selectedServiceId]);
 
-  // Al cargar, comprobar si hoy tiene horarios; si no, deshabilitarlo desde el inicio
+  // Al cargar, comprobar si hoy tiene horarios
   useEffect(() => {
+    if (!selectedServiceId) return;
     const todayStr = today.toISOString().split('T')[0];
     if (datesWithNoSlots.has(todayStr)) return;
-    fetch(`/api/bookings/available?barberId=${encodeURIComponent(barberId)}&date=${todayStr}`)
+    fetch(
+      tenantApiUrl(
+        `/api/bookings/available?barberId=${encodeURIComponent(barberId)}&date=${todayStr}&serviceId=${encodeURIComponent(selectedServiceId)}`
+      )
+    )
       .then(res => res.json())
       .then(data => {
         const slots = data?.success ? (data.data || []) : [];
@@ -100,7 +128,7 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
         }
       })
       .catch(() => {});
-  }, [barberId]);
+  }, [barberId, selectedServiceId]);
 
   // Redirección automática después de confirmar reserva
   useEffect(() => {
@@ -132,8 +160,8 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
     e.preventDefault();
     setErrors({});
     setSuccess(false);
-    if (!selectedDate || !selectedTime) {
-      setErrors({ general: 'Por favor selecciona una fecha y hora' });
+    if (!selectedDate || !selectedTime || !selectedServiceId) {
+      setErrors({ general: 'Selecciona servicio, fecha y hora' });
       return;
     }
     const parsed = bookingFormSchema.safeParse(formData);
@@ -150,12 +178,13 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
     try {
       const body = {
         barberId,
+        serviceId: selectedServiceId,
         customerName: parsed.data.customerName,
         customerPhone: parsed.data.customerPhone,
         date: selectedDate.toISOString().split('T')[0],
         time: selectedTime,
       };
-      const res = await fetch('/api/bookings', {
+      const res = await fetch(tenantApiUrl('/api/bookings'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -196,8 +225,42 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
     ? `${selectedDate.getDate()} de ${MESES_ES[selectedDate.getMonth()]}`
     : '';
 
+  const selectedService = services.find((s) => s.id === selectedServiceId);
+
   return (
     <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-xl p-4 sm:p-6 md:p-8 w-full min-w-0">
+      <div className="mb-6 sm:mb-8">
+        <h2 className="text-lg font-semibold text-gray-900 mb-3 sm:text-xl">Tipo de servicio</h2>
+        {servicesLoading && <p className="text-gray-500 text-sm">Cargando servicios...</p>}
+        {!servicesLoading && services.length === 0 && (
+          <p className="text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-sm">
+            Esta barbería aún no tiene servicios configurados.
+          </p>
+        )}
+        {!servicesLoading && services.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
+            {services.map((svc) => (
+              <button
+                key={svc.id}
+                type="button"
+                onClick={() => {
+                  setSelectedServiceId(svc.id);
+                  setSelectedTime('');
+                }}
+                className={`rounded-xl border-2 p-4 text-left transition-all ${
+                  selectedServiceId === svc.id
+                    ? 'border-gray-800 bg-gray-50 shadow-md'
+                    : 'border-gray-200 hover:border-gray-400'
+                }`}
+              >
+                <p className="font-semibold text-gray-900">{svc.name}</p>
+                <p className="text-sm text-gray-500 mt-1">{svc.durationMinutes} min</p>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
       <div className="flex flex-col md:flex-row md:gap-8 md:items-start gap-6 mb-6 sm:mb-8">
         {/* Calendario - izquierda */}
         <div className="flex-shrink-0 w-full min-w-0 md:w-auto">
@@ -270,7 +333,14 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
 
         {/* Horarios - derecha: mismo nivel que el calendario (título fuera de la caja, como a la izquierda) */}
         <div className="flex-1 w-full min-w-0 md:w-auto flex flex-col">
-          <h2 className="text-lg font-semibold text-gray-900 mb-3 sm:text-xl sm:mb-4">Horarios Disponibles</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-3 sm:text-xl sm:mb-4">
+            Horarios Disponibles
+            {selectedService && (
+              <span className="block text-sm font-normal text-gray-500 mt-1">
+                Para {selectedService.name} ({selectedService.durationMinutes} min)
+              </span>
+            )}
+          </h2>
           <div className="flex-1 min-h-0 md:min-h-[340px] rounded-2xl border border-gray-200 bg-gray-50/50 p-4 sm:p-5 md:p-6">
             {!selectedDate && (
               <p className="text-gray-500 text-sm">Selecciona una fecha en el calendario para ver los horarios disponibles.</p>
@@ -343,7 +413,7 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
 
         {errors.general && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm sm:text-base">{errors.general}</div>}
 
-        <button type="submit" disabled={submitting || !selectedDate || !selectedTime} className="w-full min-h-[48px] bg-gradient-to-r from-gray-800 via-gray-900 to-black text-white py-3 px-6 rounded-lg font-semibold hover:from-gray-700 hover:via-gray-800 hover:to-gray-900 active:from-gray-900 active:via-black active:to-black transition-all disabled:from-gray-400 disabled:via-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed touch-manipulation text-base shadow-lg">
+        <button type="submit" disabled={submitting || !selectedServiceId || !selectedDate || !selectedTime} className="w-full min-h-[48px] bg-gradient-to-r from-gray-800 via-gray-900 to-black text-white py-3 px-6 rounded-lg font-semibold hover:from-gray-700 hover:via-gray-800 hover:to-gray-900 active:from-gray-900 active:via-black active:to-black transition-all disabled:from-gray-400 disabled:via-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed touch-manipulation text-base shadow-lg">
           {submitting ? 'Reservando...' : 'Confirmar reserva'}
         </button>
       </div>

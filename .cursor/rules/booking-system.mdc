@@ -10,60 +10,31 @@ alwaysApply: true
 ### Booking Constraints
 
 - Bookings must be in the future (no past dates)
-- Minimum advance booking: 1 hour
-- Maximum advance booking: 30 days
-- Operating hours: 9:00 AM - 8:00 PM (configurable)
-- Time slots: 30-minute intervals
-- No double bookings for same barber at same time
+- Minimum advance booking: 1 hour (configurable per tenant: `minAdvanceHours`)
+- Maximum advance booking: 30 days (configurable: `maxAdvanceDays`)
+- Time slots: **40-minute intervals** (`slotDurationMinutes`)
+- No double bookings for same barber at same time within same tenant
+- All bookings require `tenantId`
 
 ### Data Models
 
-```typescript
-// ✅ GOOD - Clear booking structure
-interface Booking {
-  id: string;
-  customerName: string;
-  customerPhone: string;
-  customerEmail?: string;
-  serviceId: string;
-  barberId: string;
-  dateTime: Date;
-  duration: number; // minutes
-  status: 'pending' | 'confirmed' | 'completed' | 'cancelled';
-  notes?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+Every tenant-scoped record includes `tenantId`. Key models: `Tenant`, `TenantSettings`, `User`, `Booking`, `BlockedSlot`.
 
-interface Service {
-  id: string;
-  name: string;
-  duration: number; // minutes
-  price: number;
-  description?: string;
-}
+### Notifications
 
-interface Barber {
-  id: string;
-  name: string;
-  specialties: string[];
-  isAvailable: boolean;
-}
-```
+- Channel: **ManyChat WhatsApp** (not Twilio)
+- Confirmations and reminders via ManyChat flows
+- Cron: `/api/cron/reminders` processes all active tenants
 
 ## Validation Rules
 
 - Customer name: required, min 2 characters, max 50
-- Phone: required, valid format (country-specific)
-- Email: optional, must be valid if provided
-- Date/Time: must be within operating hours, not in past
-- Service: must exist and be active
-- Barber: must exist and be available
+- Phone: required, 10 digits (Colombia +57 prefix on server)
+- Date/Time: must be within tenant operating hours (`scheduleJson`)
+- Barber: must exist, be active, and belong to same tenant
 
 ## User Experience
 
 - Show available time slots only
-- Display barber availability in real-time
-- Send confirmation after booking
-- Allow cancellation with reasonable notice (e.g., 2 hours)
-- Show booking history for customers
+- Cancel URL uses tenant domain: `https://{slug}.tubarber.com/cancelar/{id}`
+- Cancellation notice: `cancelNoticeHours` from tenant settings (default 2h)

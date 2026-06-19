@@ -1,106 +1,102 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { getAvailableTimeSlots, parseAmPmToMinutes, formatMinutesToAmPm } from '@/lib/schedule';
+import { parseAmPmToMinutes, type ScheduleConfig } from '@/lib/schedule';
 import { colombiaToUTC, getColombiaComponents, getColombiaDayRange, toColombiaDateString } from '@/lib/date-utils';
+import { requireApiTenant } from '@/lib/tenant/api-helper';
+import { scopedPrisma, assertBarberInTenant } from '@/lib/tenant/prisma-scoped';
+import { bookingToInterval, getAvailableSlotsForDuration } from '@/lib/slot-availability';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
+  let tenant;
+  try {
+    tenant = await requireApiTenant(request);
+  } catch {
+    return NextResponse.json({ success: false, error: 'Barbería no encontrada' }, { status: 404 });
+  }
+
   try {
     const searchParams = request.nextUrl.searchParams;
     const barberId = searchParams.get('barberId');
     const date = searchParams.get('date');
+    const serviceId = searchParams.get('serviceId');
 
     if (!barberId || !date) {
-      return NextResponse.json(
-        { success: false, error: 'barberId y date son requeridos' },
-        { status: 400 }
-      );
+      return NextResponse.json({ success: false, error: 'barberId y date son requeridos' }, { status: 400 });
+    }
+
+    if (!(await assertBarberInTenant(barberId, tenant.id))) {
+      return NextResponse.json({ success: false, error: 'Barbero no encontrado' }, { status: 404 });
+    }
+
+    const db = scopedPrisma(tenant.id);
+    const settings = await db.settings.findUnique();
+    const scheduleJson = (settings?.scheduleJson as ScheduleConfig | null) ?? null;
+
+    let durationMinutes = settings?.slotDurationMinutes ?? 40;
+    if (serviceId) {
+      const service = await db.service.findFirst({ where: { id: serviceId, isActive: true } });
+      if (!service) {
+        return NextResponse.json({ success: false, error: 'Servicio no encontrado' }, { status: 404 });
+      }
+      durationMinutes = service.durationMinutes;
     }
 
     const [year, month, day] = date.split('-').map(Number);
     const selectedDate = new Date(year, month - 1, day);
-
-    let timeSlots = getAvailableTimeSlots(selectedDate);
 
     const now = new Date();
     const minAdvance = new Date(now.getTime() + 60 * 60 * 1000);
     const todayColombia = toColombiaDateString(now);
     const isToday = date === todayColombia;
 
+    const blockDateStart = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
+    const blockDateEnd = new Date(Date.UTC(year, month - 1, day + 1, 5, 0, 0, 0));
+    const { startOfDay, endOfDay } = getColombiaDayRange(year, month, day);
+
+    const blocks = await db.blockedSlot.findMany({
+      where: { barberId, date: { gte: blockDateStart, lt: blockDateEnd } },
+    });
+
+    if (blocks.some((b) => b.isFullDay)) {
+      return NextResponse.json({ success: true, data: [] });
+    }
+
+    const blockedTimes = new Set(blocks.filter((b) => !b.isFullDay && b.time).map((b) => b.time!));
+
+    const existingBookings = await db.booking.findMany({
+      where: {
+        barberId,
+        dateTime: { gte: startOfDay, lte: endOfDay },
+        status: { not: 'cancelled' },
+      },
+      select: { dateTime: true, durationMinutes: true },
+    });
+
+    const occupiedIntervals = existingBookings.map((b) =>
+      bookingToInterval(new Date(b.dateTime), b.durationMinutes)
+    );
+
+    let timeSlots = getAvailableSlotsForDuration(
+      selectedDate,
+      durationMinutes,
+      scheduleJson,
+      occupiedIntervals,
+      blockedTimes
+    );
+
     if (isToday) {
       timeSlots = timeSlots.filter((slot) => {
         const totalMinutes = parseAmPmToMinutes(slot);
         const hours = Math.floor(totalMinutes / 60);
         const minutes = totalMinutes % 60;
-        const slotUTC = colombiaToUTC(year, month - 1, day, hours, minutes);
-        return slotUTC >= minAdvance;
+        return colombiaToUTC(year, month - 1, day, hours, minutes) >= minAdvance;
       });
     }
 
-    // Rango amplio para encontrar bloqueos
-    const blockDateStart = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
-    const blockDateEnd = new Date(Date.UTC(year, month - 1, day + 1, 5, 0, 0, 0));
-
-    // Rango del día en Colombia para consultar bookings
-    const { startOfDay, endOfDay } = getColombiaDayRange(year, month, day);
-
-    try {
-      if (prisma.blockedSlot) {
-        const blocks = await prisma.blockedSlot.findMany({
-          where: {
-            barberId,
-            date: {
-              gte: blockDateStart,
-              lt: blockDateEnd,
-            },
-          },
-        });
-
-        const fullDayBlock = blocks.find((b) => b.isFullDay);
-        if (fullDayBlock) {
-          return NextResponse.json({ success: true, data: [] });
-        }
-
-        const blockedTimes = new Set(
-          blocks.filter((b) => !b.isFullDay && b.time).map((b) => b.time!)
-        );
-        if (blockedTimes.size > 0) {
-          timeSlots = timeSlots.filter((slot) => !blockedTimes.has(slot));
-        }
-      }
-    } catch (blockError) {
-      console.warn('BlockedSlot table not available yet, skipping block checks:', blockError);
-    }
-
-    const existingBookings = await prisma.booking.findMany({
-      where: {
-        barberId,
-        dateTime: {
-          gte: startOfDay,
-          lte: endOfDay,
-        },
-        status: {
-          not: 'cancelled',
-        },
-      },
-    });
-
-    const occupiedTimes = new Set(
-      existingBookings.map((booking) => {
-        const { hours, minutes } = getColombiaComponents(new Date(booking.dateTime));
-        return formatMinutesToAmPm(hours * 60 + minutes);
-      })
-    );
-
-    const availableSlots = timeSlots.filter((slot) => !occupiedTimes.has(slot));
-
-    return NextResponse.json({ success: true, data: availableSlots });
+    return NextResponse.json({ success: true, data: timeSlots, durationMinutes });
   } catch (error) {
     console.error('Error fetching available slots:', error);
-    return NextResponse.json(
-      { success: false, error: 'Error al obtener horarios disponibles' },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, error: 'Error al obtener horarios disponibles' }, { status: 500 });
   }
 }

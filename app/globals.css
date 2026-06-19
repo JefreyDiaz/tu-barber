@@ -198,3 +198,87 @@ body {
 .animate-bounce-gentle {
   animation: bounceGentle 1.5s ease-in-out infinite;
 }
+
+/* ===== Platform / SaaS landing (glassmorphism) ===== */
+
+.platform-bg {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(229, 184, 105, 0.18), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 50%, rgba(200, 148, 74, 0.08), transparent),
+    linear-gradient(180deg, #0c0a09 0%, #1c1917 40%, #0c0a09 100%);
+}
+
+.glass-card {
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.glass-card-strong {
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.glass-input {
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: white;
+  backdrop-filter: blur(12px);
+}
+
+.glass-input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.glass-input:focus {
+  outline: none;
+  border-color: rgba(229, 184, 105, 0.5);
+  box-shadow: 0 0 0 3px rgba(229, 184, 105, 0.15);
+}
+
+.btn-accent {
+  background: linear-gradient(135deg, #e5b869 0%, #c8944a 50%, #a67c3a 100%);
+  color: #1c1917;
+  font-weight: 600;
+  box-shadow: 0 4px 24px rgba(229, 184, 105, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-accent:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 32px rgba(229, 184, 105, 0.35);
+}
+
+.btn-accent:disabled {
+  opacity: 0.5;
+}
+
+.btn-glass {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  color: white;
+  transition: background 0.15s ease;
+}
+
+.btn-glass:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, #f5deb3, #e5b869, #c8944a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.plan-card-selected {
+  border-color: rgba(229, 184, 105, 0.6) !important;
+  box-shadow: 0 0 0 1px rgba(229, 184, 105, 0.3), 0 8px 40px rgba(229, 184, 105, 0.15);
+}

@@ -1,9 +1,7 @@
 import { prisma } from '@/lib/prisma';
-import { sendBookingReminderWhatsApp } from '@/lib/twilio';
+import { sendBookingReminder } from '@/lib/messaging/booking-messages';
 
-/** Horas antes de la cita en las que se intenta enviar el recordatorio (centro de la ventana). */
 const REMINDER_HOURS_BEFORE = 3;
-/** Mitad de la ventana en minutos (cron cada 15 min debe cubrir la ventana completa). */
 const REMINDER_WINDOW_HALF_WIDTH_MINUTES = 15;
 
 function getReminderWindowBounds(now: Date): { windowStart: Date; windowEnd: Date } {
@@ -15,10 +13,6 @@ function getReminderWindowBounds(now: Date): { windowStart: Date; windowEnd: Dat
   };
 }
 
-/**
- * Busca reservas elegibles y envía recordatorio por WhatsApp (una vez por reserva).
- * @returns contadores para logs / respuesta del cron
- */
 export async function processBookingReminders(now: Date = new Date()): Promise<{
   scanned: number;
   sent: number;
@@ -30,13 +24,24 @@ export async function processBookingReminders(now: Date = new Date()): Promise<{
     where: {
       reminderSentAt: null,
       status: { in: ['pending', 'confirmed'] },
-      dateTime: {
-        gte: windowStart,
-        lte: windowEnd,
-      },
+      dateTime: { gte: windowStart, lte: windowEnd },
     },
     include: {
       barber: { select: { name: true, phone: true } },
+      tenant: {
+        select: {
+          slug: true,
+          settings: {
+            select: {
+              manychatApiKey: true,
+              manychatFlowBooking: true,
+              manychatFlowBarber: true,
+              manychatFlowReminder: true,
+              manychatFieldMap: true,
+            },
+          },
+        },
+      },
     },
   });
 
@@ -44,14 +49,29 @@ export async function processBookingReminders(now: Date = new Date()): Promise<{
   let failed = 0;
 
   for (const booking of bookings) {
-    const ok = await sendBookingReminderWhatsApp({
-      to: booking.customerPhone,
-      customerName: booking.customerName,
-      barberName: booking.barber.name,
-      barberPhone: booking.barber.phone,
-      dateTime: booking.dateTime,
-      bookingId: booking.id,
-    });
+    const settings = booking.tenant.settings;
+    const tenantSettings = settings
+      ? {
+          manychatApiKey: settings.manychatApiKey,
+          manychatFlowBooking: settings.manychatFlowBooking,
+          manychatFlowBarber: settings.manychatFlowBarber,
+          manychatFlowReminder: settings.manychatFlowReminder,
+          manychatFieldMap: settings.manychatFieldMap as Record<string, string> | null,
+        }
+      : null;
+
+    const ok = await sendBookingReminder(
+      {
+        to: booking.customerPhone,
+        customerName: booking.customerName,
+        barberName: booking.barber.name,
+        barberPhone: booking.barber.phone,
+        dateTime: booking.dateTime,
+        bookingId: booking.id,
+        tenantSlug: booking.tenant.slug,
+      },
+      tenantSettings
+    );
 
     if (ok) {
       await prisma.booking.update({

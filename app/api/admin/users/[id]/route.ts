@@ -1,25 +1,42 @@
-import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { NextRequest, NextResponse } from 'next/server';
 import { hashPassword } from '@/lib/password';
 import { updateUserSchema, updateUserByOwnerSchema } from '@/lib/validations/user';
 import { auth } from '@/lib/auth';
-
+import { requireApiTenant } from '@/lib/tenant/api-helper';
+import { assertSameTenant } from '@/lib/tenant/permissions';
+import { scopedPrisma } from '@/lib/tenant/prisma-scoped';
 type RouteParams = { params: Promise<{ id: string }> };
 
-// Verificar autenticación y obtener rol
-async function verifyAuth() {
+async function verifyAuth(request: NextRequest) {
   const session = await auth();
   if (!session?.user) {
     return { authorized: false as const, error: 'No autorizado', status: 401 };
   }
-  return { authorized: true as const, userId: session.user.id, role: session.user.role };
+
+  let tenant;
+  try {
+    tenant = await requireApiTenant(request);
+  } catch {
+    return { authorized: false as const, error: 'Barbería no encontrada', status: 404 };
+  }
+
+  if (!assertSameTenant(session.user.tenantId, tenant.id)) {
+    return { authorized: false as const, error: 'Sin permisos', status: 403 };
+  }
+
+  return {
+    authorized: true as const,
+    userId: session.user.id,
+    role: session.user.role,
+    tenantId: tenant.id,
+  };
 }
 
 // GET - Obtener un usuario específico (admin y dueño)
-export async function GET(_request: Request, { params }: RouteParams) {
+export async function GET(request: NextRequest, { params }: RouteParams) {
   const { id } = await params;
-  
-  const authResult = await verifyAuth();
+
+  const authResult = await verifyAuth(request);
   if (!authResult.authorized) {
     return NextResponse.json({ success: false, error: authResult.error }, { status: authResult.status });
   }
@@ -29,7 +46,8 @@ export async function GET(_request: Request, { params }: RouteParams) {
   }
 
   try {
-    const user = await prisma.user.findUnique({
+    const db = scopedPrisma(authResult.tenantId);
+    const user = await db.user.findFirst({
       where: { id },
       select: {
         id: true, name: true, username: true, photo: true,
@@ -37,7 +55,6 @@ export async function GET(_request: Request, { params }: RouteParams) {
         createdAt: true, updatedAt: true,
       },
     });
-
     if (!user) {
       return NextResponse.json({ success: false, error: 'Usuario no encontrado' }, { status: 404 });
     }
@@ -50,10 +67,10 @@ export async function GET(_request: Request, { params }: RouteParams) {
 }
 
 // PUT - Actualizar usuario completo (SOLO admin)
-export async function PUT(request: Request, { params }: RouteParams) {
+export async function PUT(request: NextRequest, { params }: RouteParams) {
   const { id } = await params;
-  
-  const authResult = await verifyAuth();
+
+  const authResult = await verifyAuth(request);
   if (!authResult.authorized) {
     return NextResponse.json({ success: false, error: authResult.error }, { status: authResult.status });
   }
@@ -63,6 +80,7 @@ export async function PUT(request: Request, { params }: RouteParams) {
   }
 
   try {
+    const db = scopedPrisma(authResult.tenantId);
     const body = await request.json();
     const parsed = updateUserSchema.safeParse(body);
 
@@ -74,13 +92,13 @@ export async function PUT(request: Request, { params }: RouteParams) {
 
     const { name, username, password, photo, email, phone, role, isActive } = parsed.data;
 
-    const existingUser = await prisma.user.findUnique({ where: { id } });
+    const existingUser = await db.user.findFirst({ where: { id } });
     if (!existingUser) {
       return NextResponse.json({ success: false, error: 'Usuario no encontrado' }, { status: 404 });
     }
 
     if (username !== existingUser.username) {
-      const usernameTaken = await prisma.user.findUnique({ where: { username } });
+      const usernameTaken = await db.user.findFirst({ where: { username } });
       if (usernameTaken) {
         return NextResponse.json({ success: false, error: 'Ese nombre de usuario ya está en uso' }, { status: 409 });
       }
@@ -100,9 +118,10 @@ export async function PUT(request: Request, { params }: RouteParams) {
       updateData.password = await hashPassword(password);
     }
 
-    const user = await prisma.user.update({
+    await db.user.update({ where: { id }, data: updateData });
+
+    const user = await db.user.findFirst({
       where: { id },
-      data: updateData,
       select: {
         id: true, name: true, username: true, photo: true,
         email: true, phone: true, role: true, isActive: true,
@@ -118,10 +137,10 @@ export async function PUT(request: Request, { params }: RouteParams) {
 }
 
 // PATCH - Actualizar usuario parcialmente (para dueño: solo nombre y teléfono)
-export async function PATCH(request: Request, { params }: RouteParams) {
+export async function PATCH(request: NextRequest, { params }: RouteParams) {
   const { id } = await params;
-  
-  const authResult = await verifyAuth();
+
+  const authResult = await verifyAuth(request);
   if (!authResult.authorized) {
     return NextResponse.json({ success: false, error: authResult.error }, { status: authResult.status });
   }
@@ -131,6 +150,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
   }
 
   try {
+    const db = scopedPrisma(authResult.tenantId);
     const body = await request.json();
     const parsed = updateUserByOwnerSchema.safeParse(body);
 
@@ -140,14 +160,15 @@ export async function PATCH(request: Request, { params }: RouteParams) {
       return NextResponse.json({ success: false, error: message }, { status: 400 });
     }
 
-    const { name, phone, password, isActive } = parsed.data;
+    const { name, phone, password, isActive, photo } = parsed.data;
 
-    const existingUser = await prisma.user.findUnique({ where: { id } });
+    const existingUser = await db.user.findFirst({ where: { id } });
     if (!existingUser) {
       return NextResponse.json({ success: false, error: 'Usuario no encontrado' }, { status: 404 });
     }
 
     const updateData: Record<string, unknown> = { name, phone };
+    if (photo !== undefined) updateData.photo = photo || null;
     if (isActive !== undefined) {
       updateData.isActive = isActive;
     }
@@ -155,9 +176,10 @@ export async function PATCH(request: Request, { params }: RouteParams) {
       updateData.password = await hashPassword(password);
     }
 
-    const user = await prisma.user.update({
+    await db.user.update({ where: { id }, data: updateData });
+
+    const user = await db.user.findFirst({
       where: { id },
-      data: updateData,
       select: {
         id: true, name: true, username: true, photo: true,
         email: true, phone: true, role: true, isActive: true,
@@ -173,10 +195,10 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 }
 
 // DELETE - Eliminar usuario (SOLO admin)
-export async function DELETE(_request: Request, { params }: RouteParams) {
+export async function DELETE(request: NextRequest, { params }: RouteParams) {
   const { id } = await params;
-  
-  const authResult = await verifyAuth();
+
+  const authResult = await verifyAuth(request);
   if (!authResult.authorized) {
     return NextResponse.json({ success: false, error: authResult.error }, { status: authResult.status });
   }
@@ -186,7 +208,8 @@ export async function DELETE(_request: Request, { params }: RouteParams) {
   }
 
   try {
-    const existingUser = await prisma.user.findUnique({ where: { id } });
+    const db = scopedPrisma(authResult.tenantId);
+    const existingUser = await db.user.findFirst({ where: { id } });
     if (!existingUser) {
       return NextResponse.json({ success: false, error: 'Usuario no encontrado' }, { status: 404 });
     }
@@ -195,7 +218,7 @@ export async function DELETE(_request: Request, { params }: RouteParams) {
       return NextResponse.json({ success: false, error: 'No puedes eliminarte a ti mismo' }, { status: 400 });
     }
 
-    await prisma.user.delete({ where: { id } });
+    await db.user.delete({ where: { id } });
     return NextResponse.json({ success: true, message: 'Usuario eliminado correctamente' });
   } catch (error) {
     console.error('Error deleting user:', error);

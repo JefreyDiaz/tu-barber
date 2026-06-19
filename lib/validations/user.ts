@@ -15,7 +15,7 @@ export const createUserSchema = z.object({
     .string()
     .min(8, 'La contraseña debe tener al menos 8 caracteres')
     .max(100),
-  photo: z.string().max(500).optional().or(z.literal('')),
+  photo: z.union([z.string().url('URL inválida').max(1000), z.literal('')]).optional(),
   email: z.string().email('Email inválido').optional().or(z.literal('')),
   phone: z
     .string()
@@ -46,7 +46,7 @@ export const updateUserSchema = z.object({
     .max(100)
     .optional()
     .or(z.literal('')),
-  photo: z.string().max(500).optional().or(z.literal('')),
+  photo: z.union([z.string().url('URL inválida').max(1000), z.literal('')]).optional(),
   email: z.string().email('Email inválido').optional().or(z.literal('')),
   phone: z
     .string()
@@ -76,6 +76,7 @@ export const updateUserByOwnerSchema = z.object({
     .min(8, 'La contraseña debe tener al menos 8 caracteres')
     .optional()
     .or(z.literal('')),
+  photo: z.union([z.string().url('URL inválida').max(1000), z.literal('')]).optional(),
   isActive: z.boolean().optional(),
 });
 
