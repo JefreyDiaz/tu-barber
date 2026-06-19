@@ -3,8 +3,9 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   const dbUrl = process.env.DATABASE_URL || 'NOT SET';
-  // Show host only (hide password)
   const safeUrl = dbUrl.replace(/\/\/.*:.*@/, '//***:***@');
+  const hostMatch = dbUrl.match(/@([^:/]+)/);
+  const dbHost = hostMatch?.[1] ?? 'unknown';
 
   try {
     // Test actual DB connection
@@ -15,6 +16,7 @@ export async function GET() {
       database: {
         connected: true,
         url_host: safeUrl,
+        db_host: dbHost,
         userCount,
       },
       env: {
@@ -30,6 +32,7 @@ export async function GET() {
       database: {
         connected: false,
         url_host: safeUrl,
+        db_host: dbHost,
         error: errorMessage,
       },
       env: {

@@ -1,29 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { extractSubdomain, isPlatformHost } from '@/lib/tenant/host';
 
 export const TENANT_SLUG_HEADER = 'x-tenant-slug';
 export const TENANT_PLATFORM_HEADER = 'x-is-platform';
 export const TENANT_SLUG_COOKIE = 'tenant-slug';
-
-const PLATFORM_SUBDOMAINS = new Set(['app', 'www']);
-
-export function extractSubdomain(host: string): string | null {
-  const hostname = host.split(':')[0].toLowerCase();
-  if (hostname === 'localhost' || hostname.startsWith('127.0.0.1')) return null;
-  const parts = hostname.split('.');
-  if (parts.length < 3) return null;
-  const sub = parts[0];
-  if (PLATFORM_SUBDOMAINS.has(sub)) return null;
-  return sub;
-}
-
-export function isPlatformHost(host: string, tenantParam?: string | null): boolean {
-  if (tenantParam) return false;
-  const hostname = host.split(':')[0].toLowerCase();
-  if (hostname === 'localhost' || hostname.startsWith('127.0.0.1')) return true;
-  const parts = hostname.split('.');
-  if (parts.length <= 2) return true;
-  return PLATFORM_SUBDOMAINS.has(parts[0]);
-}
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
