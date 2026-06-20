@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { hashPassword } from '@/lib/password';
 import { updateUserSchema, updateUserByOwnerSchema } from '@/lib/validations/user';
 import { auth } from '@/lib/auth';
-import { requireApiTenant } from '@/lib/tenant/api-helper';
+import { requireApiTenant, tenantErrorStatus } from '@/lib/tenant/api-helper';
 import { assertSameTenant } from '@/lib/tenant/permissions';
 import { scopedPrisma } from '@/lib/tenant/prisma-scoped';
 type RouteParams = { params: Promise<{ id: string }> };
@@ -16,8 +16,9 @@ async function verifyAuth(request: NextRequest) {
   let tenant;
   try {
     tenant = await requireApiTenant(request);
-  } catch {
-    return { authorized: false as const, error: 'Barbería no encontrada', status: 404 };
+  } catch (e) {
+    const err = tenantErrorStatus(e);
+    return { authorized: false as const, error: err.error, status: err.status };
   }
 
   if (!assertSameTenant(session.user.tenantId, tenant.id)) {

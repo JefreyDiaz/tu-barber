@@ -1,0 +1,75 @@
+---
+description: Resolución de tenant, hosts, 404 y rutas plataforma vs barbería
+alwaysApply: true
+---
+
+# Multitenant — Routing y 404
+
+## Dos modos de la app
+
+| Modo | Host | Header `x-is-platform` | Ejemplo |
+|------|------|--------------------------|---------|
+| **Plataforma** | `localhost`, `*.vercel.app`, `app.tubarber.com` | `true` | Landing, registro, super-admin |
+| **Tenant** | `{slug}.tubarber.com`, dominio custom, `?tenant=slug` | `false` | Booking, admin, login barbería |
+
+## Resolución de tenant (orden)
+
+1. Query `?tenant=slug` (dev/Vercel) — fuerza modo tenant
+2. Cookie `tenant-slug` — solo en rutas tenant (`/admin`, `/login`, `/booking`, etc.)
+3. Subdominio `{slug}.tubarber.com`
+4. Dominio custom (plan Pro)
+5. `DEFAULT_TENANT_SLUG` — solo localhost sin `?tenant`
+
+Middleware solo setea `x-tenant-slug`; **no valida** que exista en DB.
+
+## Regla 404 — tenant inexistente
+
+Si hay slug resuelto pero **no hay tenant en DB** → **404**, nunca fallback a plataforma ni datos de otro tenant.
+
+```typescript
+// ✅ Páginas server — lib/tenant/context.ts
+await assertTenantExists(); // notFound() si slug sin tenant
+const tenant = await requireTenant(); // activo + existe
+
+// ✅ APIs tenant — lib/tenant/api-helper.ts
+try {
+  tenant = await requireApiTenant(request);
+} catch (e) {
+  return tenantApiErrorResponse(e); // 404 NOT_FOUND, 403 INACTIVE
+}
+```
+
+| Caso | Respuesta |
+|------|-----------|
+| Slug no existe en DB | **404** |
+| Tenant `pending` / `rejected` | Redirect `/tenant-status` |
+| Tenant `suspended` | Redirect `/tenant-status` |
+| Recurso de otro tenant (barber, booking) | **404** (no revelar que existe) |
+| Plataforma sin `?tenant` | Landing / registro (no 404) |
+
+## Hosts especiales
+
+- `*.vercel.app` → siempre plataforma (usar `?tenant=slug` en dev)
+- Subdominios reservados: `app`, `www` → plataforma
+- Slugs reservados al registrar: `app`, `www`, `api`, `admin`, `platform`, `registro`
+
+## Rutas por grupo
+
+- `(platform)`: `/registro`, `/platform/login`, `/platform/tenants`
+- `(tenant)`: `/`, `/login`, `/admin/*`, `/booking/*`, `/cancelar/*`
+- APIs tenant: `/api/bookings`, `/api/services`, `/api/admin/*`
+- APIs plataforma: `/api/platform/*`, `/api/onboarding` — requieren `super_admin`
+
+## Dev local
+
+- Plataforma: `http://localhost:3000`
+- Tenant: `http://localhost:3000?tenant=tu-barber` o cookie tras primera visita
+- Links internos: preservar `?tenant=` con `tenantApiUrl()` / `tenantHref()`
+- Admin links server: `` `/admin${slug ? `?tenant=${slug}` : ''}` ``
+
+## Al crear rutas tenant nuevas
+
+1. Agregar path en `tenantRoutes` del middleware si necesita cookie/`?tenant`
+2. Usar `requireTenant()` o `assertTenantExists()` en la página
+3. Usar `requireApiTenant()` + `tenantApiErrorResponse()` en la API
+4. Consultas con `scopedPrisma(tenant.id)` — nunca Prisma global sin `tenantId`

@@ -28,9 +28,10 @@ Before creating/updating bookings or blocked slots, verify `barberId` belongs to
 
 ## API Handlers
 
-1. Resolve tenant with `getTenantFromRequest()` at the start
-2. Return 404 if tenant not found, 403 if suspended
-3. Never expose other tenants' data in error messages
+1. Resolve tenant with `requireApiTenant(request)` at the start
+2. Use `tenantApiErrorResponse(error)` — 404 if not found, 403 if inactive
+3. Return 404 for cross-tenant resources (never reveal they exist)
+4. Never expose other tenants' data in error messages
 
 ## Auth
 

@@ -1,4 +1,5 @@
 import { headers } from 'next/headers';
+import { notFound } from 'next/navigation';
 import { findTenantBySlug } from './resolve';
 import type { ResolvedTenant } from './resolve';
 
@@ -17,23 +18,33 @@ export async function isPlatformRequest(): Promise<boolean> {
   return h.get(TENANT_PLATFORM_HEADER) === 'true';
 }
 
-export async function getTenantFromHeaders(): Promise<ResolvedTenant | null> {
+export async function getRequestedTenantSlug(): Promise<string | null> {
   if (await isPlatformRequest()) return null;
-
   const h = await headers();
-  const slug = h.get(TENANT_SLUG_HEADER);
-  if (!slug) return null;
+  return h.get(TENANT_SLUG_HEADER);
+}
 
+export async function getTenantFromHeaders(): Promise<ResolvedTenant | null> {
+  const slug = await getRequestedTenantSlug();
+  if (!slug) return null;
   return findTenantBySlug(slug);
 }
 
-export async function requireTenant(): Promise<ResolvedTenant> {
+/** 404 when slug was resolved but tenant does not exist in DB. */
+export async function assertTenantExists(): Promise<ResolvedTenant | null> {
+  const slug = await getRequestedTenantSlug();
+  if (!slug) return null;
+
   const tenant = await getTenantFromHeaders();
-  if (!tenant) {
-    throw new Error('Tenant not resolved');
-  }
+  if (!tenant) notFound();
+  return tenant;
+}
+
+export async function requireTenant(): Promise<ResolvedTenant> {
+  const tenant = await assertTenantExists();
+  if (!tenant) notFound();
   if (tenant.status !== 'active') {
-    throw new Error(`Tenant is ${tenant.status}`);
+    notFound();
   }
   return tenant;
 }

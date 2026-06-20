@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { z } from 'zod';
-import { requireApiTenant } from '@/lib/tenant/api-helper';
+import { requireApiTenant, tenantApiErrorResponse } from '@/lib/tenant/api-helper';
 import { canManageBarber } from '@/lib/tenant/permissions';
 import { scopedPrisma } from '@/lib/tenant/prisma-scoped';
 
@@ -26,8 +26,8 @@ export async function GET(request: NextRequest) {
   let tenant;
   try {
     tenant = await requireApiTenant(request);
-  } catch {
-    return NextResponse.json({ success: false, error: 'Barbería no encontrada' }, { status: 404 });
+  } catch (e) {
+    return tenantApiErrorResponse(e);
   }
 
   const session = await auth();
@@ -68,8 +68,8 @@ export async function POST(request: NextRequest) {
   let tenant;
   try {
     tenant = await requireApiTenant(request);
-  } catch {
-    return NextResponse.json({ success: false, error: 'Barbería no encontrada' }, { status: 404 });
+  } catch (e) {
+    return tenantApiErrorResponse(e);
   }
 
   const session = await auth();
@@ -123,8 +123,8 @@ export async function DELETE(request: NextRequest) {
   let tenant;
   try {
     tenant = await requireApiTenant(request);
-  } catch {
-    return NextResponse.json({ success: false, error: 'Barbería no encontrada' }, { status: 404 });
+  } catch (e) {
+    return tenantApiErrorResponse(e);
   }
 
   const session = await auth();

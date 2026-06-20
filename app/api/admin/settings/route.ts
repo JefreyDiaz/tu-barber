@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth';
 import { tenantSettingsSchema } from '@/lib/validations/tenant';
-import { requireApiTenant } from '@/lib/tenant/api-helper';
+import { requireApiTenant, tenantApiErrorResponse } from '@/lib/tenant/api-helper';
 import { assertSameTenant } from '@/lib/tenant/permissions';
 import { scopedPrisma } from '@/lib/tenant/prisma-scoped';
 import { checkDomainVerification } from '@/lib/vercel/domains';
@@ -14,8 +14,8 @@ export async function GET(request: NextRequest) {
   let tenant;
   try {
     tenant = await requireApiTenant(request);
-  } catch {
-    return NextResponse.json({ success: false, error: 'Barbería no encontrada' }, { status: 404 });
+  } catch (e) {
+    return tenantApiErrorResponse(e);
   }
 
   const session = await auth();
@@ -65,8 +65,8 @@ export async function PATCH(request: NextRequest) {
   let tenant;
   try {
     tenant = await requireApiTenant(request);
-  } catch {
-    return NextResponse.json({ success: false, error: 'Barbería no encontrada' }, { status: 404 });
+  } catch (e) {
+    return tenantApiErrorResponse(e);
   }
 
   const session = await auth();

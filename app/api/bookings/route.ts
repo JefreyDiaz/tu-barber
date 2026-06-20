@@ -5,7 +5,7 @@ import { bookingToInterval, getAvailableSlotsForDuration } from '@/lib/slot-avai
 import { getColombiaDayRange } from '@/lib/date-utils';
 import { sendBookingConfirmation, sendBarberNotification } from '@/lib/messaging/booking-messages';
 import { auth } from '@/lib/auth';
-import { requireApiTenant } from '@/lib/tenant/api-helper';
+import { requireApiTenant, tenantApiErrorResponse } from '@/lib/tenant/api-helper';
 import { scopedPrisma, assertBarberInTenant } from '@/lib/tenant/prisma-scoped';
 import { assertSameTenant } from '@/lib/tenant/permissions';
 import { prisma } from '@/lib/prisma';
@@ -24,8 +24,8 @@ export async function GET(request: NextRequest) {
   let tenant;
   try {
     tenant = await requireApiTenant(request);
-  } catch {
-    return NextResponse.json({ success: false, error: 'Barbería no encontrada' }, { status: 404 });
+  } catch (e) {
+    return tenantApiErrorResponse(e);
   }
 
   if (!assertSameTenant(session.user.tenantId, tenant.id)) {
@@ -65,8 +65,8 @@ export async function POST(request: NextRequest) {
   let tenant;
   try {
     tenant = await requireApiTenant(request);
-  } catch {
-    return NextResponse.json({ success: false, error: 'Barbería no encontrada' }, { status: 404 });
+  } catch (e) {
+    return tenantApiErrorResponse(e);
   }
 
   try {

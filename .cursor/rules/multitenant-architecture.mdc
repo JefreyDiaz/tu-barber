@@ -7,21 +7,54 @@ alwaysApply: true
 
 ## Strategy
 
-- Shared PostgreSQL database with `tenantId` column on tenant-scoped tables
-- Tenant resolution via subdomain (`{slug}.tubarber.com`) or custom domain (Pro plan)
-- Platform routes at `app.tubarber.com` under `(platform)` route group
-- Tenant routes under `(tenant)` route group
+- Shared PostgreSQL with `tenantId` on all tenant-scoped tables
+- Tenant resolution: subdomain, custom domain (Pro), or `?tenant=slug` (dev)
+- Platform at `app.tubarber.com` → route group `(platform)`
+- Barberías → route group `(tenant)`
 
 ## Roles
 
-- `super_admin`: platform level, no tenantId, manages all tenants
-- `admin`: tenant administrator
-- `dueno`: shop owner within tenant
-- `barbero`: barber within tenant
+| Rol | Scope | `tenantId` |
+|-----|-------|------------|
+| `super_admin` | Plataforma | `null` |
+| `admin` | Tenant | required |
+| `dueno` | Tenant | required |
+| `barbero` | Tenant | required |
 
-## Rules
+## Aislamiento de datos
 
-- Never hardcode shop branding, hours, or messaging config globally
-- All tenant-scoped data must include `tenantId`
-- ManyChat config lives in `TenantSettings`; use platform fallback for Basic plan
-- Cancel URLs must use tenant domain: `https://{slug}.tubarber.com/cancelar/{id}`
+- **Nunca** consultar tablas tenant-scoped sin `where: { tenantId }`
+- Validar FKs (`barberId`, `serviceId`) pertenecen al mismo tenant
+- Auth staff: `username + password + tenantId`; sesión incluye `tenantId` y `tenantSlug`
+- Ver regla `tenant-isolation.mdc` para patrones de código
+
+## Planes y suscripción
+
+- Planes: `basic` ($39.900), `pro` ($89.900) — ver `lib/plans.ts`
+- Trial Pro 14 días al aprobar tenant (`subscriptionStatus: trialing`)
+- ManyChat: config en `TenantSettings`; plan Basic usa fallback plataforma
+
+## Onboarding
+
+1. `/registro` → `POST /api/onboarding` → tenant `pending`
+2. Super-admin aprueba → `active` + trial + activa usuario `dueno`
+3. Estados: `pending` → `active` | `rejected`; `active` ↔ `suspended`
+
+## Config por tenant (no hardcodear global)
+
+- Branding, horarios, mensajes ManyChat, logo, timezone
+- Cancel URLs: `https://{slug}.tubarber.com/cancelar/{id}`
+
+## 404 y errores
+
+- Tenant inexistente → **404** (páginas y APIs). Ver `multitenant-routing.mdc`
+- Recurso ajeno al tenant → **404**, no 403 (evitar enumeración)
+- Tenant inactivo → redirect `/tenant-status`, no 404
+
+## Archivos clave
+
+- `middleware.ts` — headers `x-tenant-slug`, `x-is-platform`
+- `lib/tenant/host.ts` — plataforma vs subdomain
+- `lib/tenant/context.ts` — `requireTenant()`, `assertTenantExists()`
+- `lib/tenant/api-helper.ts` — `requireApiTenant()`, `tenantApiErrorResponse()`
+- `lib/tenant/prisma-scoped.ts` — queries con `tenantId`

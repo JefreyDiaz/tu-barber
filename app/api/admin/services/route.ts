@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import { requireApiTenant } from '@/lib/tenant/api-helper';
+import { requireApiTenant, tenantErrorStatus } from '@/lib/tenant/api-helper';
 import { assertSameTenant } from '@/lib/tenant/permissions';
 import { scopedPrisma } from '@/lib/tenant/prisma-scoped';
 import { serviceSchema } from '@/lib/validations/service';
@@ -14,8 +14,9 @@ async function authorize(request: NextRequest) {
   let tenant;
   try {
     tenant = await requireApiTenant(request);
-  } catch {
-    return { ok: false as const, status: 404, error: 'Barbería no encontrada' };
+  } catch (e) {
+    const err = tenantErrorStatus(e);
+    return { ok: false as const, status: err.status, error: err.error };
   }
 
   if (!assertSameTenant(session.user.tenantId, tenant.id)) {

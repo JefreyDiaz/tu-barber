@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { parseAmPmToMinutes, type ScheduleConfig } from '@/lib/schedule';
 import { colombiaToUTC, getColombiaComponents, getColombiaDayRange, toColombiaDateString } from '@/lib/date-utils';
-import { requireApiTenant } from '@/lib/tenant/api-helper';
+import { requireApiTenant, tenantApiErrorResponse } from '@/lib/tenant/api-helper';
 import { scopedPrisma, assertBarberInTenant } from '@/lib/tenant/prisma-scoped';
 import { bookingToInterval, getAvailableSlotsForDuration } from '@/lib/slot-availability';
 
@@ -11,8 +11,8 @@ export async function GET(request: NextRequest) {
   let tenant;
   try {
     tenant = await requireApiTenant(request);
-  } catch {
-    return NextResponse.json({ success: false, error: 'Barbería no encontrada' }, { status: 404 });
+  } catch (e) {
+    return tenantApiErrorResponse(e);
   }
 
   try {

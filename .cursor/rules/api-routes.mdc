@@ -72,8 +72,8 @@ export async function POST(request: NextRequest) {
 - Use schema validation (Zod)
 - Return 400 for validation errors
 - Resolve tenant with `requireApiTenant(request)` on tenant-scoped routes
-- Return 404 if tenant not found, 403 if suspended or cross-tenant access
-- Platform admin APIs under `/api/platform/*` require `super_admin` role
+- Use `tenantApiErrorResponse(error)` — 404 not found, 403 inactive
+- Return 404 for cross-tenant resources; platform APIs under `/api/platform/*` require `super_admin`
 
 ```typescript
 import { z } from 'zod';

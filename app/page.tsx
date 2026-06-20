@@ -1,13 +1,14 @@
 import BarberCarousel, { BarberSelectionText } from '@/components/BarberCarousel';
 import PlatformLanding from '@/components/PlatformLanding';
 import Image from 'next/image';
-import { getTenantFromHeaders } from '@/lib/tenant/context';
+import { assertTenantExists, getTenantFromHeaders } from '@/lib/tenant/context';
 import { scopedPrisma } from '@/lib/tenant/prisma-scoped';
 import { redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
+  await assertTenantExists();
   const tenant = await getTenantFromHeaders();
 
   if (!tenant) {
