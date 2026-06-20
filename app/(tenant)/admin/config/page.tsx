@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import ScheduleEditor, { type ScheduleConfig } from '@/components/ScheduleEditor';
+import { ui } from '@/lib/admin-ui';
 import { DEFAULT_SCHEDULE } from '@/lib/tenant/defaults';
 import { tenantApiUrl } from '@/lib/tenant/client-api';
 
@@ -121,20 +122,20 @@ export default function AdminConfigPage() {
     }
   }
 
-  if (loading) return <p className="text-neutral-500">Cargando...</p>;
+  if (loading) return <p className={ui.muted}>Cargando...</p>;
 
   return (
-    <div className="space-y-10">
+    <div className={ui.pageWide}>
       <div>
-        <h1 className="text-xl font-bold text-neutral-900">Configuración</h1>
-        <p className="mt-1 text-sm text-neutral-600">Horarios, ManyChat y dominio personalizado</p>
+        <h1 className={ui.title}>Configuración</h1>
+        <p className={ui.subtitle}>Horarios, ManyChat y dominio personalizado</p>
       </div>
       {message && (
-        <div className="rounded-lg border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm">{message}</div>
+        <div className={ui.alertInfo}>{message}</div>
       )}
       <section>
-        <h2 className="font-semibold text-neutral-800">Horarios de la barbería</h2>
-        <p className="mt-1 mb-4 text-xs text-neutral-500">
+        <h2 className={ui.sectionTitle}>Horarios de la barbería</h2>
+        <p className={`mb-4 mt-1 ${ui.muted}`}>
           Turnos de 40 minutos dentro de cada bloque horario.
         </p>
         <form onSubmit={handleSaveSchedule}>
@@ -142,7 +143,7 @@ export default function AdminConfigPage() {
           <button
             type="submit"
             disabled={saving}
-            className="mt-4 rounded-lg bg-neutral-900 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+            className={`mt-4 ${ui.btnPrimary}`}
           >
             {saving ? 'Guardando...' : 'Guardar horarios'}
           </button>
@@ -150,42 +151,42 @@ export default function AdminConfigPage() {
       </section>
       <section>
         <form onSubmit={handleSaveManyChat} className="max-w-lg space-y-4">
-          <h2 className="font-semibold text-neutral-800">ManyChat (Pro — opcional)</h2>
+          <h2 className={ui.sectionTitle}>ManyChat (Pro — opcional)</h2>
           {(['manychatApiKey', 'manychatFlowBooking', 'manychatFlowBarber', 'manychatFlowReminder'] as const).map(
             (field) => (
               <div key={field}>
-                <label className="block text-sm font-medium text-neutral-700">{field}</label>
+                <label className={ui.label}>{field}</label>
                 <input
                   value={form[field]}
                   onChange={(e) => setForm({ ...form, [field]: e.target.value })}
-                  className="mt-1 w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
+                  className={ui.input}
                 />
               </div>
             )
           )}
-          <button type="submit" disabled={saving} className="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-semibold text-white">
+          <button type="submit" disabled={saving} className={ui.btnPrimary}>
             Guardar ManyChat
           </button>
         </form>
       </section>
       {form.effectivePlan === 'pro' && (
         <section className="max-w-lg">
-          <h2 className="font-semibold text-neutral-800">Dominio personalizado</h2>
+          <h2 className={ui.sectionTitle}>Dominio personalizado</h2>
           <input
             value={form.customDomain}
             onChange={(e) => setForm({ ...form, customDomain: e.target.value })}
             placeholder="www.mibarberia.com"
-            className="mt-2 w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
+            className={`mt-2 ${ui.input}`}
           />
           <div className="mt-2 flex gap-2">
-            <button type="button" onClick={saveCustomDomain} className="rounded-lg border px-4 py-2 text-sm">
+            <button type="button" onClick={saveCustomDomain} className={ui.btnSecondary}>
               Registrar en Vercel
             </button>
-            <button type="button" onClick={checkDomainStatus} className="rounded-lg border px-4 py-2 text-sm">
+            <button type="button" onClick={checkDomainStatus} className={ui.btnSecondary}>
               Verificar DNS
             </button>
           </div>
-          {form.domainVerified && <p className="mt-2 text-sm text-green-700">Dominio verificado</p>}
+          {form.domainVerified && <p className="mt-2 text-sm text-emerald-300">Dominio verificado</p>}
         </section>
       )}
     </div>

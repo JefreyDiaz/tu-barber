@@ -38,21 +38,22 @@ export default function ScheduleEditor({ value, onChange }: ScheduleEditorProps)
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {DAY_LABELS.map((label, dayIndex) => {
         const day = String(dayIndex);
         const closed = value[day] === null;
         const blocks = value[day] ?? [];
 
         return (
-          <div key={day} className="rounded-lg border border-neutral-200 p-4">
+          <div key={day} className="glass-card rounded-xl p-4">
             <div className="flex items-center justify-between gap-4">
-              <span className="font-medium text-neutral-800">{label}</span>
-              <label className="flex items-center gap-2 text-sm text-neutral-600">
+              <span className="font-medium text-white/90">{label}</span>
+              <label className="flex items-center gap-2 text-sm text-white/55">
                 <input
                   type="checkbox"
                   checked={closed}
                   onChange={(e) => setDayClosed(day, e.target.checked)}
+                  className="rounded border-white/20"
                 />
                 Cerrado
               </label>
@@ -67,20 +68,20 @@ export default function ScheduleEditor({ value, onChange }: ScheduleEditorProps)
                       value={formatMinutesToAmPm(block.start)}
                       onChange={(e) => updateBlock(day, i, 'start', e.target.value)}
                       placeholder="8:00 AM"
-                      className="w-28 rounded border border-neutral-300 px-2 py-1 text-sm"
+                      className="glass-input w-28 px-2 py-1.5 text-sm"
                     />
-                    <span className="text-neutral-400">—</span>
+                    <span className="text-white/35">—</span>
                     <input
                       type="text"
                       value={formatMinutesToAmPm(block.end)}
                       onChange={(e) => updateBlock(day, i, 'end', e.target.value)}
                       placeholder="12:00 PM"
-                      className="w-28 rounded border border-neutral-300 px-2 py-1 text-sm"
+                      className="glass-input w-28 px-2 py-1.5 text-sm"
                     />
                     <button
                       type="button"
                       onClick={() => removeBlock(day, i)}
-                      className="text-xs text-red-600 hover:underline"
+                      className="text-xs text-red-300 hover:text-red-200"
                     >
                       Quitar
                     </button>
@@ -89,7 +90,7 @@ export default function ScheduleEditor({ value, onChange }: ScheduleEditorProps)
                 <button
                   type="button"
                   onClick={() => addBlock(day)}
-                  className="text-sm text-neutral-600 hover:text-neutral-900"
+                  className="text-sm text-amber-400/90 hover:text-amber-300"
                 >
                   + Agregar bloque horario
                 </button>

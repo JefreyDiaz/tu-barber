@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import { ui } from '@/lib/admin-ui';
 import { getAvailableTimeSlots, getScheduleForDay } from '@/lib/schedule';
 import { formatColombiaTime, toColombiaDateString } from '@/lib/date-utils';
 import { tenantApiUrl } from '@/lib/tenant/client-api';
@@ -250,22 +251,16 @@ export default function HorariosContent({ barberId, barberName }: HorariosConten
   const hasSchedule = selectedDate ? getScheduleForDay(selectedDate.getDay()) !== null : false;
 
   return (
-    <div className="space-y-6">
+    <div className={ui.page}>
       <div>
-        <h1 className="text-2xl font-bold text-neutral-800">Mis Horarios</h1>
-        <p className="text-neutral-500 mt-1">
+        <h1 className={ui.title}>Mis Horarios</h1>
+        <p className={ui.subtitle}>
           {barberName}, bloquea días completos o turnos específicos de tu agenda
         </p>
       </div>
 
       {message && (
-        <div
-          className={`rounded-lg px-4 py-3 text-sm font-medium ${
-            message.type === 'success'
-              ? 'bg-green-50 text-green-700 border border-green-200'
-              : 'bg-red-50 text-red-700 border border-red-200'
-          }`}
-        >
+        <div className={message.type === 'success' ? ui.alertSuccess : ui.alertError}>
           {message.text}
         </div>
       )}
@@ -273,8 +268,8 @@ export default function HorariosContent({ barberId, barberName }: HorariosConten
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Calendario */}
         <div className="flex-shrink-0 w-full lg:w-auto">
-          <div className="inline-block w-full max-w-sm rounded-2xl border border-neutral-200 bg-white shadow-lg overflow-hidden">
-            <div className="flex items-center justify-between bg-gradient-to-r from-neutral-800 via-neutral-900 to-black px-4 py-3">
+          <div className="glass-card inline-block w-full max-w-sm overflow-hidden rounded-2xl">
+            <div className="flex items-center justify-between border-b border-white/10 bg-white/5 px-4 py-3">
               <button
                 type="button"
                 disabled={!canGoPrev}
@@ -301,9 +296,9 @@ export default function HorariosContent({ barberId, barberName }: HorariosConten
                 &#8250;
               </button>
             </div>
-            <div className="grid grid-cols-7 gap-0 border-b border-neutral-100 bg-neutral-50/80 px-2 py-2">
+            <div className="grid grid-cols-7 gap-0 border-b border-white/10 bg-white/5 px-2 py-2">
               {DIAS_SEMANA.map((d) => (
-                <span key={d} className="text-center text-[10px] font-semibold text-neutral-500 uppercase tracking-wider">
+                <span key={d} className="text-center text-[10px] font-semibold uppercase tracking-wider text-white/45">
                   {d}
                 </span>
               ))}
@@ -328,11 +323,11 @@ export default function HorariosContent({ barberId, barberName }: HorariosConten
                 const isPartialBlocked = blockStatus === 'partial';
                 const hasBookingsOnDay = bookedMap.has(dateStr);
 
-                let dayClass = 'text-neutral-700 hover:bg-neutral-100';
-                if (disabled) dayClass = 'text-neutral-300 cursor-not-allowed';
-                else if (isSelected) dayClass = 'bg-neutral-800 text-white shadow-md';
-                else if (isFullBlocked) dayClass = 'bg-red-100 text-red-700 hover:bg-red-200 font-semibold';
-                else if (isPartialBlocked) dayClass = 'bg-amber-100 text-amber-700 hover:bg-amber-200';
+                let dayClass = 'text-white/90 hover:bg-white/10';
+                if (disabled) dayClass = 'text-white/25 cursor-not-allowed';
+                else if (isSelected) dayClass = 'bg-amber-500/30 text-white shadow-md ring-1 ring-amber-400/50';
+                else if (isFullBlocked) dayClass = 'bg-red-500/20 text-red-300 hover:bg-red-500/30 font-semibold';
+                else if (isPartialBlocked) dayClass = 'bg-amber-500/20 text-amber-300 hover:bg-amber-500/30';
 
                 return (
                   <button
@@ -355,17 +350,17 @@ export default function HorariosContent({ barberId, barberName }: HorariosConten
                 );
               })}
             </div>
-            <div className="flex items-center justify-center gap-3 px-4 py-2 border-t border-neutral-100 text-[10px] text-neutral-500 flex-wrap">
+            <div className="flex flex-wrap items-center justify-center gap-3 border-t border-white/10 px-4 py-2 text-[10px] text-white/45">
               <span className="flex items-center gap-1">
-                <span className="h-2.5 w-2.5 rounded-sm bg-red-100 border border-red-300" />
+                <span className="h-2.5 w-2.5 rounded-sm border border-red-400/40 bg-red-500/20" />
                 Bloqueado
               </span>
               <span className="flex items-center gap-1">
-                <span className="h-2.5 w-2.5 rounded-sm bg-amber-100 border border-amber-300" />
+                <span className="h-2.5 w-2.5 rounded-sm border border-amber-400/40 bg-amber-500/20" />
                 Parcial
               </span>
               <span className="flex items-center gap-1">
-                <span className="h-2.5 w-2.5 rounded-sm bg-blue-100 border border-blue-300" />
+                <span className="h-2.5 w-2.5 rounded-sm border border-blue-400/40 bg-blue-500/20" />
                 Reservado
               </span>
             </div>
@@ -375,23 +370,23 @@ export default function HorariosContent({ barberId, barberName }: HorariosConten
         {/* Panel de turnos del día seleccionado */}
         <div className="flex-1 min-w-0">
           {!selectedDate && (
-            <div className="rounded-xl border border-neutral-200 bg-white p-8 text-center">
-              <p className="text-neutral-500">Selecciona una fecha en el calendario para gestionar tus turnos</p>
+            <div className={`${ui.empty} text-white/50`}>
+              <p>Selecciona una fecha en el calendario para gestionar tus turnos</p>
             </div>
           )}
           {selectedDate && !hasSchedule && (
-            <div className="rounded-xl border border-neutral-200 bg-white p-8 text-center">
-              <p className="text-neutral-500">Este día no tiene horario configurado</p>
+            <div className={`${ui.empty} text-white/50`}>
+              <p>Este día no tiene horario configurado</p>
             </div>
           )}
           {selectedDate && hasSchedule && (
-            <div className="rounded-xl border border-neutral-200 bg-white overflow-hidden">
-              <div className="bg-neutral-50 px-4 py-3 border-b border-neutral-200 flex items-center justify-between flex-wrap gap-2">
+            <div className="glass-card overflow-hidden rounded-2xl">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 bg-white/5 px-4 py-3">
                 <div>
-                  <h3 className="font-semibold text-neutral-800">
+                  <h3 className="font-semibold text-white/90">
                     {selectedDate.getDate()} de {MESES_ES[selectedDate.getMonth()]}
                   </h3>
-                  <p className="text-xs text-neutral-500 mt-0.5">
+                  <p className="mt-0.5 text-xs text-white/45">
                     {DIAS_SEMANA[selectedDate.getDay()]} - {selectedDateSlots.length} turnos
                   </p>
                 </div>
@@ -401,7 +396,7 @@ export default function HorariosContent({ barberId, barberName }: HorariosConten
                       type="button"
                       disabled={saving}
                       onClick={unblockFullDay}
-                      className="rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 transition-colors disabled:opacity-50"
+                      className={ui.btnPrimary}
                     >
                       Desbloquear día
                     </button>
@@ -411,7 +406,7 @@ export default function HorariosContent({ barberId, barberName }: HorariosConten
                       disabled={saving || dayHasBookings}
                       onClick={blockFullDay}
                       title={dayHasBookings ? 'No se puede bloquear el día porque hay citas reservadas' : ''}
-                      className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className={ui.btnDanger}
                     >
                       Bloquear día completo
                     </button>
@@ -421,21 +416,21 @@ export default function HorariosContent({ barberId, barberName }: HorariosConten
 
               {isFullDayBlocked ? (
                 <div className="p-6 text-center">
-                  <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-red-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-7 w-7 text-red-600">
+                  <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-red-500/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-7 w-7 text-red-300">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636" />
                     </svg>
                   </div>
-                  <p className="text-neutral-600 font-medium">Día completamente bloqueado</p>
-                  <p className="text-sm text-neutral-400 mt-1">No se aceptarán reservas para este día</p>
+                  <p className="font-medium text-white/90">Día completamente bloqueado</p>
+                  <p className="mt-1 text-sm text-white/45">No se aceptarán reservas para este día</p>
                 </div>
               ) : (
                 <div className="p-4">
-                  <p className="text-xs text-neutral-500 mb-3">
+                  <p className={`mb-3 ${ui.muted}`}>
                     Toca un turno para bloquearlo/desbloquearlo. Los turnos rojos están bloqueados.
                   </p>
                   {dayHasBookings && (
-                    <div className="mb-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700 flex items-center gap-2">
+                    <div className="mb-3 flex items-center gap-2 rounded-xl border border-amber-400/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-300">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-4 w-4 shrink-0">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
                       </svg>
@@ -444,7 +439,7 @@ export default function HorariosContent({ barberId, barberName }: HorariosConten
                   )}
                   {blocksLoading ? (
                     <div className="flex justify-center py-8">
-                      <div className="h-6 w-6 animate-spin rounded-full border-3 border-neutral-300 border-t-neutral-800" />
+                      <div className={ui.spinner} />
                     </div>
                   ) : (
                     <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
@@ -459,18 +454,18 @@ export default function HorariosContent({ barberId, barberName }: HorariosConten
                             onClick={() => toggleSlotBlock(slot)}
                             className={`min-h-[44px] px-2 py-2.5 rounded-xl border-2 text-sm font-medium transition-all ${
                               isBooked
-                                ? 'bg-blue-50 text-blue-700 border-blue-300 cursor-not-allowed opacity-90'
+                                ? 'border-blue-400/40 bg-blue-500/15 text-blue-300 cursor-not-allowed opacity-90'
                                 : isBlocked
-                                  ? 'bg-red-50 text-red-700 border-red-300 hover:bg-red-100 disabled:opacity-50'
-                                  : 'bg-white text-neutral-700 border-neutral-200 hover:border-neutral-400 hover:bg-neutral-50 disabled:opacity-50'
+                                  ? 'border-red-400/40 bg-red-500/15 text-red-300 hover:bg-red-500/25 disabled:opacity-50'
+                                  : 'border-white/10 bg-white/5 text-white/90 hover:border-white/25 hover:bg-white/10 disabled:opacity-50'
                             }`}
                           >
                             <span>{slot}</span>
                             {isBooked && (
-                              <span className="block text-[10px] text-blue-500 mt-0.5">Reservado</span>
+                              <span className="mt-0.5 block text-[10px] text-blue-400">Reservado</span>
                             )}
                             {isBlocked && !isBooked && (
-                              <span className="block text-[10px] text-red-500 mt-0.5">Bloqueado</span>
+                              <span className="mt-0.5 block text-[10px] text-red-400">Bloqueado</span>
                             )}
                           </button>
                         );
@@ -484,9 +479,9 @@ export default function HorariosContent({ barberId, barberName }: HorariosConten
         </div>
       </div>
 
-      <div className="rounded-xl border border-neutral-200 bg-white p-4">
-        <h3 className="font-semibold text-neutral-700 mb-3 text-sm">Horarios configurados</h3>
-        <div className="space-y-2 text-sm text-neutral-600">
+      <div className={ui.card}>
+        <h3 className={`mb-3 text-sm ${ui.sectionTitle}`}>Horarios configurados</h3>
+        <div className="space-y-2 text-sm text-white/70">
           <div className="flex items-start gap-2">
             <span className="h-2 w-2 rounded-full bg-blue-500 mt-1.5 shrink-0" />
             <span><strong>Lun, Mar, Jue, Vie:</strong> 7:40-11:40 AM | 2:00-7:30 PM | 8:00-10:00 PM</span>
@@ -504,8 +499,8 @@ export default function HorariosContent({ barberId, barberName }: HorariosConten
             <span><strong>Comida:</strong> 7:30-8:00 PM (Lun-Vie) | 1:00-1:40 PM (Sáb-Dom)</span>
           </div>
           <div className="flex items-start gap-2">
-            <span className="h-2 w-2 rounded-full bg-neutral-400 mt-1.5 shrink-0" />
-            <span><strong>Duración por turno:</strong> 40 minutos</span>
+            <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-white/30" />
+            <span><strong className="text-white/90">Duración por turno:</strong> 40 minutos</span>
           </div>
         </div>
       </div>

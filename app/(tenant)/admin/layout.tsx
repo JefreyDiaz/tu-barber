@@ -35,6 +35,8 @@ export default async function AdminLayout({
   }
 
   const shopName = tenant?.name ?? 'Admin';
+  const headerTitle =
+    user?.role === 'admin' ? shopName : user?.role === 'dueno' ? 'Mi Barbería' : 'Mi Panel';
 
   let trialInfo: { daysLeft: number; plan: string } | null = null;
   if (tenant && !isSetupMode) {
@@ -46,13 +48,13 @@ export default async function AdminLayout({
     if (isTrialing(sub)) {
       const daysLeft = trialDaysLeft(sub);
       if (daysLeft !== null && daysLeft > 0) {
-        trialInfo = { daysLeft, plan: tenant.plan };
+        trialInfo = { daysLeft, plan: sub.plan };
       }
     }
   }
 
   return (
-    <div className="min-h-screen bg-neutral-100 text-neutral-900">
+    <div className="admin-shell platform-bg min-h-screen min-h-[100dvh] text-white">
       {isSetupMode && (
         <div className="bg-amber-500 px-4 py-2 text-center text-sm font-medium text-amber-950">
           Modo configuración inicial — Crea tu primer usuario administrador
@@ -61,13 +63,16 @@ export default async function AdminLayout({
 
       {trialInfo && <TrialBanner daysLeft={trialInfo.daysLeft} selectedPlan={trialInfo.plan} />}
 
-      <header className="border-b border-neutral-200 bg-white shadow-sm">
+      <header className="sticky top-0 z-40 border-b border-white/5 bg-stone-950/75 backdrop-blur-xl">
         <div className="mx-auto max-w-5xl px-4 py-3">
-          <div className="flex items-center justify-between">
-            <Link href={`/admin${tq}`} className="text-base sm:text-lg font-semibold text-neutral-800 truncate">
-              {user?.role === 'admin' ? shopName : user?.role === 'dueno' ? 'Mi Barbería' : 'Mi Panel'}
+          <div className="flex items-center justify-between gap-3">
+            <Link href={`/admin${tq}`} className="min-w-0 truncate text-base font-bold sm:text-lg">
+              {headerTitle}
             </Link>
-            <Link href={`/${tq}`} className="text-sm text-neutral-500 hover:text-neutral-700 shrink-0 ml-3">
+            <Link
+              href={`/${tq}`}
+              className="btn-glass shrink-0 rounded-full px-3 py-1.5 text-xs font-medium sm:text-sm"
+            >
               Ver sitio
             </Link>
           </div>
@@ -76,12 +81,16 @@ export default async function AdminLayout({
       </header>
 
       {user && (
-        <div className="border-b border-neutral-200 bg-neutral-50">
-          <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-2">
+        <div className="border-b border-white/5 bg-white/[0.03]">
+          <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-2.5">
             <div className="text-sm">
-              <p className="font-medium text-neutral-800">{user.name || 'Usuario'}</p>
-              <p className="text-xs text-neutral-500">
-                {user.role === 'admin' ? 'Administrador' : user.role === 'dueno' ? 'Dueño' : 'Barbero'}
+              <p className="font-medium text-white/90">{user.name || 'Usuario'}</p>
+              <p className="text-xs text-white/45">
+                {user.role === 'admin'
+                  ? 'Administrador'
+                  : user.role === 'dueno'
+                    ? 'Dueño'
+                    : 'Barbero'}
               </p>
             </div>
             <SignOutButton />
@@ -89,7 +98,7 @@ export default async function AdminLayout({
         </div>
       )}
 
-      <main className="mx-auto max-w-5xl px-4 py-8">{children}</main>
+      <main className="mx-auto max-w-5xl px-4 py-6 pb-12 sm:py-8">{children}</main>
     </div>
   );
 }

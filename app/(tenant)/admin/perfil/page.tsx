@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import PhotoUploadField from '@/components/PhotoUploadField';
+import { ui } from '@/lib/admin-ui';
 import { tenantApiUrl } from '@/lib/tenant/client-api';
 
 type Profile = {
@@ -77,30 +78,30 @@ export default function AdminPerfilPage() {
   }
 
   if (loading) {
-    return <p className="text-neutral-500">Cargando...</p>;
+    return <p className={ui.muted}>Cargando...</p>;
   }
 
   if (!profile) {
-    return <p className="text-red-600">{error ?? 'Perfil no encontrado'}</p>;
+    return <p className="text-red-300">{error ?? 'Perfil no encontrado'}</p>;
   }
 
   return (
-    <div className="mx-auto max-w-lg space-y-6">
+    <div className={`mx-auto max-w-lg ${ui.page}`}>
       <div>
-        <h1 className="text-2xl font-bold text-neutral-800">Mi perfil</h1>
-        <p className="mt-1 text-sm text-neutral-600">
+        <h1 className={ui.title}>Mi perfil</h1>
+        <p className={ui.subtitle}>
           Tu foto aparece en el sitio público cuando eres barbero o dueño. Usuario: @{profile.username}
         </p>
       </div>
 
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">{error}</div>
+        <div className={ui.alertError}>{error}</div>
       )}
       {success && (
-        <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-2 text-sm text-green-700">{success}</div>
+        <div className={ui.alertSuccess}>{success}</div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6 rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
+      <form onSubmit={handleSubmit} className={`space-y-6 ${ui.card}`}>
         <PhotoUploadField
           userId={profile.id}
           currentPhoto={photoUrl}
@@ -112,7 +113,7 @@ export default function AdminPerfilPage() {
         />
 
         <div>
-          <label htmlFor="profile-name" className="mb-1 block text-sm font-medium text-neutral-700">
+          <label htmlFor="profile-name" className={ui.label}>
             Nombre *
           </label>
           <input
@@ -120,12 +121,12 @@ export default function AdminPerfilPage() {
             required
             value={form.name}
             onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-            className="w-full rounded-lg border border-neutral-300 px-3 py-2"
+            className={ui.input}
           />
         </div>
 
         <div>
-          <label htmlFor="profile-phone" className="mb-1 block text-sm font-medium text-neutral-700">
+          <label htmlFor="profile-phone" className={ui.label}>
             Teléfono (WhatsApp) *
           </label>
           <input
@@ -135,13 +136,13 @@ export default function AdminPerfilPage() {
             maxLength={10}
             value={form.phone}
             onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value.replace(/\D/g, '') }))}
-            className="w-full rounded-lg border border-neutral-300 px-3 py-2"
+            className={ui.input}
             placeholder="3001234567"
           />
         </div>
 
         <div>
-          <label htmlFor="profile-password" className="mb-1 block text-sm font-medium text-neutral-700">
+          <label htmlFor="profile-password" className={ui.label}>
             Nueva contraseña
           </label>
           <input
@@ -150,7 +151,7 @@ export default function AdminPerfilPage() {
             minLength={8}
             value={form.password}
             onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
-            className="w-full rounded-lg border border-neutral-300 px-3 py-2"
+            className={ui.input}
             placeholder="Opcional"
           />
         </div>
@@ -158,7 +159,7 @@ export default function AdminPerfilPage() {
         <button
           type="submit"
           disabled={saving}
-          className="rounded-lg bg-neutral-800 px-4 py-2 text-sm font-medium text-white hover:bg-neutral-700 disabled:opacity-50"
+          className={ui.btnPrimary}
         >
           {saving ? 'Guardando...' : 'Guardar cambios'}
         </button>

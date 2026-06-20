@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { ui } from '@/lib/admin-ui';
 import { COLOMBIA_TZ } from '@/lib/date-utils';
 import { tenantApiUrl } from '@/lib/tenant/client-api';
 
@@ -134,16 +135,16 @@ export default function AdminBookingsPage() {
   const pastDates = sortedDates.filter((d) => d < todayStr).reverse();
 
   return (
-    <div className="space-y-6">
+    <div className={ui.page}>
       <div>
-        <h1 className="text-2xl font-bold text-neutral-800">Reservas</h1>
-        <p className="text-neutral-500 mt-1">Gestiona todas las citas de la barbería</p>
+        <h1 className={ui.title}>Reservas</h1>
+        <p className={ui.subtitle}>Gestiona todas las citas de la barbería</p>
       </div>
 
       {/* Filtro de fecha */}
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex items-center gap-2">
-          <label htmlFor="filterDate" className="text-sm font-medium text-neutral-600">
+          <label htmlFor="filterDate" className={ui.label}>
             Filtrar por fecha:
           </label>
           <input
@@ -151,14 +152,14 @@ export default function AdminBookingsPage() {
             id="filterDate"
             value={filterDate}
             onChange={(e) => setFilterDate(e.target.value)}
-            className="rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-500 focus:outline-none focus:ring-1 focus:ring-neutral-500"
+            className={ui.input}
           />
         </div>
         {filterDate && (
           <button
             type="button"
             onClick={() => setFilterDate('')}
-            className="flex items-center gap-1.5 rounded-lg bg-neutral-100 px-3 py-2 text-sm font-medium text-neutral-600 hover:bg-neutral-200 transition-colors"
+            className={`flex items-center gap-1.5 ${ui.btnSecondary}`}
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-4 w-4">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -167,37 +168,37 @@ export default function AdminBookingsPage() {
           </button>
         )}
         {filterDate && (
-          <span className="text-sm text-neutral-500">
+          <span className={ui.muted}>
             Mostrando {filteredBookings.length} {filteredBookings.length === 1 ? 'reserva' : 'reservas'}
           </span>
         )}
       </div>
 
       {actionSuccess && (
-        <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+        <div className={ui.alertSuccess}>
           {actionSuccess}
         </div>
       )}
       {actionError && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className={ui.alertError}>
           {actionError}
         </div>
       )}
 
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-300 border-t-neutral-800" />
+          <div className={ui.spinner} />
         </div>
       ) : filteredBookings.length === 0 ? (
-        <div className="rounded-xl border border-neutral-200 bg-white p-8 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-neutral-100">
+        <div className={`${ui.empty} text-white/50`}>
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white/10">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="h-8 w-8 text-neutral-400"
+              className="h-8 w-8 text-white/45"
             >
               <path
                 strokeLinecap="round"
@@ -206,10 +207,10 @@ export default function AdminBookingsPage() {
               />
             </svg>
           </div>
-          <p className="text-neutral-600">
+          <p className="text-white/90">
             {filterDate ? 'No hay reservas para esta fecha' : 'No hay reservas programadas'}
           </p>
-          <p className="text-sm text-neutral-400 mt-1">
+          <p className="mt-1 text-sm text-white/45">
             {filterDate 
               ? 'Prueba seleccionando otra fecha o limpia el filtro para ver todas'
               : 'Las citas aparecerán aquí cuando los clientes reserven'
@@ -221,49 +222,49 @@ export default function AdminBookingsPage() {
           {/* Próximas citas */}
           {futureDates.length > 0 && (
             <section>
-              <h2 className="mb-4 text-lg font-semibold text-neutral-700 flex items-center gap-2">
+              <h2 className={`mb-4 flex items-center gap-2 ${ui.sectionTitle}`}>
                 <span className="h-2 w-2 rounded-full bg-green-500" />
                 Próximas citas
               </h2>
               <div className="space-y-4">
                 {futureDates.map((dateKey) => (
-                  <div key={dateKey} className="rounded-xl border border-neutral-200 bg-white overflow-hidden">
-                    <div className="bg-neutral-50 px-4 py-2 border-b border-neutral-200">
-                      <h3 className="font-medium text-neutral-700 capitalize">
+                  <div key={dateKey} className="glass-card overflow-hidden rounded-2xl">
+                    <div className="border-b border-white/10 bg-white/5 px-4 py-2">
+                      <h3 className="font-medium capitalize text-white/90">
                         {formatDate(groupedBookings[dateKey][0].dateTime)}
                       </h3>
                     </div>
-                    <div className="divide-y divide-neutral-100">
+                    <div className="divide-y divide-white/10">
                       {getSortedBookings(groupedBookings[dateKey]).map((booking) => {
                           const bookingTime = new Date(booking.dateTime);
                           const isPastToday = bookingTime < now && toLocalDateString(bookingTime) === todayStr;
                           
                           return (
-                            <div key={booking.id} className={`flex items-start sm:items-center justify-between px-4 py-3 gap-4 ${isPastToday ? 'opacity-60 bg-neutral-50' : ''}`}>
+                            <div key={booking.id} className={`flex items-start sm:items-center justify-between px-4 py-3 gap-4 ${isPastToday ? 'bg-white/5 opacity-60' : ''}`}>
                               <div className="flex items-center gap-4 min-w-0 flex-1">
                                 <div className="text-center min-w-[60px] shrink-0">
-                                  <span className={`text-lg font-bold ${isPastToday ? 'text-neutral-500' : 'text-neutral-800'}`}>
+                                  <span className={`text-lg font-bold ${isPastToday ? 'text-white/45' : 'text-white/90'}`}>
                                     {formatTime(booking.dateTime)}
                                   </span>
                                   {isPastToday && (
-                                    <p className="text-[10px] text-orange-600 font-medium">Pasada</p>
+                                    <p className="text-[10px] font-medium text-amber-400">Pasada</p>
                                   )}
                                 </div>
                                 <div className="min-w-0 flex-1">
-                                  <p className={`font-medium truncate ${isPastToday ? 'text-neutral-600' : 'text-neutral-800'}`}>{booking.customerName}</p>
-                                  <p className="text-sm text-neutral-500 truncate">{booking.customerPhone}</p>
-                                  <p className={`text-xs sm:hidden ${isPastToday ? 'text-neutral-400' : 'text-neutral-500'}`}>{booking.barber.name}</p>
+                                  <p className={`truncate font-medium ${isPastToday ? 'text-white/55' : 'text-white/90'}`}>{booking.customerName}</p>
+                                  <p className="truncate text-sm text-white/55">{booking.customerPhone}</p>
+                                  <p className={`text-xs sm:hidden ${isPastToday ? 'text-white/45' : 'text-white/55'}`}>{booking.barber.name}</p>
                                 </div>
                                 <div className="hidden sm:block text-right shrink-0">
-                                  <p className="text-xs text-neutral-400">Barbero</p>
-                                  <p className={`text-sm font-medium ${isPastToday ? 'text-neutral-500' : 'text-neutral-700'}`}>{booking.barber.name}</p>
+                                  <p className="text-xs text-white/45">Barbero</p>
+                                  <p className={`text-sm font-medium ${isPastToday ? 'text-white/45' : 'text-white/90'}`}>{booking.barber.name}</p>
                                 </div>
                               </div>
                               {!isPastToday && (
                                 <button
                                   type="button"
                                   onClick={() => openCancelModal(booking)}
-                                  className="shrink-0 rounded-lg border border-red-200 p-2 text-red-600 transition-colors hover:bg-red-50 hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-red-300"
+                                  className={`shrink-0 p-2 ${ui.btnDanger}`}
                                   aria-label={`Cancelar cita de las ${formatTime(booking.dateTime)}`}
                                   title="Cancelar cita"
                                 >
@@ -285,35 +286,35 @@ export default function AdminBookingsPage() {
           {/* Citas pasadas */}
           {pastDates.length > 0 && (
             <section>
-              <h2 className="mb-4 text-lg font-semibold text-neutral-500 flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-neutral-400" />
+              <h2 className={`mb-4 flex items-center gap-2 ${ui.sectionTitle} text-white/55`}>
+                <span className="h-2 w-2 rounded-full bg-white/30" />
                 Citas anteriores
               </h2>
               <div className="space-y-4 opacity-75">
                 {pastDates.slice(0, 10).map((dateKey) => (
-                  <div key={dateKey} className="rounded-xl border border-neutral-200 bg-white overflow-hidden">
-                    <div className="bg-neutral-50 px-4 py-2 border-b border-neutral-200">
-                      <h3 className="font-medium text-neutral-500 capitalize">
+                  <div key={dateKey} className="glass-card overflow-hidden rounded-2xl">
+                    <div className="border-b border-white/10 bg-white/5 px-4 py-2">
+                      <h3 className="font-medium capitalize text-white/55">
                         {formatDate(groupedBookings[dateKey][0].dateTime)}
                       </h3>
                     </div>
-                    <div className="divide-y divide-neutral-100">
+                    <div className="divide-y divide-white/10">
                       {getSortedBookings(groupedBookings[dateKey]).map((booking) => (
                           <div key={booking.id} className="flex items-center px-4 py-3 gap-4">
                             <div className="flex items-center gap-4 min-w-0 flex-1">
                               <div className="text-center min-w-[60px] shrink-0">
-                                <span className="text-lg font-bold text-neutral-500">
+                                <span className="text-lg font-bold text-white/45">
                                   {formatTime(booking.dateTime)}
                                 </span>
                               </div>
                               <div className="min-w-0 flex-1">
-                                <p className="font-medium text-neutral-600 truncate">{booking.customerName}</p>
-                                <p className="text-sm text-neutral-400 truncate">{booking.customerPhone}</p>
-                                <p className="text-xs text-neutral-400 sm:hidden">{booking.barber.name}</p>
+                                <p className="truncate font-medium text-white/55">{booking.customerName}</p>
+                                <p className="truncate text-sm text-white/45">{booking.customerPhone}</p>
+                                <p className="text-xs text-white/45 sm:hidden">{booking.barber.name}</p>
                               </div>
                               <div className="hidden sm:block text-right shrink-0">
-                                <p className="text-xs text-neutral-400">Barbero</p>
-                                <p className="text-sm font-medium text-neutral-500">{booking.barber.name}</p>
+                                <p className="text-xs text-white/45">Barbero</p>
+                                <p className="text-sm font-medium text-white/55">{booking.barber.name}</p>
                               </div>
                             </div>
                           </div>
@@ -328,14 +329,14 @@ export default function AdminBookingsPage() {
       )}
 
       {cancelTarget && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4 sm:items-center">
-          <div className="w-full max-w-md rounded-2xl bg-white p-5 shadow-2xl">
+        <div className={ui.modalOverlay}>
+          <div className={ui.modal}>
             <div className="mb-2 flex justify-end">
               <button
                 type="button"
                 onClick={closeCancelModal}
                 disabled={isCancelling}
-                className="rounded-md p-1 text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-700 disabled:opacity-50"
+                className={`p-1 disabled:opacity-50 ${ui.btnGhost}`}
                 aria-label="Cerrar modal"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5">
@@ -343,16 +344,16 @@ export default function AdminBookingsPage() {
                 </svg>
               </button>
             </div>
-            <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-red-100 text-red-600">
+            <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-red-500/20 text-red-300">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
                 <path fillRule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.088 6.66l-.209.035a.75.75 0 1 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.857 2.759-2.985A48.16 48.16 0 0 1 12 1.5c.587 0 1.17.01 1.741.029 1.546.128 2.759 1.42 2.759 2.985Zm-6.75 0a1.5 1.5 0 0 1 1.5-1.5h1.5a1.5 1.5 0 0 1 1.5 1.5v.053a47.81 47.81 0 0 0-4.5 0v-.053Zm-.96 5.47a.75.75 0 1 0-1.5.104l.5 7.5a.75.75 0 0 0 1.496-.1l-.5-7.5Zm6.42.104a.75.75 0 1 0-1.5-.104l-.5 7.5a.75.75 0 0 0 1.496.1l.5-7.5Z" clipRule="evenodd" />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold text-neutral-900">Confirmar cancelación</h3>
-            <p className="mt-2 text-sm text-neutral-600">
-              ¿Seguro que quieres cancelar la cita de las <span className="font-semibold text-neutral-800">{formatTime(cancelTarget.dateTime)}</span>?
+            <h3 className={ui.sectionTitle}>Confirmar cancelación</h3>
+            <p className="mt-2 text-sm text-white/70">
+              ¿Seguro que quieres cancelar la cita de las <span className="font-semibold text-white/90">{formatTime(cancelTarget.dateTime)}</span>?
             </p>
-            <p className="mt-1 text-sm text-neutral-500">
+            <p className={`mt-1 ${ui.muted}`}>
               Cliente: {cancelTarget.customerName}
             </p>
             <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
@@ -360,7 +361,7 @@ export default function AdminBookingsPage() {
                 type="button"
                 onClick={closeCancelModal}
                 disabled={isCancelling}
-                className="rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100 disabled:cursor-not-allowed disabled:opacity-60"
+                className={ui.btnSecondary}
               >
                 No, mantener
               </button>
@@ -368,7 +369,7 @@ export default function AdminBookingsPage() {
                 type="button"
                 onClick={handleConfirmCancel}
                 disabled={isCancelling}
-                className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+                className={ui.btnDanger}
               >
                 {isCancelling ? 'Cancelando...' : 'Sí, cancelar'}
               </button>

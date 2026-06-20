@@ -278,6 +278,23 @@ body {
   color: transparent;
 }
 
+.admin-shell input[type='date'],
+.admin-shell input[type='time'] {
+  color-scheme: dark;
+}
+
+.admin-shell select {
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: white;
+}
+
+.admin-shell select option {
+  background: #1c1917;
+  color: white;
+}
+
 .plan-card-selected {
   border-color: rgba(229, 184, 105, 0.6) !important;
   box-shadow: 0 0 0 1px rgba(229, 184, 105, 0.3), 0 8px 40px rgba(229, 184, 105, 0.15);

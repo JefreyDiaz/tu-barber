@@ -49,13 +49,13 @@ export default function PhotoUploadField({
 
   return (
     <div>
-      <p className="mb-2 block text-sm font-medium text-neutral-700">{label}</p>
+      <p className="mb-2 block text-sm font-medium text-white/75">{label}</p>
       <div className="flex items-center gap-4">
-        <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full border border-neutral-200 bg-neutral-100">
+        <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full border border-white/15 bg-white/5">
           {preview ? (
             <Image src={preview} alt="" fill className="object-cover" unoptimized />
           ) : (
-            <div className="flex h-full w-full items-center justify-center text-neutral-400 text-xs text-center px-1">
+            <div className="flex h-full w-full items-center justify-center px-1 text-center text-xs text-white/35">
               Sin foto
             </div>
           )}
@@ -75,14 +75,14 @@ export default function PhotoUploadField({
             type="button"
             disabled={uploading}
             onClick={() => inputRef.current?.click()}
-            className="rounded-lg border border-neutral-300 px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-50 disabled:opacity-50"
+            className="btn-glass rounded-xl px-3 py-2 text-sm font-medium disabled:opacity-50"
           >
             {uploading ? 'Subiendo...' : preview ? 'Cambiar foto' : 'Subir foto'}
           </button>
-          <p className="mt-1 text-xs text-neutral-500">JPG, PNG o WebP · máx. 2 MB</p>
+          <p className="mt-1 text-xs text-white/40">JPG, PNG o WebP · máx. 2 MB</p>
         </div>
       </div>
-      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+      {error && <p className="mt-2 text-sm text-red-300">{error}</p>}
     </div>
   );
 }

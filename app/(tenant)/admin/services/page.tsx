@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { ui } from '@/lib/admin-ui';
 import { tenantApiUrl } from '@/lib/tenant/client-api';
 
 type Service = {
@@ -122,27 +123,27 @@ export default function AdminServicesPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className={ui.pageWide}>
       <div>
-        <h1 className="text-2xl font-bold text-neutral-800">Tipos de corte</h1>
-        <p className="mt-1 text-sm text-neutral-600">
+        <h1 className={ui.title}>Tipos de corte</h1>
+        <p className={ui.subtitle}>
           Define los servicios y cuánto dura cada uno. El sistema usa esos tiempos para calcular
           los espacios disponibles y reducir huecos muertos en la agenda.
         </p>
       </div>
 
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">{error}</div>
+        <div className={ui.alertError}>{error}</div>
       )}
       {success && (
-        <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-2 text-sm text-green-700">{success}</div>
+        <div className={ui.alertSuccess}>{success}</div>
       )}
 
-      <form onSubmit={handleCreate} className="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-lg font-semibold text-neutral-800">Agregar servicio</h2>
+      <form onSubmit={handleCreate} className={ui.card}>
+        <h2 className={`mb-4 ${ui.sectionTitle}`}>Agregar servicio</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label htmlFor="svc-name" className="mb-1 block text-sm font-medium text-neutral-700">
+            <label htmlFor="svc-name" className={ui.label}>
               Nombre *
             </label>
             <input
@@ -151,11 +152,11 @@ export default function AdminServicesPage() {
               value={form.name}
               onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
               placeholder="Ej. Corte completo"
-              className="w-full rounded-lg border border-neutral-300 px-3 py-2"
+              className={ui.input}
             />
           </div>
           <div>
-            <label htmlFor="svc-duration" className="mb-1 block text-sm font-medium text-neutral-700">
+            <label htmlFor="svc-duration" className={ui.label}>
               Duración (minutos) *
             </label>
             <input
@@ -166,25 +167,25 @@ export default function AdminServicesPage() {
               max={240}
               value={form.durationMinutes}
               onChange={(e) => setForm((f) => ({ ...f, durationMinutes: Number(e.target.value) }))}
-              className="w-full rounded-lg border border-neutral-300 px-3 py-2"
+              className={ui.input}
             />
           </div>
         </div>
         <button
           type="submit"
           disabled={submitting}
-          className="mt-4 rounded-lg bg-neutral-800 px-4 py-2 text-sm font-medium text-white hover:bg-neutral-700 disabled:opacity-50"
+          className={`mt-4 ${ui.btnPrimary}`}
         >
           {submitting ? 'Guardando...' : 'Agregar'}
         </button>
       </form>
 
       <section>
-        <h2 className="mb-4 text-lg font-semibold text-neutral-800">Servicios activos</h2>
+        <h2 className={`mb-4 ${ui.sectionTitle}`}>Servicios activos</h2>
         {loading ? (
-          <p className="text-neutral-500">Cargando...</p>
+          <p className={ui.muted}>Cargando...</p>
         ) : services.length === 0 ? (
-          <p className="rounded-lg border border-neutral-200 bg-white p-4 text-neutral-500">
+          <p className={`${ui.empty} text-white/50`}>
             No hay servicios. Agrega al menos uno para que los clientes puedan reservar.
           </p>
         ) : (
@@ -192,14 +193,14 @@ export default function AdminServicesPage() {
             {services.map((s) => (
               <div
                 key={s.id}
-                className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-neutral-200 bg-white p-4"
+                className={`flex flex-wrap items-center justify-between gap-3 ${ui.listItem}`}
               >
                 {editing?.id === s.id ? (
                   <form onSubmit={handleUpdate} className="flex flex-1 flex-wrap items-end gap-3">
                     <input
                       value={editing.name}
                       onChange={(e) => setEditing({ ...editing, name: e.target.value })}
-                      className="rounded-lg border border-neutral-300 px-3 py-2"
+                      className={ui.input}
                       required
                     />
                     <input
@@ -210,9 +211,9 @@ export default function AdminServicesPage() {
                       onChange={(e) =>
                         setEditing({ ...editing, durationMinutes: Number(e.target.value) })
                       }
-                      className="w-24 rounded-lg border border-neutral-300 px-3 py-2"
+                      className={`w-24 ${ui.input}`}
                     />
-                    <label className="flex items-center gap-2 text-sm">
+                    <label className="flex items-center gap-2 text-sm text-white/75">
                       <input
                         type="checkbox"
                         checked={editing.isActive}
@@ -220,13 +221,13 @@ export default function AdminServicesPage() {
                       />
                       Activo
                     </label>
-                    <button type="submit" className="rounded-lg bg-neutral-800 px-3 py-2 text-sm text-white">
+                    <button type="submit" className={ui.btnPrimary}>
                       Guardar
                     </button>
                     <button
                       type="button"
                       onClick={() => setEditing(null)}
-                      className="rounded-lg border px-3 py-2 text-sm"
+                      className={ui.btnSecondary}
                     >
                       Cancelar
                     </button>
@@ -234,8 +235,8 @@ export default function AdminServicesPage() {
                 ) : (
                   <>
                     <div>
-                      <p className="font-medium text-neutral-900">{s.name}</p>
-                      <p className="text-sm text-neutral-500">
+                      <p className="font-medium text-white/90">{s.name}</p>
+                      <p className="text-sm text-white/55">
                         {s.durationMinutes} min · {s.isActive ? 'Activo' : 'Inactivo'}
                       </p>
                     </div>
@@ -243,14 +244,14 @@ export default function AdminServicesPage() {
                       <button
                         type="button"
                         onClick={() => setEditing(s)}
-                        className="rounded-lg border border-neutral-300 px-3 py-1.5 text-sm hover:bg-neutral-50"
+                        className={ui.btnGhost}
                       >
                         Editar
                       </button>
                       <button
                         type="button"
                         onClick={() => handleDelete(s.id)}
-                        className="rounded-lg border border-red-200 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50"
+                        className={ui.btnDanger}
                       >
                         Eliminar
                       </button>

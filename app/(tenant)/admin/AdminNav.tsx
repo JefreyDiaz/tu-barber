@@ -13,10 +13,10 @@ function navClass(pathname: string, href: string): string {
   const path = href.split('?')[0];
   const isActive = pathname === path || pathname.startsWith(`${path}/`);
   return [
-    'shrink-0 rounded-t-lg px-3 py-2 text-sm font-medium transition-colors',
+    'shrink-0 rounded-full px-3 py-2 text-sm font-medium transition-colors',
     isActive
-      ? 'bg-neutral-200 text-neutral-900 shadow-sm'
-      : 'text-neutral-600 hover:bg-neutral-100',
+      ? 'bg-amber-500/25 text-amber-100 ring-1 ring-amber-500/35'
+      : 'text-white/55 hover:bg-white/8 hover:text-white/85',
   ].join(' ');
 }
 
@@ -24,7 +24,7 @@ export function AdminNav({ tq, isSetupMode, role }: AdminNavProps) {
   const pathname = usePathname();
 
   return (
-    <nav className="flex items-center gap-1 mt-2 -mb-px overflow-x-auto">
+    <nav className="-mx-1 mt-3 flex items-center gap-1 overflow-x-auto px-1 pb-1">
       {role && !isSetupMode && (
         <Link href={`/admin/perfil${tq}`} className={navClass(pathname, '/admin/perfil')}>
           Mi perfil
