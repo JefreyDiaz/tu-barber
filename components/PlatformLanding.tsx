@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { PLAN_LIST, TRIAL_DAYS } from '@/lib/plans';
 import PlanCard from '@/components/platform/PlanCard';
+import PlatformLogo from '@/components/PlatformLogo';
 
 const FEATURES = [
   {
@@ -41,9 +42,7 @@ export default function PlatformLanding() {
       {/* Nav */}
       <header className="sticky top-0 z-50 border-b border-white/5 bg-stone-950/60 backdrop-blur-xl">
         <div className="mx-auto flex max-w-lg items-center justify-between px-4 py-3 sm:max-w-2xl lg:max-w-4xl">
-          <span className="text-lg font-bold tracking-tight">
-            Tu<span className="text-gradient-gold">Barber</span>
-          </span>
+          <PlatformLogo size="sm" priority />
           <div className="flex items-center gap-2">
             <Link href="#precios" className="btn-glass hidden rounded-full px-4 py-2 text-xs font-medium sm:inline-block">
               Precios

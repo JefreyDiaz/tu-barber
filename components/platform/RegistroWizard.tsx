@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import PlanCard from '@/components/platform/PlanCard';
+import PlatformLogo from '@/components/PlatformLogo';
 import { PLAN_LIST, TRIAL_DAYS, type PlanId, isValidPlanId } from '@/lib/plans';
 
 const STEPS = ['Plan', 'Barbería', 'Cuenta'] as const;
@@ -115,9 +116,7 @@ function RegistroWizardInner() {
     <div className="platform-bg min-h-screen min-h-[100dvh] text-white">
       <header className="border-b border-white/5 bg-stone-950/60 backdrop-blur-xl">
         <div className="mx-auto flex max-w-lg items-center justify-between px-4 py-3">
-          <Link href="/" className="text-sm text-white/50 hover:text-white/80">
-            ← Inicio
-          </Link>
+          <PlatformLogo size="sm" href="/" />
           <span className="text-sm font-medium text-white/70">
             Paso {step + 1} de {STEPS.length}
           </span>

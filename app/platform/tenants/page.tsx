@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { signOut } from 'next-auth/react';
 import { PLANS, getTrialDaysRemaining, normalizePlanId } from '@/lib/plans';
+import PlatformLogo from '@/components/PlatformLogo';
 
 interface TenantRow {
   id: string;
@@ -347,10 +348,8 @@ export default function PlatformTenantsPage() {
       <header className="sticky top-0 z-50 border-b border-white/5 bg-stone-950/70 backdrop-blur-xl">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3 lg:max-w-4xl">
           <div>
-            <Link href="/" className="text-lg font-bold tracking-tight">
-              Tu<span className="text-gradient-gold">Barber</span>
-            </Link>
-            <p className="text-xs text-white/45">Panel de plataforma</p>
+            <PlatformLogo size="sm" href="/" />
+            <p className="mt-1 text-xs text-white/45">Panel de plataforma</p>
           </div>
           <button
             type="button"

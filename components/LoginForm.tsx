@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import PlatformLogo from '@/components/PlatformLogo';
 
 interface LoginFormProps {
   tenantId?: string | null;
@@ -54,11 +55,7 @@ export function LoginForm({ tenantId, tenantSlug, tenantName, platformLogin = fa
     <div className="platform-bg flex min-h-screen min-h-[100dvh] flex-col items-center justify-center px-4 py-8">
       <div className="mb-8 text-center">
         {platformLogin ? (
-          <Link href="/" className="inline-block">
-            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-              Tu<span className="text-gradient-gold">Barber</span>
-            </h1>
-          </Link>
+          <PlatformLogo size="lg" href="/" priority />
         ) : (
           <Link href={homeHref} className="inline-block">
             <h1 className="max-w-xs text-2xl font-bold leading-tight tracking-tight text-white sm:max-w-md sm:text-3xl">
@@ -137,6 +134,12 @@ export function LoginForm({ tenantId, tenantSlug, tenantName, platformLogin = fa
           </Link>
         </div>
       </div>
+
+      {!platformLogin && (
+        <div className="mt-8 opacity-50">
+          <PlatformLogo size="sm" href="/" />
+        </div>
+      )}
     </div>
   );
 }
