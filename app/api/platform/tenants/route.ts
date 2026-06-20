@@ -14,9 +14,19 @@ export async function GET() {
     orderBy: { createdAt: 'desc' },
     include: {
       onboarding: true,
-      _count: { select: { users: true, bookings: true } },
+      users: {
+        where: { role: 'dueno' },
+        select: { username: true, name: true, isActive: true, email: true },
+        take: 1,
+      },
+      _count: { select: { users: true, bookings: true, services: true } },
     },
   });
 
-  return NextResponse.json({ success: true, data: tenants });
+  const data = tenants.map(({ users, ...t }) => ({
+    ...t,
+    owner: users[0] ?? null,
+  }));
+
+  return NextResponse.json({ success: true, data });
 }
