@@ -37,7 +37,7 @@ export const PLANS: Record<PlanId, PlanDefinition> = {
       '1 barbero',
       'Reservas online 24/7',
       'Subdominio tubarber.com',
-      'WhatsApp con TuBarber',
+      'Confirmaciones por WhatsApp (número de TuBarber)',
       'Logo y color de marca',
       'Panel de administración',
     ],
@@ -61,7 +61,7 @@ export const PLANS: Record<PlanId, PlanDefinition> = {
     features: [
       'Hasta 3 barberos',
       'Subdominio tubarber.com',
-      'Twilio con tu número',
+      'Confirmaciones por WhatsApp (número de TuBarber)',
       'Landing personalizada completa',
       'SEO y preview en WhatsApp',
       'Sin marca TuBarber',
@@ -85,7 +85,7 @@ export const PLANS: Record<PlanId, PlanDefinition> = {
     features: [
       'Hasta 8 barberos',
       'Dominio propio (mibarberia.com)',
-      'Twilio con tu número',
+      'Confirmaciones por WhatsApp (tu propio número)',
       'Todo lo de Negocio',
       'Soporte prioritario',
       'Onboarding asistido',
