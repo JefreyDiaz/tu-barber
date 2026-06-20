@@ -1,4 +1,11 @@
-import { TRIAL_DAYS, type PlanId, getEffectivePlan, getTrialDaysRemaining } from '@/lib/plans';
+import {
+  TRIAL_DAYS,
+  PLANS,
+  type PlanId,
+  getEffectivePlan,
+  getTrialDaysRemaining,
+  normalizePlanId,
+} from '@/lib/plans';
 
 export interface TenantSubscription {
   plan: string;
@@ -30,14 +37,18 @@ export function trialDaysLeft(tenant: TenantSubscription): number | null {
 }
 
 export function canUseCustomDomain(tenant: TenantSubscription): boolean {
-  return resolveTenantPlan(tenant) === 'pro';
+  return PLANS[resolveTenantPlan(tenant)].limits.customDomain;
 }
 
-export function canUseOwnManyChat(tenant: TenantSubscription): boolean {
-  return resolveTenantPlan(tenant) === 'pro';
+export function canUseOwnTwilio(tenant: TenantSubscription): boolean {
+  return PLANS[resolveTenantPlan(tenant)].limits.ownTwilio;
 }
 
 export function maxBarbersForPlan(tenant: TenantSubscription): number {
-  const plan = resolveTenantPlan(tenant);
-  return plan === 'pro' ? 10 : 3;
+  return PLANS[resolveTenantPlan(tenant)].limits.maxBarbers;
+}
+
+/** Subscribed plan (ignores trial uplift) — for billing display after trial. */
+export function subscribedPlanId(tenant: TenantSubscription): PlanId {
+  return normalizePlanId(tenant.plan);
 }

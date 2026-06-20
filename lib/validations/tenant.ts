@@ -21,7 +21,7 @@ export const onboardingSchema = z.object({
     .transform((s) => '+57' + s),
   username: z.string().min(3).max(30).trim(),
   password: z.string().min(8, 'Mínimo 8 caracteres'),
-  plan: z.enum(['basic', 'pro']).default('pro'),
+  plan: z.enum(['emprendedor', 'negocio', 'cadena']).default('negocio'),
 });
 
 export type OnboardingData = z.infer<typeof onboardingSchema>;
@@ -34,10 +34,12 @@ export const tenantSettingsSchema = z.object({
   maxAdvanceDays: z.number().int().min(1).max(90).optional(),
   cancelNoticeHours: z.number().int().min(0).max(48).optional(),
   scheduleJson: z.record(z.string(), z.array(z.object({ start: z.number(), end: z.number() })).nullable()).optional(),
-  manychatApiKey: z.string().optional(),
-  manychatFlowBooking: z.string().optional(),
-  manychatFlowBarber: z.string().optional(),
-  manychatFlowReminder: z.string().optional(),
+  twilioAccountSid: z.string().optional(),
+  twilioAuthToken: z.string().optional(),
+  twilioWhatsappFrom: z.string().optional(),
+  twilioContentSidBooking: z.string().optional(),
+  twilioContentSidBarber: z.string().optional(),
+  twilioContentSidReminder: z.string().optional(),
 });
 
 export const customDomainSchema = z.object({

@@ -48,11 +48,12 @@ export type TenantSettingsMinAggregateOutputType = {
   minAdvanceHours: number | null
   maxAdvanceDays: number | null
   cancelNoticeHours: number | null
-  manychatApiKey: string | null
-  manychatPageId: string | null
-  manychatFlowBooking: string | null
-  manychatFlowBarber: string | null
-  manychatFlowReminder: string | null
+  twilioAccountSid: string | null
+  twilioAuthToken: string | null
+  twilioWhatsappFrom: string | null
+  twilioContentSidBooking: string | null
+  twilioContentSidBarber: string | null
+  twilioContentSidReminder: string | null
 }
 
 export type TenantSettingsMaxAggregateOutputType = {
@@ -63,11 +64,12 @@ export type TenantSettingsMaxAggregateOutputType = {
   minAdvanceHours: number | null
   maxAdvanceDays: number | null
   cancelNoticeHours: number | null
-  manychatApiKey: string | null
-  manychatPageId: string | null
-  manychatFlowBooking: string | null
-  manychatFlowBarber: string | null
-  manychatFlowReminder: string | null
+  twilioAccountSid: string | null
+  twilioAuthToken: string | null
+  twilioWhatsappFrom: string | null
+  twilioContentSidBooking: string | null
+  twilioContentSidBarber: string | null
+  twilioContentSidReminder: string | null
 }
 
 export type TenantSettingsCountAggregateOutputType = {
@@ -79,12 +81,12 @@ export type TenantSettingsCountAggregateOutputType = {
   maxAdvanceDays: number
   cancelNoticeHours: number
   scheduleJson: number
-  manychatApiKey: number
-  manychatPageId: number
-  manychatFlowBooking: number
-  manychatFlowBarber: number
-  manychatFlowReminder: number
-  manychatFieldMap: number
+  twilioAccountSid: number
+  twilioAuthToken: number
+  twilioWhatsappFrom: number
+  twilioContentSidBooking: number
+  twilioContentSidBarber: number
+  twilioContentSidReminder: number
   _all: number
 }
 
@@ -111,11 +113,12 @@ export type TenantSettingsMinAggregateInputType = {
   minAdvanceHours?: true
   maxAdvanceDays?: true
   cancelNoticeHours?: true
-  manychatApiKey?: true
-  manychatPageId?: true
-  manychatFlowBooking?: true
-  manychatFlowBarber?: true
-  manychatFlowReminder?: true
+  twilioAccountSid?: true
+  twilioAuthToken?: true
+  twilioWhatsappFrom?: true
+  twilioContentSidBooking?: true
+  twilioContentSidBarber?: true
+  twilioContentSidReminder?: true
 }
 
 export type TenantSettingsMaxAggregateInputType = {
@@ -126,11 +129,12 @@ export type TenantSettingsMaxAggregateInputType = {
   minAdvanceHours?: true
   maxAdvanceDays?: true
   cancelNoticeHours?: true
-  manychatApiKey?: true
-  manychatPageId?: true
-  manychatFlowBooking?: true
-  manychatFlowBarber?: true
-  manychatFlowReminder?: true
+  twilioAccountSid?: true
+  twilioAuthToken?: true
+  twilioWhatsappFrom?: true
+  twilioContentSidBooking?: true
+  twilioContentSidBarber?: true
+  twilioContentSidReminder?: true
 }
 
 export type TenantSettingsCountAggregateInputType = {
@@ -142,12 +146,12 @@ export type TenantSettingsCountAggregateInputType = {
   maxAdvanceDays?: true
   cancelNoticeHours?: true
   scheduleJson?: true
-  manychatApiKey?: true
-  manychatPageId?: true
-  manychatFlowBooking?: true
-  manychatFlowBarber?: true
-  manychatFlowReminder?: true
-  manychatFieldMap?: true
+  twilioAccountSid?: true
+  twilioAuthToken?: true
+  twilioWhatsappFrom?: true
+  twilioContentSidBooking?: true
+  twilioContentSidBarber?: true
+  twilioContentSidReminder?: true
   _all?: true
 }
 
@@ -246,12 +250,12 @@ export type TenantSettingsGroupByOutputType = {
   maxAdvanceDays: number
   cancelNoticeHours: number
   scheduleJson: runtime.JsonValue | null
-  manychatApiKey: string | null
-  manychatPageId: string | null
-  manychatFlowBooking: string | null
-  manychatFlowBarber: string | null
-  manychatFlowReminder: string | null
-  manychatFieldMap: runtime.JsonValue | null
+  twilioAccountSid: string | null
+  twilioAuthToken: string | null
+  twilioWhatsappFrom: string | null
+  twilioContentSidBooking: string | null
+  twilioContentSidBarber: string | null
+  twilioContentSidReminder: string | null
   _count: TenantSettingsCountAggregateOutputType | null
   _avg: TenantSettingsAvgAggregateOutputType | null
   _sum: TenantSettingsSumAggregateOutputType | null
@@ -286,12 +290,12 @@ export type TenantSettingsWhereInput = {
   maxAdvanceDays?: Prisma.IntFilter<"TenantSettings"> | number
   cancelNoticeHours?: Prisma.IntFilter<"TenantSettings"> | number
   scheduleJson?: Prisma.JsonNullableFilter<"TenantSettings">
-  manychatApiKey?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
-  manychatPageId?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
-  manychatFlowBooking?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
-  manychatFlowBarber?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
-  manychatFlowReminder?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
-  manychatFieldMap?: Prisma.JsonNullableFilter<"TenantSettings">
+  twilioAccountSid?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
+  twilioAuthToken?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
+  twilioWhatsappFrom?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
+  twilioContentSidBooking?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
+  twilioContentSidBarber?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
+  twilioContentSidReminder?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
 }
 
@@ -304,12 +308,12 @@ export type TenantSettingsOrderByWithRelationInput = {
   maxAdvanceDays?: Prisma.SortOrder
   cancelNoticeHours?: Prisma.SortOrder
   scheduleJson?: Prisma.SortOrderInput | Prisma.SortOrder
-  manychatApiKey?: Prisma.SortOrderInput | Prisma.SortOrder
-  manychatPageId?: Prisma.SortOrderInput | Prisma.SortOrder
-  manychatFlowBooking?: Prisma.SortOrderInput | Prisma.SortOrder
-  manychatFlowBarber?: Prisma.SortOrderInput | Prisma.SortOrder
-  manychatFlowReminder?: Prisma.SortOrderInput | Prisma.SortOrder
-  manychatFieldMap?: Prisma.SortOrderInput | Prisma.SortOrder
+  twilioAccountSid?: Prisma.SortOrderInput | Prisma.SortOrder
+  twilioAuthToken?: Prisma.SortOrderInput | Prisma.SortOrder
+  twilioWhatsappFrom?: Prisma.SortOrderInput | Prisma.SortOrder
+  twilioContentSidBooking?: Prisma.SortOrderInput | Prisma.SortOrder
+  twilioContentSidBarber?: Prisma.SortOrderInput | Prisma.SortOrder
+  twilioContentSidReminder?: Prisma.SortOrderInput | Prisma.SortOrder
   tenant?: Prisma.TenantOrderByWithRelationInput
 }
 
@@ -325,12 +329,12 @@ export type TenantSettingsWhereUniqueInput = Prisma.AtLeast<{
   maxAdvanceDays?: Prisma.IntFilter<"TenantSettings"> | number
   cancelNoticeHours?: Prisma.IntFilter<"TenantSettings"> | number
   scheduleJson?: Prisma.JsonNullableFilter<"TenantSettings">
-  manychatApiKey?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
-  manychatPageId?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
-  manychatFlowBooking?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
-  manychatFlowBarber?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
-  manychatFlowReminder?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
-  manychatFieldMap?: Prisma.JsonNullableFilter<"TenantSettings">
+  twilioAccountSid?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
+  twilioAuthToken?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
+  twilioWhatsappFrom?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
+  twilioContentSidBooking?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
+  twilioContentSidBarber?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
+  twilioContentSidReminder?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
 }, "tenantId">
 
@@ -343,12 +347,12 @@ export type TenantSettingsOrderByWithAggregationInput = {
   maxAdvanceDays?: Prisma.SortOrder
   cancelNoticeHours?: Prisma.SortOrder
   scheduleJson?: Prisma.SortOrderInput | Prisma.SortOrder
-  manychatApiKey?: Prisma.SortOrderInput | Prisma.SortOrder
-  manychatPageId?: Prisma.SortOrderInput | Prisma.SortOrder
-  manychatFlowBooking?: Prisma.SortOrderInput | Prisma.SortOrder
-  manychatFlowBarber?: Prisma.SortOrderInput | Prisma.SortOrder
-  manychatFlowReminder?: Prisma.SortOrderInput | Prisma.SortOrder
-  manychatFieldMap?: Prisma.SortOrderInput | Prisma.SortOrder
+  twilioAccountSid?: Prisma.SortOrderInput | Prisma.SortOrder
+  twilioAuthToken?: Prisma.SortOrderInput | Prisma.SortOrder
+  twilioWhatsappFrom?: Prisma.SortOrderInput | Prisma.SortOrder
+  twilioContentSidBooking?: Prisma.SortOrderInput | Prisma.SortOrder
+  twilioContentSidBarber?: Prisma.SortOrderInput | Prisma.SortOrder
+  twilioContentSidReminder?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.TenantSettingsCountOrderByAggregateInput
   _avg?: Prisma.TenantSettingsAvgOrderByAggregateInput
   _max?: Prisma.TenantSettingsMaxOrderByAggregateInput
@@ -368,12 +372,12 @@ export type TenantSettingsScalarWhereWithAggregatesInput = {
   maxAdvanceDays?: Prisma.IntWithAggregatesFilter<"TenantSettings"> | number
   cancelNoticeHours?: Prisma.IntWithAggregatesFilter<"TenantSettings"> | number
   scheduleJson?: Prisma.JsonNullableWithAggregatesFilter<"TenantSettings">
-  manychatApiKey?: Prisma.StringNullableWithAggregatesFilter<"TenantSettings"> | string | null
-  manychatPageId?: Prisma.StringNullableWithAggregatesFilter<"TenantSettings"> | string | null
-  manychatFlowBooking?: Prisma.StringNullableWithAggregatesFilter<"TenantSettings"> | string | null
-  manychatFlowBarber?: Prisma.StringNullableWithAggregatesFilter<"TenantSettings"> | string | null
-  manychatFlowReminder?: Prisma.StringNullableWithAggregatesFilter<"TenantSettings"> | string | null
-  manychatFieldMap?: Prisma.JsonNullableWithAggregatesFilter<"TenantSettings">
+  twilioAccountSid?: Prisma.StringNullableWithAggregatesFilter<"TenantSettings"> | string | null
+  twilioAuthToken?: Prisma.StringNullableWithAggregatesFilter<"TenantSettings"> | string | null
+  twilioWhatsappFrom?: Prisma.StringNullableWithAggregatesFilter<"TenantSettings"> | string | null
+  twilioContentSidBooking?: Prisma.StringNullableWithAggregatesFilter<"TenantSettings"> | string | null
+  twilioContentSidBarber?: Prisma.StringNullableWithAggregatesFilter<"TenantSettings"> | string | null
+  twilioContentSidReminder?: Prisma.StringNullableWithAggregatesFilter<"TenantSettings"> | string | null
 }
 
 export type TenantSettingsCreateInput = {
@@ -384,12 +388,12 @@ export type TenantSettingsCreateInput = {
   maxAdvanceDays?: number
   cancelNoticeHours?: number
   scheduleJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  manychatApiKey?: string | null
-  manychatPageId?: string | null
-  manychatFlowBooking?: string | null
-  manychatFlowBarber?: string | null
-  manychatFlowReminder?: string | null
-  manychatFieldMap?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  twilioAccountSid?: string | null
+  twilioAuthToken?: string | null
+  twilioWhatsappFrom?: string | null
+  twilioContentSidBooking?: string | null
+  twilioContentSidBarber?: string | null
+  twilioContentSidReminder?: string | null
   tenant: Prisma.TenantCreateNestedOneWithoutSettingsInput
 }
 
@@ -402,12 +406,12 @@ export type TenantSettingsUncheckedCreateInput = {
   maxAdvanceDays?: number
   cancelNoticeHours?: number
   scheduleJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  manychatApiKey?: string | null
-  manychatPageId?: string | null
-  manychatFlowBooking?: string | null
-  manychatFlowBarber?: string | null
-  manychatFlowReminder?: string | null
-  manychatFieldMap?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  twilioAccountSid?: string | null
+  twilioAuthToken?: string | null
+  twilioWhatsappFrom?: string | null
+  twilioContentSidBooking?: string | null
+  twilioContentSidBarber?: string | null
+  twilioContentSidReminder?: string | null
 }
 
 export type TenantSettingsUpdateInput = {
@@ -418,12 +422,12 @@ export type TenantSettingsUpdateInput = {
   maxAdvanceDays?: Prisma.IntFieldUpdateOperationsInput | number
   cancelNoticeHours?: Prisma.IntFieldUpdateOperationsInput | number
   scheduleJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  manychatApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatPageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatFlowBooking?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatFlowBarber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatFlowReminder?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatFieldMap?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  twilioAccountSid?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioAuthToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioWhatsappFrom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioContentSidBooking?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioContentSidBarber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioContentSidReminder?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tenant?: Prisma.TenantUpdateOneRequiredWithoutSettingsNestedInput
 }
 
@@ -436,12 +440,12 @@ export type TenantSettingsUncheckedUpdateInput = {
   maxAdvanceDays?: Prisma.IntFieldUpdateOperationsInput | number
   cancelNoticeHours?: Prisma.IntFieldUpdateOperationsInput | number
   scheduleJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  manychatApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatPageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatFlowBooking?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatFlowBarber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatFlowReminder?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatFieldMap?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  twilioAccountSid?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioAuthToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioWhatsappFrom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioContentSidBooking?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioContentSidBarber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioContentSidReminder?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TenantSettingsCreateManyInput = {
@@ -453,12 +457,12 @@ export type TenantSettingsCreateManyInput = {
   maxAdvanceDays?: number
   cancelNoticeHours?: number
   scheduleJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  manychatApiKey?: string | null
-  manychatPageId?: string | null
-  manychatFlowBooking?: string | null
-  manychatFlowBarber?: string | null
-  manychatFlowReminder?: string | null
-  manychatFieldMap?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  twilioAccountSid?: string | null
+  twilioAuthToken?: string | null
+  twilioWhatsappFrom?: string | null
+  twilioContentSidBooking?: string | null
+  twilioContentSidBarber?: string | null
+  twilioContentSidReminder?: string | null
 }
 
 export type TenantSettingsUpdateManyMutationInput = {
@@ -469,12 +473,12 @@ export type TenantSettingsUpdateManyMutationInput = {
   maxAdvanceDays?: Prisma.IntFieldUpdateOperationsInput | number
   cancelNoticeHours?: Prisma.IntFieldUpdateOperationsInput | number
   scheduleJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  manychatApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatPageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatFlowBooking?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatFlowBarber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatFlowReminder?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatFieldMap?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  twilioAccountSid?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioAuthToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioWhatsappFrom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioContentSidBooking?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioContentSidBarber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioContentSidReminder?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TenantSettingsUncheckedUpdateManyInput = {
@@ -486,12 +490,12 @@ export type TenantSettingsUncheckedUpdateManyInput = {
   maxAdvanceDays?: Prisma.IntFieldUpdateOperationsInput | number
   cancelNoticeHours?: Prisma.IntFieldUpdateOperationsInput | number
   scheduleJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  manychatApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatPageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatFlowBooking?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatFlowBarber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatFlowReminder?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatFieldMap?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  twilioAccountSid?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioAuthToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioWhatsappFrom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioContentSidBooking?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioContentSidBarber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioContentSidReminder?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TenantSettingsNullableScalarRelationFilter = {
@@ -508,12 +512,12 @@ export type TenantSettingsCountOrderByAggregateInput = {
   maxAdvanceDays?: Prisma.SortOrder
   cancelNoticeHours?: Prisma.SortOrder
   scheduleJson?: Prisma.SortOrder
-  manychatApiKey?: Prisma.SortOrder
-  manychatPageId?: Prisma.SortOrder
-  manychatFlowBooking?: Prisma.SortOrder
-  manychatFlowBarber?: Prisma.SortOrder
-  manychatFlowReminder?: Prisma.SortOrder
-  manychatFieldMap?: Prisma.SortOrder
+  twilioAccountSid?: Prisma.SortOrder
+  twilioAuthToken?: Prisma.SortOrder
+  twilioWhatsappFrom?: Prisma.SortOrder
+  twilioContentSidBooking?: Prisma.SortOrder
+  twilioContentSidBarber?: Prisma.SortOrder
+  twilioContentSidReminder?: Prisma.SortOrder
 }
 
 export type TenantSettingsAvgOrderByAggregateInput = {
@@ -531,11 +535,12 @@ export type TenantSettingsMaxOrderByAggregateInput = {
   minAdvanceHours?: Prisma.SortOrder
   maxAdvanceDays?: Prisma.SortOrder
   cancelNoticeHours?: Prisma.SortOrder
-  manychatApiKey?: Prisma.SortOrder
-  manychatPageId?: Prisma.SortOrder
-  manychatFlowBooking?: Prisma.SortOrder
-  manychatFlowBarber?: Prisma.SortOrder
-  manychatFlowReminder?: Prisma.SortOrder
+  twilioAccountSid?: Prisma.SortOrder
+  twilioAuthToken?: Prisma.SortOrder
+  twilioWhatsappFrom?: Prisma.SortOrder
+  twilioContentSidBooking?: Prisma.SortOrder
+  twilioContentSidBarber?: Prisma.SortOrder
+  twilioContentSidReminder?: Prisma.SortOrder
 }
 
 export type TenantSettingsMinOrderByAggregateInput = {
@@ -546,11 +551,12 @@ export type TenantSettingsMinOrderByAggregateInput = {
   minAdvanceHours?: Prisma.SortOrder
   maxAdvanceDays?: Prisma.SortOrder
   cancelNoticeHours?: Prisma.SortOrder
-  manychatApiKey?: Prisma.SortOrder
-  manychatPageId?: Prisma.SortOrder
-  manychatFlowBooking?: Prisma.SortOrder
-  manychatFlowBarber?: Prisma.SortOrder
-  manychatFlowReminder?: Prisma.SortOrder
+  twilioAccountSid?: Prisma.SortOrder
+  twilioAuthToken?: Prisma.SortOrder
+  twilioWhatsappFrom?: Prisma.SortOrder
+  twilioContentSidBooking?: Prisma.SortOrder
+  twilioContentSidBarber?: Prisma.SortOrder
+  twilioContentSidReminder?: Prisma.SortOrder
 }
 
 export type TenantSettingsSumOrderByAggregateInput = {
@@ -608,12 +614,12 @@ export type TenantSettingsCreateWithoutTenantInput = {
   maxAdvanceDays?: number
   cancelNoticeHours?: number
   scheduleJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  manychatApiKey?: string | null
-  manychatPageId?: string | null
-  manychatFlowBooking?: string | null
-  manychatFlowBarber?: string | null
-  manychatFlowReminder?: string | null
-  manychatFieldMap?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  twilioAccountSid?: string | null
+  twilioAuthToken?: string | null
+  twilioWhatsappFrom?: string | null
+  twilioContentSidBooking?: string | null
+  twilioContentSidBarber?: string | null
+  twilioContentSidReminder?: string | null
 }
 
 export type TenantSettingsUncheckedCreateWithoutTenantInput = {
@@ -624,12 +630,12 @@ export type TenantSettingsUncheckedCreateWithoutTenantInput = {
   maxAdvanceDays?: number
   cancelNoticeHours?: number
   scheduleJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  manychatApiKey?: string | null
-  manychatPageId?: string | null
-  manychatFlowBooking?: string | null
-  manychatFlowBarber?: string | null
-  manychatFlowReminder?: string | null
-  manychatFieldMap?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  twilioAccountSid?: string | null
+  twilioAuthToken?: string | null
+  twilioWhatsappFrom?: string | null
+  twilioContentSidBooking?: string | null
+  twilioContentSidBarber?: string | null
+  twilioContentSidReminder?: string | null
 }
 
 export type TenantSettingsCreateOrConnectWithoutTenantInput = {
@@ -656,12 +662,12 @@ export type TenantSettingsUpdateWithoutTenantInput = {
   maxAdvanceDays?: Prisma.IntFieldUpdateOperationsInput | number
   cancelNoticeHours?: Prisma.IntFieldUpdateOperationsInput | number
   scheduleJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  manychatApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatPageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatFlowBooking?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatFlowBarber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatFlowReminder?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatFieldMap?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  twilioAccountSid?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioAuthToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioWhatsappFrom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioContentSidBooking?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioContentSidBarber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioContentSidReminder?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TenantSettingsUncheckedUpdateWithoutTenantInput = {
@@ -672,12 +678,12 @@ export type TenantSettingsUncheckedUpdateWithoutTenantInput = {
   maxAdvanceDays?: Prisma.IntFieldUpdateOperationsInput | number
   cancelNoticeHours?: Prisma.IntFieldUpdateOperationsInput | number
   scheduleJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  manychatApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatPageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatFlowBooking?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatFlowBarber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatFlowReminder?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manychatFieldMap?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  twilioAccountSid?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioAuthToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioWhatsappFrom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioContentSidBooking?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioContentSidBarber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twilioContentSidReminder?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -691,12 +697,12 @@ export type TenantSettingsSelect<ExtArgs extends runtime.Types.Extensions.Intern
   maxAdvanceDays?: boolean
   cancelNoticeHours?: boolean
   scheduleJson?: boolean
-  manychatApiKey?: boolean
-  manychatPageId?: boolean
-  manychatFlowBooking?: boolean
-  manychatFlowBarber?: boolean
-  manychatFlowReminder?: boolean
-  manychatFieldMap?: boolean
+  twilioAccountSid?: boolean
+  twilioAuthToken?: boolean
+  twilioWhatsappFrom?: boolean
+  twilioContentSidBooking?: boolean
+  twilioContentSidBarber?: boolean
+  twilioContentSidReminder?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tenantSettings"]>
 
@@ -709,12 +715,12 @@ export type TenantSettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   maxAdvanceDays?: boolean
   cancelNoticeHours?: boolean
   scheduleJson?: boolean
-  manychatApiKey?: boolean
-  manychatPageId?: boolean
-  manychatFlowBooking?: boolean
-  manychatFlowBarber?: boolean
-  manychatFlowReminder?: boolean
-  manychatFieldMap?: boolean
+  twilioAccountSid?: boolean
+  twilioAuthToken?: boolean
+  twilioWhatsappFrom?: boolean
+  twilioContentSidBooking?: boolean
+  twilioContentSidBarber?: boolean
+  twilioContentSidReminder?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tenantSettings"]>
 
@@ -727,12 +733,12 @@ export type TenantSettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   maxAdvanceDays?: boolean
   cancelNoticeHours?: boolean
   scheduleJson?: boolean
-  manychatApiKey?: boolean
-  manychatPageId?: boolean
-  manychatFlowBooking?: boolean
-  manychatFlowBarber?: boolean
-  manychatFlowReminder?: boolean
-  manychatFieldMap?: boolean
+  twilioAccountSid?: boolean
+  twilioAuthToken?: boolean
+  twilioWhatsappFrom?: boolean
+  twilioContentSidBooking?: boolean
+  twilioContentSidBarber?: boolean
+  twilioContentSidReminder?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tenantSettings"]>
 
@@ -745,15 +751,15 @@ export type TenantSettingsSelectScalar = {
   maxAdvanceDays?: boolean
   cancelNoticeHours?: boolean
   scheduleJson?: boolean
-  manychatApiKey?: boolean
-  manychatPageId?: boolean
-  manychatFlowBooking?: boolean
-  manychatFlowBarber?: boolean
-  manychatFlowReminder?: boolean
-  manychatFieldMap?: boolean
+  twilioAccountSid?: boolean
+  twilioAuthToken?: boolean
+  twilioWhatsappFrom?: boolean
+  twilioContentSidBooking?: boolean
+  twilioContentSidBarber?: boolean
+  twilioContentSidReminder?: boolean
 }
 
-export type TenantSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"tenantId" | "logoUrl" | "primaryColor" | "slotDurationMinutes" | "minAdvanceHours" | "maxAdvanceDays" | "cancelNoticeHours" | "scheduleJson" | "manychatApiKey" | "manychatPageId" | "manychatFlowBooking" | "manychatFlowBarber" | "manychatFlowReminder" | "manychatFieldMap", ExtArgs["result"]["tenantSettings"]>
+export type TenantSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"tenantId" | "logoUrl" | "primaryColor" | "slotDurationMinutes" | "minAdvanceHours" | "maxAdvanceDays" | "cancelNoticeHours" | "scheduleJson" | "twilioAccountSid" | "twilioAuthToken" | "twilioWhatsappFrom" | "twilioContentSidBooking" | "twilioContentSidBarber" | "twilioContentSidReminder", ExtArgs["result"]["tenantSettings"]>
 export type TenantSettingsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
 }
@@ -778,12 +784,12 @@ export type $TenantSettingsPayload<ExtArgs extends runtime.Types.Extensions.Inte
     maxAdvanceDays: number
     cancelNoticeHours: number
     scheduleJson: runtime.JsonValue | null
-    manychatApiKey: string | null
-    manychatPageId: string | null
-    manychatFlowBooking: string | null
-    manychatFlowBarber: string | null
-    manychatFlowReminder: string | null
-    manychatFieldMap: runtime.JsonValue | null
+    twilioAccountSid: string | null
+    twilioAuthToken: string | null
+    twilioWhatsappFrom: string | null
+    twilioContentSidBooking: string | null
+    twilioContentSidBarber: string | null
+    twilioContentSidReminder: string | null
   }, ExtArgs["result"]["tenantSettings"]>
   composites: {}
 }
@@ -1216,12 +1222,12 @@ export interface TenantSettingsFieldRefs {
   readonly maxAdvanceDays: Prisma.FieldRef<"TenantSettings", 'Int'>
   readonly cancelNoticeHours: Prisma.FieldRef<"TenantSettings", 'Int'>
   readonly scheduleJson: Prisma.FieldRef<"TenantSettings", 'Json'>
-  readonly manychatApiKey: Prisma.FieldRef<"TenantSettings", 'String'>
-  readonly manychatPageId: Prisma.FieldRef<"TenantSettings", 'String'>
-  readonly manychatFlowBooking: Prisma.FieldRef<"TenantSettings", 'String'>
-  readonly manychatFlowBarber: Prisma.FieldRef<"TenantSettings", 'String'>
-  readonly manychatFlowReminder: Prisma.FieldRef<"TenantSettings", 'String'>
-  readonly manychatFieldMap: Prisma.FieldRef<"TenantSettings", 'Json'>
+  readonly twilioAccountSid: Prisma.FieldRef<"TenantSettings", 'String'>
+  readonly twilioAuthToken: Prisma.FieldRef<"TenantSettings", 'String'>
+  readonly twilioWhatsappFrom: Prisma.FieldRef<"TenantSettings", 'String'>
+  readonly twilioContentSidBooking: Prisma.FieldRef<"TenantSettings", 'String'>
+  readonly twilioContentSidBarber: Prisma.FieldRef<"TenantSettings", 'String'>
+  readonly twilioContentSidReminder: Prisma.FieldRef<"TenantSettings", 'String'>
 }
     
 

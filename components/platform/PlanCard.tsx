@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import type { PlanDefinition, PlanId } from '@/lib/plans';
-import { TRIAL_DAYS } from '@/lib/plans';
+import { TRIAL_DAYS, PLANS, TRIAL_PLAN } from '@/lib/plans';
 
 interface PlanCardProps {
   plan: PlanDefinition;
@@ -48,7 +48,7 @@ export default function PlanCard({ plan, selected, onSelect, href, compact }: Pl
 
       {plan.popular && (
         <p className="mt-2 text-xs font-medium text-amber-400/90">
-          {TRIAL_DAYS} días gratis · acceso Pro completo
+          {TRIAL_DAYS} días gratis · acceso {PLANS[TRIAL_PLAN].name}
         </p>
       )}
 

@@ -102,12 +102,12 @@ export const TenantSettingsScalarFieldEnum = {
   maxAdvanceDays: 'maxAdvanceDays',
   cancelNoticeHours: 'cancelNoticeHours',
   scheduleJson: 'scheduleJson',
-  manychatApiKey: 'manychatApiKey',
-  manychatPageId: 'manychatPageId',
-  manychatFlowBooking: 'manychatFlowBooking',
-  manychatFlowBarber: 'manychatFlowBarber',
-  manychatFlowReminder: 'manychatFlowReminder',
-  manychatFieldMap: 'manychatFieldMap'
+  twilioAccountSid: 'twilioAccountSid',
+  twilioAuthToken: 'twilioAuthToken',
+  twilioWhatsappFrom: 'twilioWhatsappFrom',
+  twilioContentSidBooking: 'twilioContentSidBooking',
+  twilioContentSidBarber: 'twilioContentSidBarber',
+  twilioContentSidReminder: 'twilioContentSidReminder'
 } as const
 
 export type TenantSettingsScalarFieldEnum = (typeof TenantSettingsScalarFieldEnum)[keyof typeof TenantSettingsScalarFieldEnum]

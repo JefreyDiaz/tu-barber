@@ -1,124 +1,97 @@
 import { formatColombiaDate, formatColombiaTime } from '@/lib/date-utils';
-import { getPlatformManyChatConfig, getTenantAppUrl, resolveManyChatConfig, type TenantManyChatSettings } from './get-config';
-import { sendManyChatMessage } from './manychat';
+import {
+  getPlatformTwilioConfig,
+  getTenantAppUrl,
+  resolveTwilioConfig,
+} from './get-config';
+import { sendTwilioTemplateMessage } from './twilio';
 import type {
   BarberMessageParams,
   BookingMessageParams,
-  ManyChatConfig,
+  TenantTwilioSettings,
+  TwilioConfig,
 } from './types';
 
-export type { ManyChatConfig, TenantManyChatSettings };
+export type { TenantTwilioSettings, TwilioConfig };
 
-function buildFieldData(
-  params: BookingMessageParams
-): {
-  customerName: string;
-  barberName: string;
-  bookingDate: string;
-  bookingTime: string;
-  barberPhone: string;
-  cancelUrl: string;
-  customerPhone?: string;
-} {
-  const cancelUrl = `${getTenantAppUrl(params.tenantSlug)}/cancelar/${params.bookingId}`;
-  return {
-    customerName: params.customerName,
-    barberName: params.barberName,
-    bookingDate: formatColombiaDate(params.dateTime),
-    bookingTime: formatColombiaTime(params.dateTime),
-    barberPhone: params.barberPhone ?? 'No disponible',
-    cancelUrl,
-    customerPhone: params.to.replace(/\D/g, ''),
-  };
+function getConfig(tenantSettings?: TenantTwilioSettings | null): TwilioConfig | null {
+  return resolveTwilioConfig(tenantSettings);
 }
 
-function getConfig(tenantSettings?: TenantManyChatSettings | null): ManyChatConfig | null {
-  return resolveManyChatConfig(tenantSettings);
+function bookingVariables(params: BookingMessageParams): string[] {
+  const cancelUrl = `${getTenantAppUrl(params.tenantSlug)}/cancelar/${params.bookingId}`;
+  return [
+    params.customerName,
+    params.barberName,
+    formatColombiaDate(params.dateTime),
+    formatColombiaTime(params.dateTime),
+    params.barberPhone ?? 'No disponible',
+    cancelUrl,
+  ];
 }
 
 /**
- * Send booking confirmation WhatsApp to customer via ManyChat flow.
+ * Send booking confirmation WhatsApp to customer via Twilio template.
  * Does not throw — logs errors and returns silently (booking already saved).
  */
 export async function sendBookingConfirmation(
   params: BookingMessageParams,
-  tenantSettings?: TenantManyChatSettings | null
+  tenantSettings?: TenantTwilioSettings | null
 ): Promise<void> {
   const config = getConfig(tenantSettings);
   if (!config) {
-    console.warn('[ManyChat] Not configured: missing MANYCHAT_API_KEY');
+    console.warn('[Twilio] Not configured: missing TWILIO_ACCOUNT_SID / TWILIO_AUTH_TOKEN / TWILIO_WHATSAPP_FROM');
     return;
   }
 
-  const fieldData = buildFieldData(params);
-  await sendManyChatMessage(
+  await sendTwilioTemplateMessage(
     config,
     params.to,
-    config.flowBooking,
-    fieldData,
-    params.customerName
+    config.contentSidBooking,
+    bookingVariables(params)
   );
 }
 
-/** Send new booking notification to barber via ManyChat flow */
+/** Send new booking notification to barber via Twilio template */
 export async function sendBarberNotification(
   params: BarberMessageParams,
-  tenantSettings?: TenantManyChatSettings | null
+  tenantSettings?: TenantTwilioSettings | null
 ): Promise<void> {
   const config = getConfig(tenantSettings);
   if (!config) {
-    console.warn('[ManyChat] Not configured: missing MANYCHAT_API_KEY');
+    console.warn('[Twilio] Not configured: missing TWILIO_ACCOUNT_SID / TWILIO_AUTH_TOKEN / TWILIO_WHATSAPP_FROM');
     return;
   }
 
-  const fieldData = {
-    customerName: params.customerName,
-    barberName: params.barberName,
-    bookingDate: formatColombiaDate(params.dateTime),
-    bookingTime: formatColombiaTime(params.dateTime),
-    barberPhone: params.barberPhone,
-    cancelUrl: '',
-    customerPhone: params.customerPhone.replace(/\D/g, ''),
-  };
-
-  await sendManyChatMessage(
-    config,
-    params.barberPhone,
-    config.flowBarber,
-    fieldData,
-    params.barberName
-  );
+  await sendTwilioTemplateMessage(config, params.barberPhone, config.contentSidBarber, [
+    params.barberName,
+    params.customerName,
+    params.customerPhone.replace(/\D/g, ''),
+    formatColombiaDate(params.dateTime),
+    formatColombiaTime(params.dateTime),
+  ]);
 }
 
 /**
- * Send booking reminder (~3h before) via ManyChat flow.
+ * Send booking reminder (~3h before) via Twilio template.
  * @returns true if message was accepted
  */
 export async function sendBookingReminder(
   params: BookingMessageParams,
-  tenantSettings?: TenantManyChatSettings | null
+  tenantSettings?: TenantTwilioSettings | null
 ): Promise<boolean> {
   const config = getConfig(tenantSettings);
   if (!config) {
-    console.warn('[ManyChat] Not configured: missing MANYCHAT_API_KEY');
+    console.warn('[Twilio] Not configured: missing TWILIO_ACCOUNT_SID / TWILIO_AUTH_TOKEN / TWILIO_WHATSAPP_FROM');
     return false;
   }
 
-  const fieldData = buildFieldData(params);
-  return sendManyChatMessage(
+  return sendTwilioTemplateMessage(
     config,
     params.to,
-    config.flowReminder,
-    fieldData,
-    params.customerName
+    config.contentSidReminder,
+    bookingVariables(params)
   );
 }
 
-/** @deprecated Use sendBookingConfirmation — kept for gradual migration */
-export const sendBookingConfirmationWhatsApp = sendBookingConfirmation;
-/** @deprecated Use sendBarberNotification */
-export const sendBarberNotificationWhatsApp = sendBarberNotification;
-/** @deprecated Use sendBookingReminder */
-export const sendBookingReminderWhatsApp = sendBookingReminder;
-
-export { getPlatformManyChatConfig, resolveManyChatConfig, getTenantAppUrl };
+export { getPlatformTwilioConfig, resolveTwilioConfig, getTenantAppUrl };

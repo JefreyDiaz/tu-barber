@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { signOut } from 'next-auth/react';
-import { PLANS, getTrialDaysRemaining } from '@/lib/plans';
+import { PLANS, getTrialDaysRemaining, normalizePlanId } from '@/lib/plans';
 
 interface TenantRow {
   id: string;
@@ -67,16 +67,17 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 function PlanBadge({ plan }: { plan: string }) {
-  const isPro = plan === 'pro';
+  const planId = normalizePlanId(plan);
+  const isHighlight = planId === 'negocio' || planId === 'cadena';
   return (
     <span
       className={`rounded-full border px-2.5 py-0.5 text-xs font-medium ${
-        isPro
+        isHighlight
           ? 'border-amber-500/40 bg-amber-500/15 text-amber-300'
           : 'border-white/15 bg-white/5 text-white/60'
       }`}
     >
-      {PLANS[plan as keyof typeof PLANS]?.name ?? plan}
+      {PLANS[planId]?.name ?? plan}
     </span>
   );
 }

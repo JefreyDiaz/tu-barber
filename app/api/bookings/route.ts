@@ -148,11 +148,12 @@ export async function POST(request: NextRequest) {
 
     const tenantSettings = settings
       ? {
-          manychatApiKey: settings.manychatApiKey,
-          manychatFlowBooking: settings.manychatFlowBooking,
-          manychatFlowBarber: settings.manychatFlowBarber,
-          manychatFlowReminder: settings.manychatFlowReminder,
-          manychatFieldMap: settings.manychatFieldMap as Record<string, string> | null,
+          twilioAccountSid: settings.twilioAccountSid,
+          twilioAuthToken: settings.twilioAuthToken,
+          twilioWhatsappFrom: settings.twilioWhatsappFrom,
+          twilioContentSidBooking: settings.twilioContentSidBooking,
+          twilioContentSidBarber: settings.twilioContentSidBarber,
+          twilioContentSidReminder: settings.twilioContentSidReminder,
         }
       : null;
 

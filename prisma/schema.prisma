@@ -16,7 +16,7 @@ model Tenant {
   name         String
   customDomain String?  @unique
   status             String    @default("pending") // pending | active | suspended | rejected
-  plan               String    @default("basic")   // basic | pro
+  plan               String    @default("emprendedor") // emprendedor | negocio | cadena
   subscriptionStatus String    @default("none")    // none | trialing | active | past_due | canceled
   trialEndsAt        DateTime?
   timezone           String    @default("America/Bogota")
@@ -40,13 +40,13 @@ model TenantSettings {
   minAdvanceHours     Int     @default(1)
   maxAdvanceDays      Int     @default(30)
   cancelNoticeHours   Int     @default(2)
-  scheduleJson        Json?
-  manychatApiKey      String?
-  manychatPageId      String?
-  manychatFlowBooking String?
-  manychatFlowBarber  String?
-  manychatFlowReminder String?
-  manychatFieldMap    Json?
+  scheduleJson            Json?
+  twilioAccountSid        String?
+  twilioAuthToken         String?
+  twilioWhatsappFrom      String?
+  twilioContentSidBooking  String?
+  twilioContentSidBarber   String?
+  twilioContentSidReminder String?
 }
 
 model TenantOnboarding {

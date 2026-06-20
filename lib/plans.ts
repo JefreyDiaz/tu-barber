@@ -1,4 +1,7 @@
-export type PlanId = 'basic' | 'pro';
+export type PlanId = 'emprendedor' | 'negocio' | 'cadena';
+
+/** Plan unlocked during 14-day trial (Negocio features, no custom domain). */
+export const TRIAL_PLAN: PlanId = 'negocio';
 
 export type SubscriptionStatus = 'none' | 'trialing' | 'active' | 'past_due' | 'canceled';
 
@@ -15,22 +18,23 @@ export interface PlanDefinition {
   limits: {
     maxBarbers: number;
     customDomain: boolean;
-    ownManyChat: boolean;
+    ownTwilio: boolean;
     fullBranding: boolean;
     seo: boolean;
     galleryPhotos: number;
+    prioritySupport: boolean;
   };
 }
 
 export const PLANS: Record<PlanId, PlanDefinition> = {
-  basic: {
-    id: 'basic',
-    name: 'Básico',
-    tagline: 'Ideal para empezar',
+  emprendedor: {
+    id: 'emprendedor',
+    name: 'Emprendedor',
+    tagline: 'Para el barbero que trabaja solo',
     priceMonthly: 39900,
     priceLabel: '$39.900',
     features: [
-      'Hasta 3 barberos',
+      '1 barbero',
       'Reservas online 24/7',
       'Subdominio tubarber.com',
       'WhatsApp con TuBarber',
@@ -38,42 +42,72 @@ export const PLANS: Record<PlanId, PlanDefinition> = {
       'Panel de administración',
     ],
     limits: {
-      maxBarbers: 3,
+      maxBarbers: 1,
       customDomain: false,
-      ownManyChat: false,
+      ownTwilio: false,
       fullBranding: false,
       seo: false,
       galleryPhotos: 3,
+      prioritySupport: false,
     },
   },
-  pro: {
-    id: 'pro',
-    name: 'Pro',
-    tagline: 'Tu barbería profesional',
+  negocio: {
+    id: 'negocio',
+    name: 'Negocio',
+    tagline: 'Tu barbería con equipo pequeño',
     priceMonthly: 89900,
     priceLabel: '$89.900',
     popular: true,
     features: [
-      'Hasta 10 barberos',
-      'Dominio propio (mibarberia.com)',
-      'ManyChat con tu cuenta',
+      'Hasta 3 barberos',
+      'Subdominio tubarber.com',
+      'Twilio con tu número',
       'Landing personalizada completa',
       'SEO y preview en WhatsApp',
-      'Recordatorios ilimitados',
       'Sin marca TuBarber',
     ],
     limits: {
-      maxBarbers: 10,
-      customDomain: true,
-      ownManyChat: true,
+      maxBarbers: 3,
+      customDomain: false,
+      ownTwilio: true,
       fullBranding: true,
       seo: true,
       galleryPhotos: 12,
+      prioritySupport: false,
+    },
+  },
+  cadena: {
+    id: 'cadena',
+    name: 'Cadena',
+    tagline: 'Para equipos que crecen',
+    priceMonthly: 129900,
+    priceLabel: '$129.900',
+    features: [
+      'Hasta 8 barberos',
+      'Dominio propio (mibarberia.com)',
+      'Twilio con tu número',
+      'Todo lo de Negocio',
+      'Soporte prioritario',
+      'Onboarding asistido',
+    ],
+    limits: {
+      maxBarbers: 8,
+      customDomain: true,
+      ownTwilio: true,
+      fullBranding: true,
+      seo: true,
+      galleryPhotos: 20,
+      prioritySupport: true,
     },
   },
 };
 
-export const PLAN_LIST: PlanDefinition[] = [PLANS.basic, PLANS.pro];
+export const PLAN_LIST: PlanDefinition[] = [PLANS.emprendedor, PLANS.negocio, PLANS.cadena];
+
+const LEGACY_PLAN_MAP: Record<string, PlanId> = {
+  basic: 'emprendedor',
+  pro: 'negocio',
+};
 
 export function formatPrice(cop: number): string {
   return new Intl.NumberFormat('es-CO', {
@@ -84,7 +118,21 @@ export function formatPrice(cop: number): string {
 }
 
 export function isValidPlanId(value: string): value is PlanId {
-  return value === 'basic' || value === 'pro';
+  return value === 'emprendedor' || value === 'negocio' || value === 'cadena';
+}
+
+/** Map legacy DB values (basic/pro) to current plan ids. */
+export function normalizePlanId(value: string): PlanId {
+  if (isValidPlanId(value)) return value;
+  return LEGACY_PLAN_MAP[value] ?? 'emprendedor';
+}
+
+export function getPlanDefinition(planId: string): PlanDefinition {
+  return PLANS[normalizePlanId(planId)];
+}
+
+export function getPlanName(planId: string): string {
+  return getPlanDefinition(planId).name;
 }
 
 export function getEffectivePlan(
@@ -93,9 +141,9 @@ export function getEffectivePlan(
   trialEndsAt: Date | null | undefined
 ): PlanId {
   if (subscriptionStatus === 'trialing' && trialEndsAt && trialEndsAt > new Date()) {
-    return 'pro';
+    return TRIAL_PLAN;
   }
-  return isValidPlanId(plan) ? plan : 'basic';
+  return normalizePlanId(plan);
 }
 
 export function getTrialDaysRemaining(trialEndsAt: Date | null | undefined): number | null {

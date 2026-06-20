@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { PLAN_LIST, TRIAL_DAYS } from '@/lib/plans';
+import { PLAN_LIST, TRIAL_DAYS, TRIAL_PLAN, PLANS } from '@/lib/plans';
 import PlanCard from '@/components/platform/PlanCard';
 
 const FEATURES = [
@@ -23,11 +23,11 @@ const FEATURES = [
 const FAQ = [
   {
     q: '¿Necesito tarjeta para la prueba?',
-    a: `No. Tienes ${TRIAL_DAYS} días gratis con acceso Pro completo después de que aprobemos tu barbería.`,
+    a: `No. Tienes ${TRIAL_DAYS} días gratis con acceso ${PLANS[TRIAL_PLAN].name} después de que aprobemos tu barbería.`,
   },
   {
     q: '¿Puedo cambiar de plan después?',
-    a: 'Sí. Puedes empezar con Básico o Pro y cambiar cuando quieras.',
+    a: 'Sí. Puedes empezar con Emprendedor, Negocio o Cadena y cambiar cuando quieras.',
   },
   {
     q: '¿Cómo me aprueban?',
@@ -48,7 +48,7 @@ export default function PlatformLanding() {
             <Link href="#precios" className="btn-glass hidden rounded-full px-4 py-2 text-xs font-medium sm:inline-block">
               Precios
             </Link>
-            <Link href="/registro?plan=pro" className="btn-accent rounded-full px-4 py-2 text-xs font-semibold">
+            <Link href="/registro?plan=negocio" className="btn-accent rounded-full px-4 py-2 text-xs font-semibold">
               Empezar gratis
             </Link>
           </div>
@@ -73,7 +73,7 @@ export default function PlatformLanding() {
             </p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
               <Link
-                href="/registro?plan=pro"
+                href="/registro?plan=negocio"
                 className="btn-accent rounded-2xl px-6 py-3.5 text-sm font-semibold"
               >
                 Probar {TRIAL_DAYS} días gratis →
@@ -135,10 +135,10 @@ export default function PlatformLanding() {
           <div className="text-center">
             <h2 className="text-xl font-bold">Elige tu plan</h2>
             <p className="mt-2 text-sm text-white/50">
-              {TRIAL_DAYS} días de prueba Pro gratis · sin tarjeta
+              {TRIAL_DAYS} días de prueba {PLANS[TRIAL_PLAN].name} gratis · sin tarjeta
             </p>
           </div>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2">
+          <div className="mt-8 grid gap-4 lg:grid-cols-3">
             {PLAN_LIST.map((plan) => (
               <PlanCard
                 key={plan.id}
@@ -174,7 +174,7 @@ export default function PlatformLanding() {
             <p className="mt-2 text-sm text-white/55">
               Regístrate en 2 minutos. Te activamos en pocas horas.
             </p>
-            <Link href="/registro?plan=pro" className="btn-accent mt-5 inline-block rounded-2xl px-8 py-3.5 text-sm font-semibold">
+            <Link href="/registro?plan=negocio" className="btn-accent mt-5 inline-block rounded-2xl px-8 py-3.5 text-sm font-semibold">
               Crear mi barbería
             </Link>
           </div>

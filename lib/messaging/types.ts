@@ -1,19 +1,20 @@
-export interface ManyChatFieldMap {
-  customerName?: string;
-  barberName?: string;
-  bookingDate?: string;
-  bookingTime?: string;
-  barberPhone?: string;
-  cancelUrl?: string;
-  customerPhone?: string;
+export interface TwilioConfig {
+  accountSid: string;
+  authToken: string;
+  whatsappFrom: string;
+  contentSidBooking?: string;
+  contentSidBarber?: string;
+  contentSidReminder?: string;
+  contentSidWelcome?: string;
 }
 
-export interface ManyChatConfig {
-  apiKey: string;
-  flowBooking?: string;
-  flowBarber?: string;
-  flowReminder?: string;
-  fieldMap: ManyChatFieldMap;
+export interface TenantTwilioSettings {
+  twilioAccountSid?: string | null;
+  twilioAuthToken?: string | null;
+  twilioWhatsappFrom?: string | null;
+  twilioContentSidBooking?: string | null;
+  twilioContentSidBarber?: string | null;
+  twilioContentSidReminder?: string | null;
 }
 
 export interface BookingMessageParams {
@@ -24,6 +25,7 @@ export interface BookingMessageParams {
   dateTime: Date;
   bookingId: string;
   tenantSlug?: string;
+  shopName?: string;
 }
 
 export interface BarberMessageParams {
@@ -32,14 +34,4 @@ export interface BarberMessageParams {
   customerName: string;
   customerPhone: string;
   dateTime: Date;
-}
-
-export interface BookingFieldData {
-  customerName: string;
-  barberName: string;
-  bookingDate: string;
-  bookingTime: string;
-  barberPhone: string;
-  cancelUrl: string;
-  customerPhone?: string;
 }

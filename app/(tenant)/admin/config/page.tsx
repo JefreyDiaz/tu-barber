@@ -6,6 +6,17 @@ import { ui } from '@/lib/admin-ui';
 import { DEFAULT_SCHEDULE } from '@/lib/tenant/defaults';
 import { tenantApiUrl } from '@/lib/tenant/client-api';
 
+const TWILIO_FIELDS = [
+  { key: 'twilioAccountSid', label: 'Account SID' },
+  { key: 'twilioAuthToken', label: 'Auth Token' },
+  { key: 'twilioWhatsappFrom', label: 'WhatsApp From (ej. +14155238886)' },
+  { key: 'twilioContentSidBooking', label: 'Content SID — confirmación cliente' },
+  { key: 'twilioContentSidBarber', label: 'Content SID — aviso barbero' },
+  { key: 'twilioContentSidReminder', label: 'Content SID — recordatorio' },
+] as const;
+
+type TwilioFieldKey = (typeof TWILIO_FIELDS)[number]['key'];
+
 export default function AdminConfigPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -13,13 +24,15 @@ export default function AdminConfigPage() {
   const [tenantId, setTenantId] = useState('');
   const [schedule, setSchedule] = useState<ScheduleConfig>(DEFAULT_SCHEDULE);
   const [form, setForm] = useState({
-    manychatApiKey: '',
-    manychatFlowBooking: '',
-    manychatFlowBarber: '',
-    manychatFlowReminder: '',
+    twilioAccountSid: '',
+    twilioAuthToken: '',
+    twilioWhatsappFrom: '',
+    twilioContentSidBooking: '',
+    twilioContentSidBarber: '',
+    twilioContentSidReminder: '',
     customDomain: '',
-    plan: 'basic',
-    effectivePlan: 'basic',
+    plan: 'emprendedor',
+    effectivePlan: 'emprendedor',
     subscriptionStatus: 'none',
     trialDaysLeft: null as number | null,
     domainVerified: false,
@@ -34,13 +47,15 @@ export default function AdminConfigPage() {
           setTenantId(json.data.tenantId ?? '');
           setForm((f) => ({
             ...f,
-            manychatApiKey: json.data.manychatApiKey ?? '',
-            manychatFlowBooking: json.data.manychatFlowBooking ?? '',
-            manychatFlowBarber: json.data.manychatFlowBarber ?? '',
-            manychatFlowReminder: json.data.manychatFlowReminder ?? '',
+            twilioAccountSid: json.data.twilioAccountSid ?? '',
+            twilioAuthToken: json.data.twilioAuthToken ?? '',
+            twilioWhatsappFrom: json.data.twilioWhatsappFrom ?? '',
+            twilioContentSidBooking: json.data.twilioContentSidBooking ?? '',
+            twilioContentSidBarber: json.data.twilioContentSidBarber ?? '',
+            twilioContentSidReminder: json.data.twilioContentSidReminder ?? '',
             customDomain: json.data.customDomain ?? '',
-            plan: json.data.plan ?? 'basic',
-            effectivePlan: json.data.effectivePlan ?? json.data.plan ?? 'basic',
+            plan: json.data.plan ?? 'emprendedor',
+            effectivePlan: json.data.effectivePlan ?? json.data.plan ?? 'emprendedor',
             subscriptionStatus: json.data.subscriptionStatus ?? 'none',
             trialDaysLeft: json.data.trialDaysLeft ?? null,
             domainVerified: json.data.domainVerified ?? false,
@@ -53,7 +68,7 @@ export default function AdminConfigPage() {
       });
   }, []);
 
-  async function handleSaveManyChat(e: React.FormEvent) {
+  async function handleSaveTwilio(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
     setMessage(null);
@@ -61,15 +76,17 @@ export default function AdminConfigPage() {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        manychatApiKey: form.manychatApiKey || undefined,
-        manychatFlowBooking: form.manychatFlowBooking || undefined,
-        manychatFlowBarber: form.manychatFlowBarber || undefined,
-        manychatFlowReminder: form.manychatFlowReminder || undefined,
+        twilioAccountSid: form.twilioAccountSid || undefined,
+        twilioAuthToken: form.twilioAuthToken || undefined,
+        twilioWhatsappFrom: form.twilioWhatsappFrom || undefined,
+        twilioContentSidBooking: form.twilioContentSidBooking || undefined,
+        twilioContentSidBarber: form.twilioContentSidBarber || undefined,
+        twilioContentSidReminder: form.twilioContentSidReminder || undefined,
       }),
     });
     const json = await res.json();
     setSaving(false);
-    setMessage(json.success ? 'ManyChat guardado' : json.error ?? 'Error al guardar');
+    setMessage(json.success ? 'Twilio guardado' : json.error ?? 'Error al guardar');
   }
 
   async function handleSaveSchedule(e: React.FormEvent) {
@@ -128,11 +145,9 @@ export default function AdminConfigPage() {
     <div className={ui.pageWide}>
       <div>
         <h1 className={ui.title}>Configuración</h1>
-        <p className={ui.subtitle}>Horarios, ManyChat y dominio personalizado</p>
+        <p className={ui.subtitle}>Horarios, WhatsApp (Twilio) y dominio personalizado</p>
       </div>
-      {message && (
-        <div className={ui.alertInfo}>{message}</div>
-      )}
+      {message && <div className={ui.alertInfo}>{message}</div>}
       <section>
         <h2 className={ui.sectionTitle}>Horarios de la barbería</h2>
         <p className={`mb-4 mt-1 ${ui.muted}`}>
@@ -140,36 +155,38 @@ export default function AdminConfigPage() {
         </p>
         <form onSubmit={handleSaveSchedule}>
           <ScheduleEditor value={schedule} onChange={setSchedule} />
-          <button
-            type="submit"
-            disabled={saving}
-            className={`mt-4 ${ui.btnPrimary}`}
-          >
+          <button type="submit" disabled={saving} className={`mt-4 ${ui.btnPrimary}`}>
             {saving ? 'Guardando...' : 'Guardar horarios'}
           </button>
         </form>
       </section>
-      <section>
-        <form onSubmit={handleSaveManyChat} className="max-w-lg space-y-4">
-          <h2 className={ui.sectionTitle}>ManyChat (Pro — opcional)</h2>
-          {(['manychatApiKey', 'manychatFlowBooking', 'manychatFlowBarber', 'manychatFlowReminder'] as const).map(
-            (field) => (
-              <div key={field}>
-                <label className={ui.label}>{field}</label>
+      {(form.effectivePlan === 'negocio' || form.effectivePlan === 'cadena') && (
+        <section>
+          <form onSubmit={handleSaveTwilio} className="max-w-lg space-y-4">
+            <h2 className={ui.sectionTitle}>Twilio WhatsApp (Negocio / Cadena)</h2>
+            <p className={`text-sm ${ui.muted}`}>
+              Deja vacío para usar el WhatsApp de TuBarber. Si configuras Account SID y Auth Token,
+              los mensajes salen de tu cuenta Twilio.
+            </p>
+            {TWILIO_FIELDS.map(({ key, label }) => (
+              <div key={key}>
+                <label className={ui.label}>{label}</label>
                 <input
-                  value={form[field]}
-                  onChange={(e) => setForm({ ...form, [field]: e.target.value })}
+                  type={key === 'twilioAuthToken' ? 'password' : 'text'}
+                  value={form[key as TwilioFieldKey]}
+                  onChange={(e) => setForm({ ...form, [key]: e.target.value })}
                   className={ui.input}
+                  autoComplete="off"
                 />
               </div>
-            )
-          )}
-          <button type="submit" disabled={saving} className={ui.btnPrimary}>
-            Guardar ManyChat
-          </button>
-        </form>
-      </section>
-      {form.effectivePlan === 'pro' && (
+            ))}
+            <button type="submit" disabled={saving} className={ui.btnPrimary}>
+              Guardar Twilio
+            </button>
+          </form>
+        </section>
+      )}
+      {form.effectivePlan === 'cadena' && (
         <section className="max-w-lg">
           <h2 className={ui.sectionTitle}>Dominio personalizado</h2>
           <input
@@ -186,7 +203,9 @@ export default function AdminConfigPage() {
               Verificar DNS
             </button>
           </div>
-          {form.domainVerified && <p className="mt-2 text-sm text-emerald-300">Dominio verificado</p>}
+          {form.domainVerified && (
+            <p className="mt-2 text-sm text-emerald-300">Dominio verificado</p>
+          )}
         </section>
       )}
     </div>

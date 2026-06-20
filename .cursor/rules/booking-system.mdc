@@ -22,8 +22,8 @@ Every tenant-scoped record includes `tenantId`. Key models: `Tenant`, `TenantSet
 
 ### Notifications
 
-- Channel: **ManyChat WhatsApp** (not Twilio)
-- Confirmations and reminders via ManyChat flows
+- Channel: **Twilio WhatsApp** (Content API utility templates)
+- Confirmations and reminders via approved Twilio templates
 - Cron: `/api/cron/reminders` processes all active tenants
 
 ## Validation Rules

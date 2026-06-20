@@ -27,15 +27,17 @@
 
 Ver [`.env.example`](.env.example).
 
-### ManyChat (WhatsApp)
+### Twilio WhatsApp
 
-- `MANYCHAT_API_KEY` — API Key de ManyChat (Settings → API)
-- `MANYCHAT_FLOW_BOOKING` — flow_ns confirmación cliente
-- `MANYCHAT_FLOW_BARBER` — flow_ns aviso barbero
-- `MANYCHAT_FLOW_REMINDER` — flow_ns recordatorio
-- `MANYCHAT_FIELD_MAP` — JSON con IDs de custom fields
+- `TWILIO_ACCOUNT_SID` — Account SID (Twilio Console)
+- `TWILIO_AUTH_TOKEN` — Auth Token
+- `TWILIO_WHATSAPP_FROM` — Número emisor (ej. `+14155238886`)
+- `TWILIO_CONTENT_SID_BOOKING` — Content Template SID confirmación cliente
+- `TWILIO_CONTENT_SID_BARBER` — Content Template SID aviso barbero
+- `TWILIO_CONTENT_SID_REMINDER` — Content Template SID recordatorio
+- `TWILIO_CONTENT_SID_WELCOME` — Content Template SID bienvenida dueño (opcional)
 
-Patrón: find/create subscriber → setCustomFields → sendFlow
+Templates usan variables `{{1}}`, `{{2}}`, … Ver `.cursor/rules/twilio-messaging.mdc`.
 
 ### Cron recordatorios
 
@@ -57,7 +59,7 @@ npm run dev
 
 1. Agregar dominio raíz: `tubarber.com`
 2. Agregar wildcard: `*.tubarber.com`
-3. Variables de entorno en Vercel (DATABASE_URL, DIRECT_URL, MANYCHAT_*, CRON_SECRET, NEXT_PUBLIC_ROOT_DOMAIN=tubarber.com)
+3. Variables de entorno en Vercel (DATABASE_URL, DIRECT_URL, TWILIO_*, CRON_SECRET, NEXT_PUBLIC_ROOT_DOMAIN=tubarber.com)
 4. Cron externo (cron-job.org) → `/api/cron/reminders`
 
 ## Arquitectura
@@ -65,4 +67,4 @@ npm run dev
 - Multitenant: shared DB + `tenantId`
 - Subdominios: `{slug}.tubarber.com`
 - Plan Pro: dominio personalizado via `PATCH /api/platform/tenants/[id]` PUT
-- Mensajería: ManyChat (no Twilio)
+- Mensajería: Twilio WhatsApp (Content API)

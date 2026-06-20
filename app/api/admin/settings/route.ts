@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
         subscriptionStatus: tenantData.subscriptionStatus,
         trialEndsAt: tenantData.trialEndsAt,
       })
-    : 'basic';
+    : 'emprendedor';
 
   return NextResponse.json({
     success: true,

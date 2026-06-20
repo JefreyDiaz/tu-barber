@@ -1,0 +1,38 @@
+---
+description: Twilio WhatsApp messaging integration rules
+globs: "**/lib/messaging/**/*.{ts,js},**/app/api/bookings/**/*.{ts,js},**/lib/reminders.ts"
+alwaysApply: false
+---
+
+# Twilio WhatsApp Messaging
+
+## Provider
+
+All WhatsApp messaging goes through **Twilio Content API** (approved utility templates).
+
+## Required env (platform / Basic plan)
+
+- `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_WHATSAPP_FROM`
+- `TWILIO_CONTENT_SID_BOOKING`, `TWILIO_CONTENT_SID_BARBER`, `TWILIO_CONTENT_SID_REMINDER`
+- `TWILIO_CONTENT_SID_WELCOME` (optional, on tenant approval)
+
+## Config resolution
+
+- Tenant Pro with `twilioAccountSid` + `twilioAuthToken` in `TenantSettings` → tenant override
+- Otherwise → platform env vars
+
+## Template variable order ({{1}}, {{2}}, … in Twilio Console)
+
+**Booking / Reminder:** 1=customerName, 2=barberName, 3=bookingDate, 4=bookingTime, 5=barberPhone, 6=cancelUrl
+
+**Barber:** 1=barberName, 2=customerName, 3=customerPhone, 4=bookingDate, 5=bookingTime
+
+**Welcome:** 1=ownerName, 2=shopName, 3=tenantUrl
+
+## Fail-safe
+
+If Twilio fails, the booking must still be saved. Log with `[Twilio]` prefix.
+
+## Phone format
+
+Colombia: 10 digits in forms → normalized to `+57XXXXXXXXXX` via `lib/messaging/phone.ts`.

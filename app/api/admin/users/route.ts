@@ -5,6 +5,8 @@ import { auth } from '@/lib/auth';
 import { requireApiTenant, tenantApiErrorResponse } from '@/lib/tenant/api-helper';
 import { assertSameTenant } from '@/lib/tenant/permissions';
 import { scopedPrisma } from '@/lib/tenant/prisma-scoped';
+import { prisma } from '@/lib/prisma';
+import { maxBarbersForPlan } from '@/lib/tenant/subscription';
 
 export const dynamic = 'force-dynamic';
 
@@ -87,6 +89,28 @@ export async function POST(request: NextRequest) {
     const existing = await db.user.findFirst({ where: { username } });
     if (existing) {
       return NextResponse.json({ success: false, error: 'Ese nombre de usuario ya está en uso' }, { status: 409 });
+    }
+
+    if (role === 'barbero' || role === 'dueno') {
+      const tenantData = await prisma.tenant.findUnique({
+        where: { id: tenant.id },
+        select: { plan: true, subscriptionStatus: true, trialEndsAt: true },
+      });
+      if (tenantData) {
+        const maxBarbers = maxBarbersForPlan(tenantData);
+        const barberCount = await db.user.count({
+          where: { role: { in: ['barbero', 'dueno'] } },
+        });
+        if (barberCount >= maxBarbers) {
+          return NextResponse.json(
+            {
+              success: false,
+              error: `Tu plan permite máximo ${maxBarbers} barbero(s). Actualiza tu plan para agregar más.`,
+            },
+            { status: 403 }
+          );
+        }
+      }
     }
 
     const created = await db.user.create({

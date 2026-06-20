@@ -30,9 +30,10 @@ alwaysApply: true
 
 ## Planes y suscripción
 
-- Planes: `basic` ($39.900), `pro` ($89.900) — ver `lib/plans.ts`
-- Trial Pro 14 días al aprobar tenant (`subscriptionStatus: trialing`)
-- ManyChat: config en `TenantSettings`; plan Basic usa fallback plataforma
+- Planes: `emprendedor` ($39.900), `negocio` ($89.900), `cadena` ($129.900) — ver `lib/plans.ts`
+- Trial Negocio 14 días al aprobar tenant (`subscriptionStatus: trialing`)
+- Dominio propio solo plan Cadena; subdominio en Emprendedor y Negocio
+- Twilio WhatsApp: config en `TenantSettings`; plan Basic usa credenciales plataforma (`TWILIO_*`)
 
 ## Onboarding
 
@@ -42,7 +43,7 @@ alwaysApply: true
 
 ## Config por tenant (no hardcodear global)
 
-- Branding, horarios, mensajes ManyChat, logo, timezone
+- Branding, horarios, WhatsApp Twilio, logo, timezone
 - Cancel URLs: `https://{slug}.tubarber.com/cancelar/{id}`
 
 ## 404 y errores

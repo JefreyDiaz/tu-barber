@@ -1,53 +1,47 @@
-import type { ManyChatConfig, ManyChatFieldMap } from './types';
+import type { TenantTwilioSettings, TwilioConfig } from './types';
+import { normalizeWhatsappFrom } from './phone';
 
-const MANYCHAT_BASE = 'https://api.manychat.com';
+/** Platform-level Twilio config from env vars */
+export function getPlatformTwilioConfig(): TwilioConfig | null {
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
+  const whatsappFrom = process.env.TWILIO_WHATSAPP_FROM;
 
-function parseFieldMap(raw: string | undefined): ManyChatFieldMap {
-  if (!raw) return {};
-  try {
-    return JSON.parse(raw) as ManyChatFieldMap;
-  } catch {
-    console.warn('[ManyChat] Invalid MANYCHAT_FIELD_MAP JSON');
-    return {};
-  }
-}
-
-/** Platform-level ManyChat config from env vars */
-export function getPlatformManyChatConfig(): ManyChatConfig | null {
-  const apiKey = process.env.MANYCHAT_API_KEY;
-  if (!apiKey) return null;
+  if (!accountSid || !authToken || !whatsappFrom) return null;
 
   return {
-    apiKey,
-    flowBooking: process.env.MANYCHAT_FLOW_BOOKING,
-    flowBarber: process.env.MANYCHAT_FLOW_BARBER,
-    flowReminder: process.env.MANYCHAT_FLOW_REMINDER,
-    fieldMap: parseFieldMap(process.env.MANYCHAT_FIELD_MAP),
+    accountSid,
+    authToken,
+    whatsappFrom: normalizeWhatsappFrom(whatsappFrom),
+    contentSidBooking: process.env.TWILIO_CONTENT_SID_BOOKING,
+    contentSidBarber: process.env.TWILIO_CONTENT_SID_BARBER,
+    contentSidReminder: process.env.TWILIO_CONTENT_SID_REMINDER,
+    contentSidWelcome: process.env.TWILIO_CONTENT_SID_WELCOME,
   };
 }
 
-export interface TenantManyChatSettings {
-  manychatApiKey?: string | null;
-  manychatFlowBooking?: string | null;
-  manychatFlowBarber?: string | null;
-  manychatFlowReminder?: string | null;
-  manychatFieldMap?: ManyChatFieldMap | null;
-}
+/** Resolve Twilio config: tenant override (Pro) or platform fallback */
+export function resolveTwilioConfig(
+  tenantSettings?: TenantTwilioSettings | null
+): TwilioConfig | null {
+  if (tenantSettings?.twilioAccountSid && tenantSettings?.twilioAuthToken) {
+    const from = tenantSettings.twilioWhatsappFrom ?? process.env.TWILIO_WHATSAPP_FROM;
+    if (!from) return null;
 
-/** Resolve ManyChat config: tenant override or platform fallback */
-export function resolveManyChatConfig(
-  tenantSettings?: TenantManyChatSettings | null
-): ManyChatConfig | null {
-  if (tenantSettings?.manychatApiKey) {
     return {
-      apiKey: tenantSettings.manychatApiKey,
-      flowBooking: tenantSettings.manychatFlowBooking ?? undefined,
-      flowBarber: tenantSettings.manychatFlowBarber ?? undefined,
-      flowReminder: tenantSettings.manychatFlowReminder ?? undefined,
-      fieldMap: (tenantSettings.manychatFieldMap as ManyChatFieldMap) ?? {},
+      accountSid: tenantSettings.twilioAccountSid,
+      authToken: tenantSettings.twilioAuthToken,
+      whatsappFrom: normalizeWhatsappFrom(from),
+      contentSidBooking:
+        tenantSettings.twilioContentSidBooking ?? process.env.TWILIO_CONTENT_SID_BOOKING,
+      contentSidBarber:
+        tenantSettings.twilioContentSidBarber ?? process.env.TWILIO_CONTENT_SID_BARBER,
+      contentSidReminder:
+        tenantSettings.twilioContentSidReminder ?? process.env.TWILIO_CONTENT_SID_REMINDER,
+      contentSidWelcome: process.env.TWILIO_CONTENT_SID_WELCOME,
     };
   }
-  return getPlatformManyChatConfig();
+  return getPlatformTwilioConfig();
 }
 
 /** Build tenant-aware app URL for cancel links */

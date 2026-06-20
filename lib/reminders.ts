@@ -33,11 +33,12 @@ export async function processBookingReminders(now: Date = new Date()): Promise<{
           slug: true,
           settings: {
             select: {
-              manychatApiKey: true,
-              manychatFlowBooking: true,
-              manychatFlowBarber: true,
-              manychatFlowReminder: true,
-              manychatFieldMap: true,
+              twilioAccountSid: true,
+              twilioAuthToken: true,
+              twilioWhatsappFrom: true,
+              twilioContentSidBooking: true,
+              twilioContentSidBarber: true,
+              twilioContentSidReminder: true,
             },
           },
         },
@@ -52,11 +53,12 @@ export async function processBookingReminders(now: Date = new Date()): Promise<{
     const settings = booking.tenant.settings;
     const tenantSettings = settings
       ? {
-          manychatApiKey: settings.manychatApiKey,
-          manychatFlowBooking: settings.manychatFlowBooking,
-          manychatFlowBarber: settings.manychatFlowBarber,
-          manychatFlowReminder: settings.manychatFlowReminder,
-          manychatFieldMap: settings.manychatFieldMap as Record<string, string> | null,
+          twilioAccountSid: settings.twilioAccountSid,
+          twilioAuthToken: settings.twilioAuthToken,
+          twilioWhatsappFrom: settings.twilioWhatsappFrom,
+          twilioContentSidBooking: settings.twilioContentSidBooking,
+          twilioContentSidBarber: settings.twilioContentSidBarber,
+          twilioContentSidReminder: settings.twilioContentSidReminder,
         }
       : null;
 

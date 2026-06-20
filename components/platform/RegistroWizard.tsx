@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import PlanCard from '@/components/platform/PlanCard';
-import { PLAN_LIST, TRIAL_DAYS, type PlanId, isValidPlanId } from '@/lib/plans';
+import { PLAN_LIST, TRIAL_DAYS, TRIAL_PLAN, PLANS, type PlanId, isValidPlanId } from '@/lib/plans';
 
 const STEPS = ['Plan', 'Barbería', 'Cuenta'] as const;
 
@@ -17,7 +17,7 @@ function RegistroWizardInner() {
   const [error, setError] = useState<string | null>(null);
 
   const [plan, setPlan] = useState<PlanId>(
-    initialPlan && isValidPlanId(initialPlan) ? initialPlan : 'pro'
+    initialPlan && isValidPlanId(initialPlan) ? initialPlan : 'negocio'
   );
   const [form, setForm] = useState({
     shopName: '',
@@ -77,7 +77,7 @@ function RegistroWizardInner() {
           <h1 className="mt-4 text-2xl font-bold">¡Solicitud enviada!</h1>
           <p className="mt-3 text-sm leading-relaxed text-white/60">
             Revisaremos tu barbería y te activaremos con{' '}
-            <strong className="text-amber-400">{TRIAL_DAYS} días de prueba Pro</strong>.
+            <strong className="text-amber-400">{TRIAL_DAYS} días de prueba {PLANS[TRIAL_PLAN].name}</strong>.
             Te avisaremos por WhatsApp.
           </p>
           <Link href="/" className="btn-glass mt-6 inline-block rounded-2xl px-6 py-3 text-sm font-medium">
@@ -132,7 +132,7 @@ function RegistroWizardInner() {
             <div className="text-center">
               <h1 className="text-2xl font-bold">Elige tu plan</h1>
               <p className="mt-2 text-sm text-white/50">
-                {TRIAL_DAYS} días gratis con acceso Pro al activarte
+                {TRIAL_DAYS} días gratis con acceso {PLANS[TRIAL_PLAN].name} al activarte
               </p>
             </div>
             <div className="space-y-3">
@@ -247,7 +247,7 @@ function RegistroWizardInner() {
                 <strong className="text-white">{selectedPlanDef.name}</strong> ({selectedPlanDef.priceLabel}/mes)
               </p>
               <p className="mt-1 text-amber-400/90">
-                + {TRIAL_DAYS} días de prueba Pro gratis al activarte
+                + {TRIAL_DAYS} días de prueba {PLANS[TRIAL_PLAN].name} gratis al activarte
               </p>
             </div>
           </div>
