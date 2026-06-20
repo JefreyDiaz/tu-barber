@@ -26,9 +26,9 @@ export default async function BookingPage({ params }: BookingPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+    <div className="platform-bg min-h-screen min-h-[100dvh]">
       <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-6 md:py-8">
-        <div className="max-w-4xl mx-auto w-full min-w-0">
+        <div className="mx-auto w-full min-w-0 max-w-4xl">
           <BookingPageContent barberId={barberId} barberName={barber.name} />
         </div>
       </div>

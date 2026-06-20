@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import BookingForm from '@/components/BookingFormNew';
 
 interface BookingPageContentProps {
@@ -14,9 +15,14 @@ export default function BookingPageContent({ barberId, barberName }: BookingPage
   return (
     <>
       {showTitle && (
-        <h1 className="text-xl font-bold text-white mb-4 sm:text-2xl sm:mb-6 md:text-3xl md:mb-8">
-          Seleccione una fecha y hora
-        </h1>
+        <div className="mb-5 text-center sm:mb-8">
+          <p className="text-xs font-medium uppercase tracking-widest text-amber-400/80">
+            Reservar con {barberName}
+          </p>
+          <h1 className="mt-2 text-2xl font-bold text-white sm:text-3xl">
+            Elige fecha y hora
+          </h1>
+        </div>
       )}
       <BookingForm
         barberId={barberId}
