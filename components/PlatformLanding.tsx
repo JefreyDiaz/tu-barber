@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { PLAN_LIST, TRIAL_DAYS, TRIAL_PLAN, PLANS } from '@/lib/plans';
+import { PLAN_LIST, TRIAL_DAYS } from '@/lib/plans';
 import PlanCard from '@/components/platform/PlanCard';
 
 const FEATURES = [
@@ -23,7 +23,7 @@ const FEATURES = [
 const FAQ = [
   {
     q: '¿Necesito tarjeta para la prueba?',
-    a: `No. Tienes ${TRIAL_DAYS} días gratis con acceso ${PLANS[TRIAL_PLAN].name} después de que aprobemos tu barbería.`,
+    a: `No. Todos los planes incluyen ${TRIAL_DAYS} días gratis después de que aprobemos tu barbería.`,
   },
   {
     q: '¿Puedo cambiar de plan después?',
@@ -135,7 +135,7 @@ export default function PlatformLanding() {
           <div className="text-center">
             <h2 className="text-xl font-bold">Elige tu plan</h2>
             <p className="mt-2 text-sm text-white/50">
-              {TRIAL_DAYS} días de prueba {PLANS[TRIAL_PLAN].name} gratis · sin tarjeta
+              Todos los planes incluyen {TRIAL_DAYS} días gratis · sin tarjeta
             </p>
           </div>
           <div className="mt-8 grid gap-4 lg:grid-cols-3">

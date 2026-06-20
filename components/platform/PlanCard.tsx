@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import type { PlanDefinition, PlanId } from '@/lib/plans';
-import { TRIAL_DAYS, PLANS, TRIAL_PLAN } from '@/lib/plans';
+import { TRIAL_DAYS } from '@/lib/plans';
 
 interface PlanCardProps {
   plan: PlanDefinition;
@@ -46,11 +46,9 @@ export default function PlanCard({ plan, selected, onSelect, href, compact }: Pl
         <span className="text-sm text-white/40">/mes</span>
       </div>
 
-      {plan.popular && (
-        <p className="mt-2 text-xs font-medium text-amber-400/90">
-          {TRIAL_DAYS} días gratis · acceso {PLANS[TRIAL_PLAN].name}
-        </p>
-      )}
+      <p className="mt-2 text-xs font-medium text-amber-400/90">
+        {TRIAL_DAYS} días gratis al activarte
+      </p>
 
       {!compact && (
         <ul className="mt-5 space-y-2.5">
@@ -67,7 +65,7 @@ export default function PlanCard({ plan, selected, onSelect, href, compact }: Pl
 
       {href && (
         <span className={`mt-6 block w-full rounded-2xl py-3 text-center text-sm font-semibold ${plan.popular ? 'btn-accent' : 'btn-glass'}`}>
-          {plan.popular ? `Probar ${TRIAL_DAYS} días gratis` : 'Elegir plan'}
+          Probar {TRIAL_DAYS} días gratis
         </span>
       )}
     </>

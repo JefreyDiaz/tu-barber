@@ -1,8 +1,5 @@
 export type PlanId = 'emprendedor' | 'negocio' | 'cadena';
 
-/** Plan unlocked during 14-day trial (Negocio features, no custom domain). */
-export const TRIAL_PLAN: PlanId = 'negocio';
-
 export type SubscriptionStatus = 'none' | 'trialing' | 'active' | 'past_due' | 'canceled';
 
 export const TRIAL_DAYS = 14;
@@ -140,12 +137,9 @@ export function getPlanName(planId: string): string {
 
 export function getEffectivePlan(
   plan: string,
-  subscriptionStatus: string,
-  trialEndsAt: Date | null | undefined
+  _subscriptionStatus?: string,
+  _trialEndsAt?: Date | null | undefined
 ): PlanId {
-  if (subscriptionStatus === 'trialing' && trialEndsAt && trialEndsAt > new Date()) {
-    return TRIAL_PLAN;
-  }
   return normalizePlanId(plan);
 }
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { TRIAL_DAYS, TRIAL_PLAN, PLANS, getPlanName, normalizePlanId } from '@/lib/plans';
+import { getPlanDefinition, getPlanName, normalizePlanId } from '@/lib/plans';
 
 interface TrialBannerProps {
   daysLeft: number;
@@ -9,7 +9,9 @@ interface TrialBannerProps {
 
 export default function TrialBanner({ daysLeft, selectedPlan }: TrialBannerProps) {
   const urgent = daysLeft <= 3;
-  const afterTrial = getPlanName(normalizePlanId(selectedPlan));
+  const planId = normalizePlanId(selectedPlan);
+  const planName = getPlanName(planId);
+  const planDef = getPlanDefinition(planId);
 
   return (
     <div
@@ -20,11 +22,11 @@ export default function TrialBanner({ daysLeft, selectedPlan }: TrialBannerProps
       }`}
     >
       <span className="font-medium">
-        Prueba {PLANS[TRIAL_PLAN].name} gratis — {daysLeft} {daysLeft === 1 ? 'día' : 'días'} restantes
+        Plan {planName} en prueba — {daysLeft} {daysLeft === 1 ? 'día' : 'días'} restantes
       </span>
       <span className="mx-2 opacity-60">·</span>
       <span className="opacity-90">
-        Después continúas con plan {afterTrial} ({TRIAL_DAYS} días de prueba)
+        Después continúa a {planDef.priceLabel}/mes
       </span>
     </div>
   );
