@@ -16,7 +16,6 @@ export function LoginForm({ tenantId, tenantSlug, tenantName, platformLogin = fa
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -49,6 +48,80 @@ export function LoginForm({ tenantId, tenantSlug, tenantName, platformLogin = fa
     }
   };
 
+  if (platformLogin) {
+    return (
+      <div className="platform-bg flex min-h-screen min-h-[100dvh] flex-col items-center justify-center px-4 py-8">
+        <div className="mb-8 text-center">
+          <Link href="/" className="inline-block">
+            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              Tu<span className="text-gradient-gold">Barber</span>
+            </h1>
+          </Link>
+          <p className="mt-2 text-sm text-white/45">Panel de administración de plataforma</p>
+        </div>
+
+        <div className="glass-card-strong w-full max-w-md p-8 animate-scale-in">
+          <h2 className="mb-1 text-center text-xl font-bold text-white">Iniciar sesión</h2>
+          <p className="mb-6 text-center text-sm text-white/45">Acceso super-admin</p>
+
+          {error && (
+            <div className="mb-4 rounded-xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label htmlFor="username" className="mb-2 block text-sm font-medium text-white/75">
+                Usuario
+              </label>
+              <input
+                id="username"
+                type="text"
+                required
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="glass-input w-full px-4 py-3 text-sm"
+                placeholder="superadmin"
+                autoComplete="username"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="password" className="mb-2 block text-sm font-medium text-white/75">
+                Contraseña
+              </label>
+              <input
+                id="password"
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="glass-input w-full px-4 py-3 text-sm"
+                placeholder="••••••••"
+                autoComplete="current-password"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-accent w-full rounded-2xl py-3.5 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {loading ? 'Entrando...' : 'Entrar'}
+            </button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <Link href="/" className="text-sm text-white/45 hover:text-amber-400/90">
+              ← Volver al inicio
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative min-h-screen min-h-[100dvh] w-full overflow-hidden">
       <video autoPlay loop muted playsInline className="absolute inset-0 h-full w-full object-cover">
@@ -57,9 +130,9 @@ export function LoginForm({ tenantId, tenantSlug, tenantName, platformLogin = fa
       <div className="absolute inset-0 bg-black/60" />
 
       <div className="relative z-10 flex min-h-screen min-h-[100dvh] flex-col items-center justify-center px-4">
-        <Link href={platformLogin ? '/' : '/'} className="mb-8">
+        <Link href="/" className="mb-8">
           <h1 className="text-3xl font-extrabold tracking-[0.12em] text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)] sm:text-4xl">
-            {platformLogin ? 'TuBarber Admin' : tenantName ?? 'BarBot'}
+            {tenantName ?? 'BarBot'}
           </h1>
         </Link>
 
@@ -95,7 +168,7 @@ export function LoginForm({ tenantId, tenantSlug, tenantName, platformLogin = fa
               </label>
               <input
                 id="password"
-                type={showPassword ? 'text' : 'password'}
+                type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
