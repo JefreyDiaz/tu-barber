@@ -186,6 +186,17 @@ export default function PlatformLanding() {
         <Link href="/platform/login" className="mt-2 inline-block hover:text-white/60">
           Admin plataforma
         </Link>
+        <p className="mt-3">
+          Created by{' '}
+          <a
+            href="https://prakto.co"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white/50 underline decoration-white/20 underline-offset-2 hover:text-amber-400/90"
+          >
+            prakto.co
+          </a>
+        </p>
       </footer>
     </div>
   );
