@@ -63,9 +63,6 @@ export const PLANS: Record<PlanId, PlanDefinition> = {
       'Confirmaciones por WhatsApp (número de TuBarber)',
       'Logo y color de marca',
       'Panel de administración',
-      'Landing personalizada completa',
-      'SEO y preview en WhatsApp',
-      'Sin marca TuBarber',
     ],
     limits: {
       maxBarbers: 3,
@@ -89,8 +86,6 @@ export const PLANS: Record<PlanId, PlanDefinition> = {
       'Confirmaciones por WhatsApp (tu propio número)',
       'Logo y color de marca',
       'Panel de administración',
-      'Todo lo de Negocio',
-      'Onboarding asistido',
     ],
     limits: {
       maxBarbers: 12,
