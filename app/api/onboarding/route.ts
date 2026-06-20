@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { hashPassword } from '@/lib/password';
-import { onboardingSchema } from '@/lib/validations/tenant';
+import { onboardingSchema, formatOnboardingValidationError } from '@/lib/validations/tenant';
 import { DEFAULT_SCHEDULE, DEFAULT_SERVICES } from '@/lib/tenant/defaults';
 
 export const dynamic = 'force-dynamic';
@@ -12,8 +12,9 @@ export async function POST(request: NextRequest) {
     const parsed = onboardingSchema.safeParse(body);
 
     if (!parsed.success) {
+      const error = formatOnboardingValidationError(parsed.error.issues);
       return NextResponse.json(
-        { success: false, errors: parsed.error.issues },
+        { success: false, error, errors: parsed.error.issues },
         { status: 400 }
       );
     }

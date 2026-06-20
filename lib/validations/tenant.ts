@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { PLAN_IDS } from '@/lib/plans';
 
 const slugSchema = z
   .string()
@@ -11,18 +12,40 @@ const slugSchema = z
   );
 
 export const onboardingSchema = z.object({
-  shopName: z.string().min(2).max(80).trim(),
+  shopName: z.string().trim().min(2, 'Mínimo 2 caracteres').max(80, 'Máximo 80 caracteres'),
   slug: slugSchema,
-  ownerName: z.string().min(2).max(50).trim(),
-  ownerEmail: z.string().email(),
+  ownerName: z.string().trim().min(2, 'Mínimo 2 caracteres').max(50, 'Máximo 50 caracteres'),
+  ownerEmail: z.string().trim().email('Email inválido'),
   ownerPhone: z
     .string()
-    .regex(/^\d{10}$/, 'Teléfono debe ser 10 dígitos')
+    .regex(/^\d{10}$/, 'Debe tener exactamente 10 dígitos')
     .transform((s) => '+57' + s),
-  username: z.string().min(3).max(30).trim(),
+  username: z.string().trim().min(3, 'Mínimo 3 caracteres').max(30, 'Máximo 30 caracteres'),
   password: z.string().min(8, 'Mínimo 8 caracteres'),
-  plan: z.enum(['emprendedor', 'negocio', 'cadena']).default('negocio'),
+  plan: z.enum(PLAN_IDS, { error: 'Plan inválido' }).default('negocio'),
 });
+
+export function formatOnboardingValidationError(
+  issues: z.core.$ZodIssue[]
+): string {
+  return issues
+    .map((issue) => {
+      const field = issue.path[0];
+      const labels: Record<string, string> = {
+        shopName: 'Nombre de la barbería',
+        slug: 'Subdominio',
+        ownerName: 'Nombre',
+        ownerEmail: 'Email',
+        ownerPhone: 'Teléfono WhatsApp',
+        username: 'Usuario',
+        password: 'Contraseña',
+        plan: 'Plan',
+      };
+      const label = field ? labels[String(field)] ?? String(field) : 'Formulario';
+      return `${label}: ${issue.message}`;
+    })
+    .join(' · ');
+}
 
 export type OnboardingData = z.infer<typeof onboardingSchema>;
 

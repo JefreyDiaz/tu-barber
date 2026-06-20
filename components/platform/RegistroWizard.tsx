@@ -8,6 +8,26 @@ import { PLAN_LIST, TRIAL_DAYS, type PlanId, isValidPlanId } from '@/lib/plans';
 
 const STEPS = ['Plan', 'Barbería', 'Cuenta'] as const;
 
+function isSlugValid(slug: string): boolean {
+  return slug.length >= 3 && /^[a-z0-9-]+$/.test(slug);
+}
+
+function isAccountStepValid(form: {
+  ownerName: string;
+  ownerEmail: string;
+  ownerPhone: string;
+  username: string;
+  password: string;
+}): boolean {
+  return (
+    form.ownerName.trim().length >= 2 &&
+    form.ownerEmail.includes('@') &&
+    /^\d{10}$/.test(form.ownerPhone) &&
+    form.username.trim().length >= 3 &&
+    form.password.length >= 8
+  );
+}
+
 function RegistroWizardInner() {
   const searchParams = useSearchParams();
   const initialPlan = searchParams.get('plan');
@@ -185,7 +205,9 @@ function RegistroWizardInner() {
               placeholder="luxe-cuts"
               hint={
                 form.slug
-                  ? `${form.slug}.tubarber.com`
+                  ? form.slug.length < 3
+                    ? 'Mínimo 3 caracteres'
+                    : `${form.slug}.tubarber.com`
                   : 'Solo minúsculas, números y guiones'
               }
             />
@@ -271,7 +293,7 @@ function RegistroWizardInner() {
             <button
               type="button"
               onClick={() => setStep((s) => s + 1)}
-              disabled={step === 1 && (!form.shopName || !form.slug)}
+              disabled={step === 1 && (!form.shopName.trim() || !isSlugValid(form.slug))}
               className="btn-accent flex-[2] rounded-2xl py-3.5 text-sm font-semibold disabled:opacity-40"
             >
               Continuar
@@ -280,7 +302,7 @@ function RegistroWizardInner() {
             <button
               type="button"
               onClick={handleSubmit}
-              disabled={loading || !form.ownerName || !form.ownerEmail || !form.ownerPhone || !form.username || form.password.length < 8}
+              disabled={loading || !isAccountStepValid(form)}
               className="btn-accent flex-[2] rounded-2xl py-3.5 text-sm font-semibold disabled:opacity-40"
             >
               {loading ? 'Enviando...' : 'Enviar solicitud'}

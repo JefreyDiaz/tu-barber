@@ -1,5 +1,7 @@
 export type PlanId = 'emprendedor' | 'negocio' | 'cadena';
 
+export const PLAN_IDS = ['emprendedor', 'negocio', 'cadena'] as const satisfies readonly PlanId[];
+
 export type SubscriptionStatus = 'none' | 'trialing' | 'active' | 'past_due' | 'canceled';
 
 export const TRIAL_DAYS = 14;
@@ -68,7 +70,7 @@ export const PLANS: Record<PlanId, PlanDefinition> = {
     limits: {
       maxBarbers: 3,
       customDomain: false,
-      ownTwilio: true,
+      ownTwilio: false,
       fullBranding: true,
       seo: true,
       galleryPhotos: 12,
