@@ -59,6 +59,7 @@ export const PLANS: Record<PlanId, PlanDefinition> = {
     popular: true,
     features: [
       'Hasta 3 barberos',
+      'Reservas online 24/7',
       'Subdominio tubarber.com',
       'Confirmaciones por WhatsApp (número de TuBarber)',
       'Logo y color de marca',
@@ -82,6 +83,7 @@ export const PLANS: Record<PlanId, PlanDefinition> = {
     priceLabel: '$149.900',
     features: [
       'Hasta 12 barberos',
+      'Reservas online 24/7',
       'Dominio propio (mibarberia.com)',
       'Confirmaciones por WhatsApp (tu propio número)',
       'Logo y color de marca',

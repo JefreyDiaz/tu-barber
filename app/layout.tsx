@@ -22,9 +22,9 @@ export const metadata: Metadata = {
   description: "Plataforma de reservas para barberías",
   manifest: "/manifest.webmanifest",
   icons: {
-    icon: PLATFORM_LOGO.icon,
-    shortcut: PLATFORM_LOGO.icon,
-    apple: PLATFORM_LOGO.icon,
+    icon: [{ url: PLATFORM_LOGO.icon, type: "image/png" }],
+    shortcut: [{ url: PLATFORM_LOGO.icon, type: "image/png" }],
+    apple: [{ url: PLATFORM_LOGO.icon, type: "image/png" }],
   },
 };
 

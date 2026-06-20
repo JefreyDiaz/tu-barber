@@ -1,26 +1,26 @@
 {
   "id": "/admin",
-  "name": "The Barber House Admin",
-  "short_name": "Barber Admin",
+  "name": "TuBarber Admin",
+  "short_name": "TuBarber",
   "description": "Acceso administrativo para barberos",
   "start_url": "/login",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#111111",
+  "background_color": "#0c0c0c",
+  "theme_color": "#0c0c0c",
   "icons": [
     {
-      "src": "/icons/icon-192x192.png",
+      "src": "/brand/tubarber-icon.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/icons/icon-512x512.png",
+      "src": "/brand/tubarber-icon.png",
       "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "/icons/icon-512x512-maskable.png",
+      "src": "/brand/tubarber-icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
