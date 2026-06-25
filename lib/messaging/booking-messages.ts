@@ -21,6 +21,7 @@ function getConfig(tenantSettings?: TenantTwilioSettings | null): TwilioConfig |
 function bookingVariables(params: BookingMessageParams): string[] {
   const cancelUrl = `${getTenantAppUrl(params.tenantSlug)}/cancelar/${params.bookingId}`;
   return [
+    params.shopName,
     params.customerName,
     params.barberName,
     formatColombiaDate(params.dateTime),

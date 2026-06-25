@@ -5,7 +5,8 @@ import { normalizeWhatsappFrom } from './phone';
 export function getPlatformTwilioConfig(): TwilioConfig | null {
   const accountSid = process.env.TWILIO_ACCOUNT_SID;
   const authToken = process.env.TWILIO_AUTH_TOKEN;
-  const whatsappFrom = process.env.TWILIO_WHATSAPP_FROM;
+  const whatsappFrom =
+    process.env.TWILIO_WHATSAPP_FROM ?? process.env.TWILIO_PHONE_NUMBER;
 
   if (!accountSid || !authToken || !whatsappFrom) return null;
 
@@ -13,10 +14,18 @@ export function getPlatformTwilioConfig(): TwilioConfig | null {
     accountSid,
     authToken,
     whatsappFrom: normalizeWhatsappFrom(whatsappFrom),
-    contentSidBooking: process.env.TWILIO_CONTENT_SID_BOOKING,
-    contentSidBarber: process.env.TWILIO_CONTENT_SID_BARBER,
-    contentSidReminder: process.env.TWILIO_CONTENT_SID_REMINDER,
-    contentSidWelcome: process.env.TWILIO_CONTENT_SID_WELCOME,
+    contentSidBooking:
+      process.env.TWILIO_CONTENT_SID_BOOKING ??
+      process.env.TWILIO_WHATSAPP_BOOKING_TEMPLATE_SID,
+    contentSidBarber:
+      process.env.TWILIO_CONTENT_SID_BARBER ??
+      process.env.TWILIO_WHATSAPP_BARBER_TEMPLATE_SID,
+    contentSidReminder:
+      process.env.TWILIO_CONTENT_SID_REMINDER ??
+      process.env.TWILIO_WHATSAPP_REMINDER_TEMPLATE_SID,
+    contentSidWelcome:
+      process.env.TWILIO_CONTENT_SID_WELCOME ??
+      process.env.TWILIO_WHATSAPP_WELCOME_TEMPLATE_SID,
   };
 }
 

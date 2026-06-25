@@ -35,13 +35,14 @@ export async function PATCH(
   }
 
   if (action === 'approve') {
+    const approvedPlan = plan ?? tenant.plan;
     const trialEndsAt = startTrialEndDate();
     await prisma.$transaction([
       prisma.tenant.update({
         where: { id },
         data: {
           status: 'active',
-          plan: plan ?? tenant.plan,
+          plan: approvedPlan,
           subscriptionStatus: 'trialing',
           trialEndsAt,
         },
@@ -57,11 +58,18 @@ export async function PATCH(
     ]);
 
     if (tenant.onboarding) {
+      const dueno = await prisma.user.findFirst({
+        where: { tenantId: id, role: 'dueno' },
+        select: { username: true },
+      });
+
       await sendTenantWelcomeMessage({
         ownerPhone: tenant.onboarding.ownerPhone,
         ownerName: tenant.onboarding.ownerName,
         shopName: tenant.name,
         tenantSlug: tenant.slug,
+        planId: approvedPlan,
+        username: dueno?.username ?? '—',
       }).catch((err) => console.error('[welcome]', err));
     }
   } else if (action === 'reject') {

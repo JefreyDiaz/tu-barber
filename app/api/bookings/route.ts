@@ -160,6 +160,7 @@ export async function POST(request: NextRequest) {
     await sendBookingConfirmation(
       {
         to: customerPhone,
+        shopName: tenant.name,
         customerName: booking.customerName,
         barberName: booking.barber.name,
         barberPhone: booking.barber.phone,

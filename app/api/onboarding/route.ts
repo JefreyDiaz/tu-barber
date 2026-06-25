@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { hashPassword } from '@/lib/password';
+import { notifyNewTenantRegistration } from '@/lib/email/notify-new-tenant';
 import { onboardingSchema, formatOnboardingValidationError } from '@/lib/validations/tenant';
 import { DEFAULT_SCHEDULE, DEFAULT_SERVICES } from '@/lib/tenant/defaults';
 
@@ -63,7 +64,18 @@ export async function POST(request: NextRequest) {
           },
         },
       },
-      select: { id: true, slug: true, name: true, status: true },
+      select: { id: true, slug: true, name: true, status: true, plan: true },
+    });
+
+    void notifyNewTenantRegistration({
+      tenantId: tenant.id,
+      shopName,
+      slug,
+      plan,
+      ownerName,
+      ownerEmail,
+      ownerPhone,
+      username,
     });
 
     return NextResponse.json({ success: true, data: tenant }, { status: 201 });

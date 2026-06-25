@@ -30,6 +30,7 @@ export async function processBookingReminders(now: Date = new Date()): Promise<{
       barber: { select: { name: true, phone: true } },
       tenant: {
         select: {
+          name: true,
           slug: true,
           settings: {
             select: {
@@ -65,6 +66,7 @@ export async function processBookingReminders(now: Date = new Date()): Promise<{
     const ok = await sendBookingReminder(
       {
         to: booking.customerPhone,
+        shopName: booking.tenant.name,
         customerName: booking.customerName,
         barberName: booking.barber.name,
         barberPhone: booking.barber.phone,

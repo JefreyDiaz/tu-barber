@@ -19,13 +19,14 @@ export interface TenantTwilioSettings {
 
 export interface BookingMessageParams {
   to: string;
+  /** Barbería (tenant) — {{1}} in booking/reminder templates */
+  shopName: string;
   customerName: string;
   barberName: string;
   barberPhone?: string | null;
   dateTime: Date;
   bookingId: string;
   tenantSlug?: string;
-  shopName?: string;
 }
 
 export interface BarberMessageParams {
