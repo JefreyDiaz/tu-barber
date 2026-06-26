@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "@/components/Providers";
-import { PLATFORM_LOGO } from "@/lib/brand";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -21,11 +20,6 @@ export const metadata: Metadata = {
   },
   description: "Plataforma de reservas para barberías",
   manifest: "/manifest.webmanifest",
-  icons: {
-    icon: [{ url: PLATFORM_LOGO.icon, type: "image/png" }],
-    shortcut: [{ url: PLATFORM_LOGO.icon, type: "image/png" }],
-    apple: [{ url: PLATFORM_LOGO.icon, type: "image/png" }],
-  },
 };
 
 export const viewport = {

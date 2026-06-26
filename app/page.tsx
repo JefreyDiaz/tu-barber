@@ -35,7 +35,7 @@ export default async function Home() {
   const barberList = barbers.map((b) => ({
     id: b.id,
     name: b.name,
-    image: b.photo || '/image/barberos/default.png',
+    image: b.photo?.trim() || null,
   }));
 
   return (
@@ -63,14 +63,9 @@ export default async function Home() {
               priority
             />
           ) : (
-            <Image
-              src="/image/logo/logo_barber.png"
-              alt={tenant.name}
-              width={500}
-              height={210}
-              className="mx-auto h-auto w-[280px] drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)] sm:w-[320px] md:w-[380px] lg:w-[440px] xl:w-[500px] animate-slide-in-top animation-delay-200"
-              priority
-            />
+            <h1 className="mx-auto max-w-md text-center text-2xl font-bold tracking-tight text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)] sm:text-3xl md:text-4xl animate-slide-in-top animation-delay-200">
+              {tenant.name}
+            </h1>
           )}
         </header>
 

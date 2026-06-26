@@ -7,7 +7,7 @@ import { useRef, useState, useEffect } from 'react';
 interface Barber {
   id: string;
   name: string;
-  image: string;
+  image?: string | null;
 }
 
 interface BarberCarouselProps {
@@ -213,14 +213,23 @@ function BarberSlide({ barber, index, scrollLeft, containerWidth, scrollRef, isL
           transition: 'transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.35s ease-out',
         }}
       >
-        <Image
-          src={barber.image}
-          alt={barber.name}
-          width={350}
-          height={500}
-          className="h-full w-auto max-h-[55vh] object-contain object-bottom drop-shadow-[0_0_40px_rgba(0,0,0,0.5)] md:max-h-[50vh] lg:max-h-[55vh]"
-          priority={index === 0}
-        />
+        {barber.image ? (
+          <Image
+            src={barber.image}
+            alt={barber.name}
+            width={350}
+            height={500}
+            className="h-full w-auto max-h-[55vh] object-contain object-bottom drop-shadow-[0_0_40px_rgba(0,0,0,0.5)] md:max-h-[50vh] lg:max-h-[55vh]"
+            priority={index === 0}
+            unoptimized
+          />
+        ) : (
+          <div className="flex h-full min-h-[220px] w-full max-w-[280px] items-end justify-center pb-2 md:min-h-[260px]">
+            <div className="flex h-48 w-48 items-center justify-center rounded-full border border-white/20 bg-white/10 text-5xl font-bold text-white/50 shadow-[0_0_40px_rgba(0,0,0,0.5)] sm:h-56 sm:w-56 sm:text-6xl">
+              {barber.name.charAt(0).toUpperCase()}
+            </div>
+          </div>
+        )}
       </Link>
     </div>
   );
