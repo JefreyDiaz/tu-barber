@@ -208,6 +208,13 @@ body {
     linear-gradient(180deg, #0c0a09 0%, #1c1917 40%, #0c0a09 100%);
 }
 
+.platform-bg input,
+.platform-bg select,
+.glass-card-strong input,
+.admin-shell input:not([type='date']):not([type='time']) {
+  color-scheme: dark;
+}
+
 .glass-card {
   border-radius: 1.5rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -240,6 +247,25 @@ body {
   outline: none;
   border-color: rgba(229, 184, 105, 0.5);
   box-shadow: 0 0 0 3px rgba(229, 184, 105, 0.15);
+}
+
+/* Chrome/Safari autofill — evita fondo azul claro que tapa texto e iconos */
+.glass-input:-webkit-autofill,
+.glass-input:-webkit-autofill:hover,
+.glass-input:-webkit-autofill:focus,
+.glass-input:-webkit-autofill:active {
+  -webkit-text-fill-color: #ffffff !important;
+  caret-color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  -webkit-box-shadow: 0 0 0 1000px #252220 inset !important;
+  box-shadow: 0 0 0 1000px #252220 inset !important;
+  transition: background-color 9999s ease-out 0s;
+}
+
+.glass-input:autofill {
+  -webkit-text-fill-color: #ffffff !important;
+  caret-color: #ffffff;
+  box-shadow: 0 0 0 1000px #252220 inset !important;
 }
 
 .btn-accent {
@@ -298,4 +324,65 @@ body {
 .plan-card-selected {
   border-color: rgba(229, 184, 105, 0.6) !important;
   box-shadow: 0 0 0 1px rgba(229, 184, 105, 0.3), 0 8px 40px rgba(229, 184, 105, 0.15);
+}
+
+/* ===== Tenant public site branding ===== */
+
+.tenant-site {
+  --tenant-primary: #e5b869;
+  --tenant-secondary: #c8944a;
+}
+
+.tenant-site .btn-accent {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--tenant-primary) 80%, white) 0%,
+    var(--tenant-primary) 45%,
+    var(--tenant-secondary) 100%
+  );
+  box-shadow: 0 4px 24px color-mix(in srgb, var(--tenant-primary) 35%, transparent);
+}
+
+.tenant-site .btn-accent:hover:not(:disabled) {
+  box-shadow: 0 8px 32px color-mix(in srgb, var(--tenant-primary) 45%, transparent);
+}
+
+.tenant-site .plan-card-selected {
+  border-color: color-mix(in srgb, var(--tenant-primary) 60%, transparent) !important;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--tenant-primary) 30%, transparent),
+    0 8px 40px color-mix(in srgb, var(--tenant-primary) 15%, transparent);
+}
+
+.tenant-site .glass-input:focus {
+  border-color: color-mix(in srgb, var(--tenant-primary) 50%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--tenant-primary) 15%, transparent);
+}
+
+.tenant-site .brand-accent {
+  color: var(--tenant-primary);
+}
+
+.tenant-site .brand-accent-soft {
+  color: color-mix(in srgb, var(--tenant-primary) 90%, white);
+}
+
+.tenant-site .brand-bg-soft {
+  background-color: color-mix(in srgb, var(--tenant-primary) 12%, transparent);
+}
+
+.tenant-site .brand-border {
+  border-color: color-mix(in srgb, var(--tenant-primary) 50%, transparent);
+}
+
+.tenant-site .brand-ring {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--tenant-primary) 40%, transparent);
+}
+
+.tenant-site .brand-bg-selected {
+  background-color: color-mix(in srgb, var(--tenant-primary) 28%, transparent);
+}
+
+.tenant-site .brand-hover-border:hover {
+  border-color: color-mix(in srgb, var(--tenant-primary) 35%, transparent);
 }

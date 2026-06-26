@@ -1,6 +1,9 @@
 import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { getTenantFromHeaders } from '@/lib/tenant/context';
+import { isMultiBarberPlan } from '@/lib/tenant/subscription';
+import { normalizePlanId } from '@/lib/plans';
 
 export default async function UsersLayout({
   children,
@@ -8,14 +11,23 @@ export default async function UsersLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth();
-  
-  // Verificar si estamos en modo setup (sin usuarios)
-  const userCount = await prisma.user.count();
+
+  const tenant = await getTenantFromHeaders();
+  const userCount = tenant
+    ? await prisma.user.count({ where: { tenantId: tenant.id } })
+    : await prisma.user.count({ where: { tenantId: { not: null } } });
   const isSetupMode = userCount === 0;
-  
-  // Permitir acceso en modo setup, admin o dueño
+
   const role = session?.user?.role;
   if (!isSetupMode && role !== 'admin' && role !== 'dueno') {
+    redirect('/admin/mis-reservas');
+  }
+
+  if (
+    !isSetupMode &&
+    tenant &&
+    !isMultiBarberPlan(normalizePlanId(tenant.plan))
+  ) {
     redirect('/admin/mis-reservas');
   }
 

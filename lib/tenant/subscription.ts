@@ -48,6 +48,11 @@ export function maxBarbersForPlan(tenant: TenantSubscription): number {
   return PLANS[resolveTenantPlan(tenant)].limits.maxBarbers;
 }
 
+/** Negocio, Cadena y planes legacy con más de 1 barbero */
+export function isMultiBarberPlan(planId: string): boolean {
+  return PLANS[normalizePlanId(planId)].limits.maxBarbers > 1;
+}
+
 /** Subscribed plan (ignores trial uplift) — for billing display after trial. */
 export function subscribedPlanId(tenant: TenantSubscription): PlanId {
   return normalizePlanId(tenant.plan);

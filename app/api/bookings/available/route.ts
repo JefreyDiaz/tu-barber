@@ -4,6 +4,7 @@ import { colombiaToUTC, getColombiaComponents, getColombiaDayRange, toColombiaDa
 import { requireApiTenant, tenantApiErrorResponse } from '@/lib/tenant/api-helper';
 import { scopedPrisma, assertBarberInTenant } from '@/lib/tenant/prisma-scoped';
 import { bookingToInterval, getAvailableSlotsForDuration } from '@/lib/slot-availability';
+import { resolveSlotStepMinutes } from '@/lib/slot-step';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,6 +35,12 @@ export async function GET(request: NextRequest) {
     const scheduleJson = (settings?.scheduleJson as ScheduleConfig | null) ?? null;
 
     let durationMinutes = settings?.slotDurationMinutes ?? 40;
+    const activeServices = await db.service.findMany({
+      where: { isActive: true },
+      select: { durationMinutes: true },
+    });
+    const slotStepMinutes = resolveSlotStepMinutes(activeServices, settings?.slotDurationMinutes);
+
     if (serviceId) {
       const service = await db.service.findFirst({ where: { id: serviceId, isActive: true } });
       if (!service) {
@@ -82,7 +89,8 @@ export async function GET(request: NextRequest) {
       durationMinutes,
       scheduleJson,
       occupiedIntervals,
-      blockedTimes
+      blockedTimes,
+      slotStepMinutes
     );
 
     if (isToday) {

@@ -78,11 +78,11 @@ export default function BarberCarousel({ barbers }: BarberCarouselProps) {
   }, [hasInteracted]);
 
   return (
-    <div className="flex-1 min-h-0 w-full overflow-x-auto overflow-y-hidden overscroll-x-contain snap-x snap-mandatory scroll-smooth"
+    <div className="flex-1 min-h-0 w-full overflow-x-auto overflow-y-hidden overscroll-x-contain snap-x snap-mandatory scroll-smooth md:flex-initial md:mt-4 md:min-h-0 lg:mt-5"
       ref={scrollRef}
     >
       <div 
-        className={`flex h-full min-h-[50vh] md:min-h-[auto] w-max min-w-full items-end justify-center gap-4 px-4 pb-4 md:gap-6 md:px-6 md:pt-0 lg:gap-8 lg:px-8 ${showSwipeHint && !hasInteracted ? 'animate-swipe-hint' : ''}`}
+        className={`flex h-full min-h-[50vh] md:min-h-0 md:h-auto w-max min-w-full items-end justify-center gap-4 px-4 pb-4 md:gap-6 md:px-6 md:pb-6 md:pt-0 lg:gap-8 lg:px-8 lg:pb-8 ${showSwipeHint && !hasInteracted ? 'animate-swipe-hint' : ''}`}
       >
         {barbers.map((barber, index) => (
           <BarberSlide

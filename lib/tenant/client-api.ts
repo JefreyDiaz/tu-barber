@@ -1,20 +1,29 @@
 'use client';
 
-/** Append ?tenant=slug from current URL to API paths (local dev) */
+import { extractSubdomain } from './host';
+import { getBrowserTenantSlug } from './urls';
+
+function needsTenantQuery(): boolean {
+  if (typeof window === 'undefined') return false;
+  return !extractSubdomain(window.location.host);
+}
+
+/** API path — Host header resolves tenant on subdomain; ?tenant= only on Vercel preview */
 export function tenantApiUrl(path: string): string {
-  if (typeof window === 'undefined') return path;
-  const slug = new URLSearchParams(window.location.search).get('tenant');
+  if (typeof window === 'undefined' || !needsTenantQuery()) return path;
+  const slug = getBrowserTenantSlug();
   if (!slug) return path;
   const sep = path.includes('?') ? '&' : '?';
   return `${path}${sep}tenant=${encodeURIComponent(slug)}`;
 }
 
-/** Preserve tenant query in internal admin links (client components) */
+/** Internal link — path-only on subdomain */
 export function tenantHref(path: string, search?: string): string {
+  if (typeof window !== 'undefined' && !needsTenantQuery()) return path;
   const slug = search
     ? new URLSearchParams(search).get('tenant')
     : typeof window !== 'undefined'
-      ? new URLSearchParams(window.location.search).get('tenant')
+      ? getBrowserTenantSlug()
       : null;
   if (!slug) return path;
   const sep = path.includes('?') ? '&' : '?';

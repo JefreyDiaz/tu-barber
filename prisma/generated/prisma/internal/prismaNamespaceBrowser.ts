@@ -96,7 +96,9 @@ export type TenantScalarFieldEnum = (typeof TenantScalarFieldEnum)[keyof typeof 
 export const TenantSettingsScalarFieldEnum = {
   tenantId: 'tenantId',
   logoUrl: 'logoUrl',
+  backgroundUrl: 'backgroundUrl',
   primaryColor: 'primaryColor',
+  secondaryColor: 'secondaryColor',
   slotDurationMinutes: 'slotDurationMinutes',
   minAdvanceHours: 'minAdvanceHours',
   maxAdvanceDays: 'maxAdvanceDays',

@@ -6,7 +6,7 @@ import { requireApiTenant, tenantApiErrorResponse } from '@/lib/tenant/api-helpe
 import { assertSameTenant } from '@/lib/tenant/permissions';
 import { scopedPrisma } from '@/lib/tenant/prisma-scoped';
 import { checkDomainVerification } from '@/lib/vercel/domains';
-import { resolveTenantPlan, trialDaysLeft } from '@/lib/tenant/subscription';
+import { resolveTenantPlan, trialDaysLeft, canUseOwnTwilio } from '@/lib/tenant/subscription';
 
 export const dynamic = 'force-dynamic';
 
@@ -44,6 +44,8 @@ export async function GET(request: NextRequest) {
       })
     : 'emprendedor';
 
+  const ownTwilio = tenantData ? canUseOwnTwilio(tenantData) : false;
+
   return NextResponse.json({
     success: true,
     data: {
@@ -51,6 +53,7 @@ export async function GET(request: NextRequest) {
       ...settings,
       plan: tenantData?.plan,
       effectivePlan,
+      canUseOwnTwilio: ownTwilio,
       subscriptionStatus: tenantData?.subscriptionStatus,
       trialEndsAt: tenantData?.trialEndsAt?.toISOString() ?? null,
       trialDaysLeft: tenantData ? trialDaysLeft(tenantData) : null,
@@ -85,11 +88,57 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ success: false, errors: parsed.error.issues }, { status: 400 });
   }
 
-  const db = scopedPrisma(tenant.id);
-  const settings = await db.settings.upsert({
-    create: { ...parsed.data, scheduleJson: parsed.data.scheduleJson ?? undefined },
-    update: parsed.data,
+  const tenantData = await prisma.tenant.findUnique({
+    where: { id: tenant.id },
+    select: { plan: true, subscriptionStatus: true, trialEndsAt: true },
   });
 
-  return NextResponse.json({ success: true, data: { ...settings, tenantId: tenant.id } });
+  const twilioKeys = [
+    'twilioAccountSid',
+    'twilioAuthToken',
+    'twilioWhatsappFrom',
+    'twilioContentSidBooking',
+    'twilioContentSidBarber',
+    'twilioContentSidReminder',
+  ] as const;
+
+  const hasTwilioUpdate = twilioKeys.some((key) => parsed.data[key] !== undefined);
+  const ownTwilio = tenantData ? canUseOwnTwilio(tenantData) : false;
+
+  if (hasTwilioUpdate && !ownTwilio) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'La configuración de Twilio está disponible solo en el plan Cadena.',
+      },
+      { status: 403 }
+    );
+  }
+
+  const db = scopedPrisma(tenant.id);
+
+  try {
+    const payload = {
+      ...parsed.data,
+      logoUrl: parsed.data.logoUrl?.trim() ? parsed.data.logoUrl.trim() : parsed.data.logoUrl === '' ? null : undefined,
+      backgroundUrl: parsed.data.backgroundUrl?.trim()
+        ? parsed.data.backgroundUrl.trim()
+        : parsed.data.backgroundUrl === ''
+          ? null
+          : undefined,
+    };
+
+    const settings = await db.settings.upsert({
+      create: { ...payload, scheduleJson: parsed.data.scheduleJson ?? undefined },
+      update: payload,
+    });
+
+    return NextResponse.json({ success: true, data: { ...settings, tenantId: tenant.id } });
+  } catch (error) {
+    console.error('[admin/settings PATCH]', error);
+    return NextResponse.json(
+      { success: false, error: 'Error al guardar configuración. Reinicia el servidor de desarrollo.' },
+      { status: 500 }
+    );
+  }
 }

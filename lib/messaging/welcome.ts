@@ -25,7 +25,7 @@ export async function sendTenantWelcomeMessage(params: TenantWelcomeMessageParam
   const config = getPlatformTwilioConfig();
 
   if (!config?.contentSidWelcome) {
-    console.log('[Twilio] Welcome template not configured (TWILIO_CONTENT_SID_WELCOME)');
+    console.warn('[Twilio] Welcome template not configured (TWILIO_CONTENT_SID_WELCOME)');
     return;
   }
 

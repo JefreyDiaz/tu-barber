@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { signOut } from 'next-auth/react';
 import { PLANS, getTrialDaysRemaining, normalizePlanId } from '@/lib/plans';
 import PlatformLogo from '@/components/PlatformLogo';
+import { buildTenantUrl, formatTenantHost } from '@/lib/tenant/urls';
 
 interface TenantRow {
   id: string;
@@ -38,12 +39,10 @@ function formatDate(iso: string | null | undefined): string {
 }
 
 function tenantUrls(slug: string) {
-  const origin = typeof window !== 'undefined' ? window.location.origin : '';
-  const q = `?tenant=${slug}`;
   return {
-    public: `${origin}/${q}`,
-    login: `${origin}/login${q}`,
-    admin: `${origin}/admin${q}`,
+    public: buildTenantUrl(slug, '/'),
+    login: buildTenantUrl(slug, '/login'),
+    admin: buildTenantUrl(slug, '/admin'),
   };
 }
 
@@ -143,7 +142,7 @@ function TenantCard({
           </div>
 
           <p className="mt-1 font-mono text-sm text-amber-400/80">
-            {tenant.customDomain ?? `${tenant.slug}.tubarber.com`}
+            {formatTenantHost(tenant.slug, tenant.customDomain)}
           </p>
 
           {(tenant.onboarding || tenant.owner) && (
@@ -246,21 +245,21 @@ function TenantCard({
           </p>
           <div className="flex flex-wrap gap-2">
             <Link
-              href={`/?tenant=${tenant.slug}`}
+              href={buildTenantUrl(tenant.slug, '/')}
               target="_blank"
               className="btn-accent rounded-xl px-3 py-2 text-xs font-semibold"
             >
               Ver sitio →
             </Link>
             <Link
-              href={`/login?tenant=${tenant.slug}`}
+              href={buildTenantUrl(tenant.slug, '/login')}
               target="_blank"
               className="btn-glass rounded-xl px-3 py-2 text-xs font-medium"
             >
               Login dueño
             </Link>
             <Link
-              href={`/admin?tenant=${tenant.slug}`}
+              href={buildTenantUrl(tenant.slug, '/admin')}
               target="_blank"
               className="btn-glass rounded-xl px-3 py-2 text-xs font-medium"
             >

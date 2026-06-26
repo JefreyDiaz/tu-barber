@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { extractSubdomain, isPlatformHost } from '@/lib/tenant/host';
+import { extractSubdomain, isBareLocalhost, isPlatformHost } from '@/lib/tenant/host';
 
 export const TENANT_SLUG_HEADER = 'x-tenant-slug';
 export const TENANT_PLATFORM_HEADER = 'x-is-platform';
@@ -19,6 +19,16 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Dev: redirect ?tenant=slug on bare localhost → slug.localhost:port
+  if (isBareLocalhost(host) && tenantParam) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.searchParams.delete('tenant');
+    redirectUrl.hostname = `${tenantParam}.localhost`;
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  const subdomain = extractSubdomain(host);
+
   const tenantRoutes =
     pathname.startsWith('/admin') ||
     pathname.startsWith('/login') ||
@@ -28,8 +38,10 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith('/api/bookings') ||
     pathname.startsWith('/api/services');
 
-  const resolvedParam = tenantParam ?? (tenantRoutes ? cookieSlug : null);
-  const isPlatform = isPlatformHost(host, resolvedParam);
+  const resolvedParam =
+    !subdomain && tenantParam ? tenantParam : !subdomain && tenantRoutes ? cookieSlug : null;
+
+  const isPlatform = isPlatformHost(host) && !subdomain && !resolvedParam;
 
   if (isPlatform) {
     const requestHeaders = new Headers(request.headers);
@@ -37,8 +49,12 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next({ request: { headers: requestHeaders } });
   }
 
-  const slug =
-    resolvedParam ?? extractSubdomain(host) ?? process.env.DEFAULT_TENANT_SLUG ?? 'the-barber-house';
+  const slug = subdomain ?? resolvedParam;
+  if (!slug) {
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set(TENANT_PLATFORM_HEADER, 'true');
+    return NextResponse.next({ request: { headers: requestHeaders } });
+  }
 
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set(TENANT_SLUG_HEADER, slug);
@@ -46,13 +62,11 @@ export async function middleware(request: NextRequest) {
 
   const response = NextResponse.next({ request: { headers: requestHeaders } });
 
-  if (tenantParam) {
-    response.cookies.set(TENANT_SLUG_COOKIE, tenantParam, {
-      path: '/',
-      maxAge: 60 * 60 * 24 * 30,
-      sameSite: 'lax',
-    });
-  }
+  response.cookies.set(TENANT_SLUG_COOKIE, slug, {
+    path: '/',
+    maxAge: 60 * 60 * 24 * 30,
+    sameSite: 'lax',
+  });
 
   return response;
 }

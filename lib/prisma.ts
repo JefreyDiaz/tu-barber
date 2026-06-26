@@ -8,7 +8,7 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 /** Bump when schema changes so dev hot-reload invalidates stale Prisma clients. */
-const PRISMA_SCHEMA_VERSION = '20260620-subscription-trial';
+const PRISMA_SCHEMA_VERSION = '20260626-logging';
 
 /** sslmode in the URL overrides Pool ssl options and breaks Supabase on Windows (P1011). */
 function sanitizeDatabaseUrl(raw: string): string {
@@ -39,9 +39,16 @@ function createPrismaClient() {
 
   const adapter = new PrismaPg(pool);
 
+  const prismaLog =
+    process.env.PRISMA_LOG_QUERY === 'true'
+      ? (['query', 'error', 'warn'] as const)
+      : process.env.NODE_ENV === 'development'
+        ? (['error', 'warn'] as const)
+        : (['error'] as const);
+
   return new PrismaClient({
     adapter,
-    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+    log: [...prismaLog],
   });
 }
 

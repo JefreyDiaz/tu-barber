@@ -11,11 +11,25 @@ import type {
   TenantTwilioSettings,
   TwilioConfig,
 } from './types';
+import type { TenantSubscription } from '@/lib/tenant/subscription';
 
 export type { TenantTwilioSettings, TwilioConfig };
 
-function getConfig(tenantSettings?: TenantTwilioSettings | null): TwilioConfig | null {
-  return resolveTwilioConfig(tenantSettings);
+let twilioNotConfiguredLogged = false;
+
+function warnTwilioNotConfigured(): void {
+  if (twilioNotConfiguredLogged) return;
+  twilioNotConfiguredLogged = true;
+  console.warn(
+    '[Twilio] Not configured: missing TWILIO_ACCOUNT_SID / TWILIO_AUTH_TOKEN / TWILIO_WHATSAPP_FROM'
+  );
+}
+
+function getConfig(
+  tenantSettings?: TenantTwilioSettings | null,
+  tenant?: TenantSubscription | null
+): TwilioConfig | null {
+  return resolveTwilioConfig(tenantSettings, tenant);
 }
 
 function bookingVariables(params: BookingMessageParams): string[] {
@@ -37,11 +51,12 @@ function bookingVariables(params: BookingMessageParams): string[] {
  */
 export async function sendBookingConfirmation(
   params: BookingMessageParams,
-  tenantSettings?: TenantTwilioSettings | null
+  tenantSettings?: TenantTwilioSettings | null,
+  tenant?: TenantSubscription | null
 ): Promise<void> {
-  const config = getConfig(tenantSettings);
+  const config = getConfig(tenantSettings, tenant);
   if (!config) {
-    console.warn('[Twilio] Not configured: missing TWILIO_ACCOUNT_SID / TWILIO_AUTH_TOKEN / TWILIO_WHATSAPP_FROM');
+    warnTwilioNotConfigured();
     return;
   }
 
@@ -56,11 +71,12 @@ export async function sendBookingConfirmation(
 /** Send new booking notification to barber via Twilio template */
 export async function sendBarberNotification(
   params: BarberMessageParams,
-  tenantSettings?: TenantTwilioSettings | null
+  tenantSettings?: TenantTwilioSettings | null,
+  tenant?: TenantSubscription | null
 ): Promise<void> {
-  const config = getConfig(tenantSettings);
+  const config = getConfig(tenantSettings, tenant);
   if (!config) {
-    console.warn('[Twilio] Not configured: missing TWILIO_ACCOUNT_SID / TWILIO_AUTH_TOKEN / TWILIO_WHATSAPP_FROM');
+    warnTwilioNotConfigured();
     return;
   }
 
@@ -79,11 +95,12 @@ export async function sendBarberNotification(
  */
 export async function sendBookingReminder(
   params: BookingMessageParams,
-  tenantSettings?: TenantTwilioSettings | null
+  tenantSettings?: TenantTwilioSettings | null,
+  tenant?: TenantSubscription | null
 ): Promise<boolean> {
-  const config = getConfig(tenantSettings);
+  const config = getConfig(tenantSettings, tenant);
   if (!config) {
-    console.warn('[Twilio] Not configured: missing TWILIO_ACCOUNT_SID / TWILIO_AUTH_TOKEN / TWILIO_WHATSAPP_FROM');
+    warnTwilioNotConfigured();
     return false;
   }
 

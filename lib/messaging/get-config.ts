@@ -1,5 +1,7 @@
 import type { TenantTwilioSettings, TwilioConfig } from './types';
 import { normalizeWhatsappFrom } from './phone';
+import { buildTenantOrigin } from '@/lib/tenant/urls';
+import { canUseOwnTwilio, type TenantSubscription } from '@/lib/tenant/subscription';
 
 /** Platform-level Twilio config from env vars */
 export function getPlatformTwilioConfig(): TwilioConfig | null {
@@ -29,11 +31,17 @@ export function getPlatformTwilioConfig(): TwilioConfig | null {
   };
 }
 
-/** Resolve Twilio config: tenant override (Pro) or platform fallback */
+/** Resolve Twilio config: tenant override (Cadena) or platform fallback */
 export function resolveTwilioConfig(
-  tenantSettings?: TenantTwilioSettings | null
+  tenantSettings?: TenantTwilioSettings | null,
+  tenant?: TenantSubscription | null
 ): TwilioConfig | null {
-  if (tenantSettings?.twilioAccountSid && tenantSettings?.twilioAuthToken) {
+  const canUseTenantConfig = !tenant || canUseOwnTwilio(tenant);
+  if (
+    canUseTenantConfig &&
+    tenantSettings?.twilioAccountSid &&
+    tenantSettings?.twilioAuthToken
+  ) {
     const from = tenantSettings.twilioWhatsappFrom ?? process.env.TWILIO_WHATSAPP_FROM;
     if (!from) return null;
 
@@ -53,11 +61,10 @@ export function resolveTwilioConfig(
   return getPlatformTwilioConfig();
 }
 
-/** Build tenant-aware app URL for cancel links */
+/** Build tenant-aware app URL for cancel links and messaging */
 export function getTenantAppUrl(tenantSlug?: string): string {
-  const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN;
-  if (tenantSlug && rootDomain && !rootDomain.includes('localhost')) {
-    return `https://${tenantSlug}.${rootDomain}`;
+  if (tenantSlug) {
+    return buildTenantOrigin(tenantSlug);
   }
   if (process.env.NEXT_PUBLIC_APP_URL) {
     return process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, '');

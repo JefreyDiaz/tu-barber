@@ -35,7 +35,7 @@ export const PLANS: Record<PlanId, PlanDefinition> = {
     features: [
       '1 barbero',
       'Reservas online 24/7',
-      'Subdominio tubarber.com',
+      'Subdominio tubarber.co',
       'Confirmaciones por WhatsApp (número de TuBarber)',
       'Logo y color de marca',
       'Panel de administración',
@@ -60,7 +60,7 @@ export const PLANS: Record<PlanId, PlanDefinition> = {
     features: [
       'Hasta 3 barberos',
       'Reservas online 24/7',
-      'Subdominio tubarber.com',
+      'Subdominio tubarber.co',
       'Confirmaciones por WhatsApp (número de TuBarber)',
       'Logo y color de marca',
       'Panel de administración',

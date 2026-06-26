@@ -8,6 +8,7 @@ import PlatformLogo from '@/components/PlatformLogo';
 import { PLAN_LIST, TRIAL_DAYS, type PlanId, isValidPlanId } from '@/lib/plans';
 
 const STEPS = ['Plan', 'Barbería', 'Cuenta'] as const;
+const ROOT_DOMAIN = process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? 'tubarber.co';
 
 function isSlugValid(slug: string): boolean {
   return slug.length >= 3 && /^[a-z0-9-]+$/.test(slug);
@@ -190,32 +191,35 @@ function RegistroWizardInner() {
                 setForm((f) => ({
                   ...f,
                   shopName: v,
-                  slug: f.slug || slugify(v),
+                  slug: slugify(v),
                 }));
               }}
               required
               placeholder="Ej. Luxe Cuts"
             />
-            <WizardField
-              label="Subdominio"
-              value={form.slug}
-              onChange={(v) => setForm((f) => ({ ...f, slug: slugify(v) }))}
-              required
-              placeholder="luxe-cuts"
-              hint={
-                form.slug
-                  ? form.slug.length < 3
-                    ? 'Mínimo 3 caracteres'
-                    : `${form.slug}.tubarber.com`
-                  : 'Solo minúsculas, números y guiones'
-              }
-            />
             <div className="glass-card p-4 text-center">
               <p className="text-xs text-white/40">Vista previa URL</p>
-              <p className="mt-1 font-mono text-sm text-amber-400/90">
-                {form.slug || 'mi-barberia'}.tubarber.com
+              <p className="mt-1 break-all font-mono text-sm text-amber-400/90">
+                {form.slug || 'mi-barberia'}.{ROOT_DOMAIN}
               </p>
+              {form.shopName.trim() && form.slug.length > 0 && form.slug.length < 3 && (
+                <p className="mt-2 text-xs text-amber-400/80">
+                  El nombre debe generar al menos 3 caracteres en la URL
+                </p>
+              )}
             </div>
+            {selectedPlanDef.limits.customDomain && (
+              <div className="flex gap-3 rounded-2xl border border-amber-400/15 bg-amber-400/5 px-4 py-3">
+                <span className="shrink-0 text-amber-400/90" aria-hidden>
+                  ℹ
+                </span>
+                <p className="text-left text-xs leading-relaxed text-white/55">
+                  Esta es tu URL con subdominio de TuBarber. Tu{' '}
+                  <span className="text-white/75">dominio personalizado</span> (ej. mibarberia.com) lo
+                  podrás configurar después de activar tu cuenta, desde el panel de administración.
+                </p>
+              </div>
+            )}
           </div>
         )}
 

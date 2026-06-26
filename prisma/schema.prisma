@@ -35,7 +35,9 @@ model TenantSettings {
   tenantId            String  @id
   tenant              Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   logoUrl             String?
+  backgroundUrl       String?
   primaryColor        String?
+  secondaryColor      String?
   slotDurationMinutes Int     @default(40)
   minAdvanceHours     Int     @default(1)
   maxAdvanceDays      Int     @default(30)

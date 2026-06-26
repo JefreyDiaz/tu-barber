@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  experimental: {
+    // Default 10MB breaks video uploads (max 15MB). Use proxyClientMaxBodySize only (middlewareClientMaxBodySize is deprecated).
+    proxyClientMaxBodySize: '20mb',
+  },
   images: {
     remotePatterns: [
       {

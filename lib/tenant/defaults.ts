@@ -42,6 +42,3 @@ export const DEFAULT_SERVICES: DefaultService[] = [
   { name: 'Solo barba', durationMinutes: 20, sortOrder: 1 },
   { name: 'Solo corte', durationMinutes: 30, sortOrder: 2 },
 ];
-
-/** Granularity for scanning start times (minutes) */
-export const SLOT_STEP_MINUTES = 5;

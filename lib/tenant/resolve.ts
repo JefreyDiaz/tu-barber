@@ -65,11 +65,7 @@ export async function resolveTenantFromHost(
     return findTenantBySlug(sub);
   }
 
-  if (hostname === 'localhost' || hostname.startsWith('127.0.0.1')) {
-    return findTenantBySlug(process.env.DEFAULT_TENANT_SLUG ?? 'the-barber-house');
-  }
-
-  if (isPlatformHost(host, tenantQueryParam)) {
+  if (isPlatformHost(host)) {
     return null;
   }
 

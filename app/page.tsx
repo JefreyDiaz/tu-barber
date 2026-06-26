@@ -1,7 +1,10 @@
 import BarberCarousel, { BarberSelectionText } from '@/components/BarberCarousel';
 import PlatformLanding from '@/components/PlatformLanding';
+import TenantPublicBackground from '@/components/TenantPublicBackground';
+import TenantSiteShell from '@/components/TenantSiteShell';
 import Image from 'next/image';
 import { assertTenantExists, getTenantFromHeaders } from '@/lib/tenant/context';
+import { resolveTenantBranding } from '@/lib/tenant/branding';
 import { scopedPrisma } from '@/lib/tenant/prisma-scoped';
 import { redirect } from 'next/navigation';
 
@@ -27,6 +30,7 @@ export default async function Home() {
   });
 
   const settings = await db.settings.findUnique();
+  const branding = resolveTenantBranding(settings);
 
   const barberList = barbers.map((b) => ({
     id: b.id,
@@ -35,11 +39,8 @@ export default async function Home() {
   }));
 
   return (
-    <div className="relative min-h-screen min-h-[100dvh] w-full overflow-hidden">
-      <video autoPlay loop muted playsInline className="absolute inset-0 h-full w-full object-cover animate-fade-in">
-        <source src="/video/fondos/fondo-1.mp4" type="video/mp4" />
-      </video>
-      <div className="absolute inset-0 bg-black/50 animate-fade-in" />
+    <TenantSiteShell branding={branding} className="relative min-h-screen min-h-[100dvh] w-full overflow-hidden">
+      <TenantPublicBackground url={branding.backgroundUrl} />
 
       {barberList.length > 0 && (
         <div className="absolute left-0 right-0 z-20 text-center pointer-events-none animate-slide-in-bottom animation-delay-600 bottom-[12dvh] sm:bottom-[10dvh] md:hidden">
@@ -51,10 +52,10 @@ export default async function Home() {
         className="relative z-10 flex min-h-screen min-h-[100dvh] flex-col"
         style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
       >
-        <header className="flex shrink-0 w-full items-center justify-center pt-3 pb-1 sm:py-3 md:pt-2 md:pb-0">
-          {settings?.logoUrl ? (
+        <header className="flex shrink-0 w-full items-center justify-center pt-3 pb-1 sm:py-3 md:pt-2 md:pb-2 lg:pb-3">
+          {branding.logoUrl ? (
             <Image
-              src={settings.logoUrl}
+              src={branding.logoUrl}
               alt={tenant.name}
               width={500}
               height={210}
@@ -81,6 +82,6 @@ export default async function Home() {
           </div>
         )}
       </main>
-    </div>
+    </TenantSiteShell>
   );
 }

@@ -7,17 +7,29 @@ function hostnameFromHost(host: string): string {
   return host.split(':')[0].toLowerCase();
 }
 
+export function isBareLocalhost(host: string): boolean {
+  const hostname = hostnameFromHost(host);
+  return hostname === 'localhost' || hostname === '127.0.0.1';
+}
+
+export function isLocalhostSubdomain(host: string): boolean {
+  const hostname = hostnameFromHost(host);
+  return hostname.endsWith('.localhost') && hostname !== 'localhost';
+}
+
 export function isVercelHost(hostname: string): boolean {
   return PLATFORM_HOST_SUFFIXES.some((suffix) => hostname.endsWith(suffix));
 }
 
-export function isPlatformHost(host: string, tenantParam?: string | null): boolean {
-  if (tenantParam) return false;
-
+export function isPlatformHost(host: string): boolean {
   const hostname = hostnameFromHost(host);
 
-  if (hostname === 'localhost' || hostname.startsWith('127.0.0.1')) {
+  if (isBareLocalhost(host)) {
     return true;
+  }
+
+  if (isLocalhostSubdomain(host)) {
+    return false;
   }
 
   if (isVercelHost(hostname)) {
@@ -38,7 +50,14 @@ export function isPlatformHost(host: string, tenantParam?: string | null): boole
 export function extractSubdomain(host: string): string | null {
   const hostname = hostnameFromHost(host);
 
-  if (hostname === 'localhost' || hostname.startsWith('127.0.0.1')) {
+  if (isLocalhostSubdomain(host)) {
+    const sub = hostname.slice(0, -'.localhost'.length);
+    if (!sub || sub.includes('.')) return null;
+    if (PLATFORM_SUBDOMAINS.has(sub)) return null;
+    return sub;
+  }
+
+  if (isBareLocalhost(host)) {
     return null;
   }
 

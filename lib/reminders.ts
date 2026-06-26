@@ -32,6 +32,9 @@ export async function processBookingReminders(now: Date = new Date()): Promise<{
         select: {
           name: true,
           slug: true,
+          plan: true,
+          subscriptionStatus: true,
+          trialEndsAt: true,
           settings: {
             select: {
               twilioAccountSid: true,
@@ -74,7 +77,12 @@ export async function processBookingReminders(now: Date = new Date()): Promise<{
         bookingId: booking.id,
         tenantSlug: booking.tenant.slug,
       },
-      tenantSettings
+      tenantSettings,
+      {
+        plan: booking.tenant.plan,
+        subscriptionStatus: booking.tenant.subscriptionStatus,
+        trialEndsAt: booking.tenant.trialEndsAt,
+      }
     );
 
     if (ok) {

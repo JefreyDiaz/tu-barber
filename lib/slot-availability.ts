@@ -4,7 +4,7 @@ import {
   formatMinutesToAmPm,
   type ScheduleConfig,
 } from './schedule';
-import { SLOT_STEP_MINUTES } from './tenant/defaults';
+import { DEFAULT_SLOT_STEP_MINUTES } from './slot-step';
 
 export type TimeInterval = { start: number; end: number };
 
@@ -28,7 +28,7 @@ export function mergeIntervals(intervals: TimeInterval[]): TimeInterval[] {
 export function getCandidateStartMinutes(
   date: Date,
   scheduleJson?: ScheduleConfig | null,
-  stepMinutes = SLOT_STEP_MINUTES
+  stepMinutes = DEFAULT_SLOT_STEP_MINUTES
 ): number[] {
   const blocks = getScheduleForDayFromConfig(date.getDay(), scheduleJson);
   if (!blocks) return [];
@@ -65,10 +65,11 @@ export function getAvailableSlotsForDuration(
   durationMinutes: number,
   scheduleJson: ScheduleConfig | null | undefined,
   occupiedIntervals: TimeInterval[],
-  blockedStartTimes: Set<string>
+  blockedStartTimes: Set<string>,
+  stepMinutes = DEFAULT_SLOT_STEP_MINUTES
 ): string[] {
   const mergedOccupied = mergeIntervals(occupiedIntervals);
-  const candidates = getCandidateStartMinutes(date, scheduleJson);
+  const candidates = getCandidateStartMinutes(date, scheduleJson, stepMinutes);
 
   const slots: string[] = [];
   for (const start of candidates) {

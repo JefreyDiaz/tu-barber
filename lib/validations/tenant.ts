@@ -49,9 +49,22 @@ export function formatOnboardingValidationError(
 
 export type OnboardingData = z.infer<typeof onboardingSchema>;
 
+const hexColorSchema = z
+  .string()
+  .regex(/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/, 'Color inválido (usa formato #RRGGBB)');
+
+export const tenantBrandingSchema = z.object({
+  logoUrl: z.string().url().optional().or(z.literal('')),
+  backgroundUrl: z.string().url().optional().or(z.literal('')),
+  primaryColor: hexColorSchema.optional(),
+  secondaryColor: hexColorSchema.optional(),
+});
+
 export const tenantSettingsSchema = z.object({
   logoUrl: z.string().url().optional().or(z.literal('')),
-  primaryColor: z.string().optional(),
+  backgroundUrl: z.string().url().optional().or(z.literal('')),
+  primaryColor: hexColorSchema.optional(),
+  secondaryColor: hexColorSchema.optional(),
   slotDurationMinutes: z.number().int().min(15).max(120).optional(),
   minAdvanceHours: z.number().int().min(0).max(48).optional(),
   maxAdvanceDays: z.number().int().min(1).max(90).optional(),

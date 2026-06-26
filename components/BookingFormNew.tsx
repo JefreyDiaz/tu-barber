@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { z } from 'zod';
-import { tenantApiUrl } from '@/lib/tenant/client-api';
+import { tenantApiUrl, tenantHref } from '@/lib/tenant/client-api';
 
 type ServiceOption = { id: string; name: string; durationMinutes: number };
 
@@ -42,9 +42,7 @@ interface BookingFormProps {
 
 export default function BookingForm({ barberId, barberName, onSuccess }: BookingFormProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const tenantSlug = searchParams.get('tenant');
-  const homeHref = tenantSlug ? `/?tenant=${encodeURIComponent(tenantSlug)}` : '/';
+  const homeHref = tenantHref('/');
 
   const [selectedServiceId, setSelectedServiceId] = useState<string>('');
   const [services, setServices] = useState<ServiceOption[]>([]);
@@ -231,7 +229,7 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
         <h2 className="mb-3 text-lg font-semibold text-white sm:text-xl">Tipo de servicio</h2>
         {servicesLoading && <p className="text-sm text-white/45">Cargando servicios...</p>}
         {!servicesLoading && services.length === 0 && (
-          <p className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
+          <p className="rounded-xl border brand-border brand-bg-soft px-4 py-3 text-sm brand-accent-soft">
             Esta barbería aún no tiene servicios configurados.
           </p>
         )}
@@ -247,7 +245,7 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
                 }}
                 className={`rounded-xl border-2 p-4 text-left transition-all ${
                   selectedServiceId === svc.id
-                    ? 'plan-card-selected border-amber-500/50 bg-amber-500/10'
+                    ? 'plan-card-selected brand-border brand-bg-soft'
                     : 'glass-card border-white/10 hover:border-white/20'
                 }`}
               >
@@ -310,7 +308,7 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
                 let dayClass = 'text-white/80 hover:bg-white/10';
                 if (disabled) dayClass = 'cursor-not-allowed text-white/20';
                 else if (isSelected) dayClass = 'btn-accent font-semibold shadow-md';
-                else if (isToday) dayClass = 'bg-white/15 font-bold text-white ring-1 ring-amber-500/40';
+                else if (isToday) dayClass = 'bg-white/15 font-bold text-white brand-ring';
 
                 return (
                   <button
@@ -346,7 +344,7 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
             {selectedDate && (
               <>
                 {(loading || availableSlots.length > 0) && (
-                  <p className="mb-4 text-sm text-amber-400/90">{formatSelectedDate}</p>
+                  <p className="mb-4 text-sm brand-accent">{formatSelectedDate}</p>
                 )}
                 {loading && <div className="py-8 text-center text-white/45">Cargando horarios...</div>}
                 {!loading && availableSlots.length === 0 && (
@@ -364,7 +362,7 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
                           className={`min-h-[44px] touch-manipulation rounded-xl border-2 px-3 py-3 text-sm font-medium transition-all sm:px-4 ${
                             isSlotSelected
                               ? 'btn-accent border-transparent shadow-lg'
-                              : 'btn-glass border-white/10 hover:border-amber-500/30'
+                              : 'btn-glass border-white/10 brand-hover-border'
                           }`}
                         >
                           {slot}

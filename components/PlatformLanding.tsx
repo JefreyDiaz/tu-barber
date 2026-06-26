@@ -1,21 +1,67 @@
 import Link from 'next/link';
+import type { ReactNode } from 'react';
 import { PLAN_LIST, TRIAL_DAYS } from '@/lib/plans';
 import PlanCard from '@/components/platform/PlanCard';
+import FaqAccordion from '@/components/platform/FaqAccordion';
 import PlatformLogo from '@/components/PlatformLogo';
+
+function FeatureIconBox({ children }: { readonly children: ReactNode }) {
+  return (
+    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-400/10 text-amber-400 ring-1 ring-amber-400/20">
+      {children}
+    </div>
+  );
+}
+
+function CalendarIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.75} stroke="currentColor" className="h-5 w-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+    </svg>
+  );
+}
+
+function MessageIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.75} stroke="currentColor" className="h-5 w-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+    </svg>
+  );
+}
+
+function TeamIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.75} stroke="currentColor" className="h-5 w-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+    </svg>
+  );
+}
 
 const FEATURES = [
   {
-    icon: '📅',
+    icon: (
+      <FeatureIconBox>
+        <CalendarIcon />
+      </FeatureIconBox>
+    ),
     title: 'Reservas 24/7',
     desc: 'Tus clientes agendan desde el celular, a cualquier hora.',
   },
   {
-    icon: '💬',
+    icon: (
+      <FeatureIconBox>
+        <MessageIcon />
+      </FeatureIconBox>
+    ),
     title: 'WhatsApp automático',
     desc: 'Confirmaciones y recordatorios sin escribir a mano.',
   },
   {
-    icon: '✂️',
+    icon: (
+      <FeatureIconBox>
+        <TeamIcon />
+      </FeatureIconBox>
+    ),
     title: 'Tu equipo',
     desc: 'Cada barbero con su perfil, horarios y servicios.',
   },
@@ -82,31 +128,6 @@ export default function PlatformLanding() {
               </Link>
             </div>
           </div>
-
-          {/* Mock phone preview */}
-          <div className="relative mx-auto mt-10 max-w-[280px] animate-slide-in-bottom animation-delay-300">
-            <div className="glass-card-strong overflow-hidden rounded-[2rem] p-1 shadow-2xl shadow-black/50">
-              <div className="relative aspect-[9/16] overflow-hidden rounded-[1.75rem] bg-stone-900">
-                <div
-                  className="absolute inset-0 bg-cover bg-center opacity-60"
-                  style={{ backgroundImage: 'url(/image/barberos/Santiago_1.png)' }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/40 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 p-5 text-left">
-                  <p className="text-xs text-white/50">Tu barbería</p>
-                  <p className="text-lg font-bold">Elige tu barbero</p>
-                  <div className="mt-3 flex gap-2">
-                    <div className="h-16 w-16 rounded-2xl bg-white/10 backdrop-blur-md" />
-                    <div className="h-16 w-16 rounded-2xl bg-amber-500/20 ring-2 ring-amber-400/50 backdrop-blur-md" />
-                    <div className="h-16 w-16 rounded-2xl bg-white/10 backdrop-blur-md" />
-                  </div>
-                  <div className="btn-accent mt-4 rounded-xl py-2.5 text-center text-xs font-semibold">
-                    Reservar cita
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </section>
 
         {/* Features */}
@@ -119,7 +140,7 @@ export default function PlatformLanding() {
                 className="glass-card flex items-start gap-4 p-4 animate-slide-in-bottom"
                 style={{ animationDelay: `${i * 100}ms` }}
               >
-                <span className="text-2xl">{f.icon}</span>
+                <div className="shrink-0">{f.icon}</div>
                 <div>
                   <h3 className="font-semibold">{f.title}</h3>
                   <p className="mt-0.5 text-sm text-white/55">{f.desc}</p>
@@ -151,19 +172,7 @@ export default function PlatformLanding() {
         {/* FAQ */}
         <section className="py-10">
           <h2 className="text-center text-xl font-bold">Preguntas frecuentes</h2>
-          <div className="mt-6 space-y-3">
-            {FAQ.map((item) => (
-              <details key={item.q} className="glass-card group p-4">
-                <summary className="cursor-pointer list-none font-medium marker:content-none [&::-webkit-details-marker]:hidden">
-                  <span className="flex items-center justify-between gap-2">
-                    {item.q}
-                    <span className="text-white/40 transition group-open:rotate-45">+</span>
-                  </span>
-                </summary>
-                <p className="mt-3 text-sm leading-relaxed text-white/55">{item.a}</p>
-              </details>
-            ))}
-          </div>
+          <FaqAccordion items={FAQ} />
         </section>
 
         {/* Final CTA */}

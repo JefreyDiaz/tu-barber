@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth';
@@ -8,7 +9,10 @@ import { AdminNav } from './AdminNav';
 import TrialBanner from './TrialBanner';
 import { getTenantFromHeaders } from '@/lib/tenant/context';
 import { TENANT_SLUG_HEADER } from '@/lib/tenant/context';
-import { trialDaysLeft, isTrialing } from '@/lib/tenant/subscription';
+import { extractSubdomain } from '@/lib/tenant/host';
+import { trialDaysLeft, isTrialing, isMultiBarberPlan } from '@/lib/tenant/subscription';
+import { normalizePlanId } from '@/lib/plans';
+import { scopedPrisma } from '@/lib/tenant/prisma-scoped';
 
 export default async function AdminLayout({
   children,
@@ -18,7 +22,8 @@ export default async function AdminLayout({
   const tenant = await getTenantFromHeaders();
   const h = await headers();
   const slug = h.get(TENANT_SLUG_HEADER);
-  const tq = slug ? `?tenant=${slug}` : '';
+  const host = h.get('host') ?? '';
+  const tq = extractSubdomain(host) ? '' : slug ? `?tenant=${slug}` : '';
 
   const userCount = tenant
     ? await prisma.user.count({ where: { tenantId: tenant.id } })
@@ -38,6 +43,10 @@ export default async function AdminLayout({
   const headerTitle =
     user?.role === 'admin' ? shopName : user?.role === 'dueno' ? 'Mi Barbería' : 'Mi Panel';
 
+  const logoUrl = tenant
+    ? (await scopedPrisma(tenant.id).settings.findUnique())?.logoUrl?.trim() || null
+    : null;
+
   let trialInfo: { daysLeft: number; plan: string } | null = null;
   if (tenant && !isSetupMode) {
     const sub = {
@@ -53,6 +62,10 @@ export default async function AdminLayout({
     }
   }
 
+  const multiBarberPlan = tenant
+    ? isMultiBarberPlan(normalizePlanId(tenant.plan))
+    : true;
+
   return (
     <div className="admin-shell platform-bg min-h-screen min-h-[100dvh] text-white">
       {isSetupMode && (
@@ -63,11 +76,27 @@ export default async function AdminLayout({
 
       {trialInfo && <TrialBanner daysLeft={trialInfo.daysLeft} selectedPlan={trialInfo.plan} />}
 
-      <header className="sticky top-0 z-40 border-b border-white/5 bg-stone-950/75 backdrop-blur-xl">
+      <header className="sticky top-0 z-40 overflow-visible border-b border-white/5 bg-stone-950/75 backdrop-blur-xl">
         <div className="mx-auto max-w-5xl px-4 py-3">
           <div className="flex items-center justify-between gap-3">
-            <Link href={`/admin${tq}`} className="min-w-0 truncate text-base font-bold sm:text-lg">
-              {headerTitle}
+            <Link
+              href={`/admin${tq}`}
+              className="flex min-w-0 items-center"
+              aria-label={logoUrl ? shopName : undefined}
+            >
+              {logoUrl ? (
+                <Image
+                  src={logoUrl}
+                  alt={shopName}
+                  width={160}
+                  height={64}
+                  className="h-8 w-auto max-w-[9rem] object-contain object-left sm:h-9 sm:max-w-[10rem]"
+                  unoptimized
+                  priority
+                />
+              ) : (
+                <span className="truncate text-base font-bold sm:text-lg">{headerTitle}</span>
+              )}
             </Link>
             <Link
               href={`/${tq}`}
@@ -76,7 +105,12 @@ export default async function AdminLayout({
               Ver sitio
             </Link>
           </div>
-          <AdminNav tq={tq} isSetupMode={isSetupMode} role={user?.role} />
+          <AdminNav
+            tq={tq}
+            isSetupMode={isSetupMode}
+            role={user?.role}
+            multiBarberPlan={multiBarberPlan}
+          />
         </div>
       </header>
 

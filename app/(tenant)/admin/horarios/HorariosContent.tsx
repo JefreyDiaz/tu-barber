@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { ui } from '@/lib/admin-ui';
 import { getAvailableTimeSlots, getScheduleForDay } from '@/lib/schedule';
+import { DEFAULT_SLOT_STEP_MINUTES } from '@/lib/slot-step';
 import { formatColombiaTime, toColombiaDateString } from '@/lib/date-utils';
 import { tenantApiUrl } from '@/lib/tenant/client-api';
 
@@ -55,6 +56,7 @@ export default function HorariosContent({ barberId, barberName }: HorariosConten
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [slotStepMinutes, setSlotStepMinutes] = useState(DEFAULT_SLOT_STEP_MINUTES);
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -107,11 +109,27 @@ export default function HorariosContent({ barberId, barberName }: HorariosConten
     loadBookings();
   }, [loadBookings]);
 
+  useEffect(() => {
+    fetch(tenantApiUrl('/api/services'))
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+          const min = Math.min(
+            ...data.data.map((s: { durationMinutes: number }) => s.durationMinutes)
+          );
+          setSlotStepMinutes(min);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   // Fecha seleccionada como string YYYY-MM-DD (local)
   const selectedDateStr = selectedDate ? formatDateStr(selectedDate) : '';
 
   // Slots del día seleccionado
-  const selectedDateSlots = selectedDate ? getAvailableTimeSlots(selectedDate) : [];
+  const selectedDateSlots = selectedDate
+    ? getAvailableTimeSlots(selectedDate, null, slotStepMinutes, slotStepMinutes)
+    : [];
 
   // Filtrar bloqueos del día seleccionado comparando strings YYYY-MM-DD
   const dayBlocks = blocks.filter((b) => {
@@ -387,7 +405,8 @@ export default function HorariosContent({ barberId, barberName }: HorariosConten
                     {selectedDate.getDate()} de {MESES_ES[selectedDate.getMonth()]}
                   </h3>
                   <p className="mt-0.5 text-xs text-white/45">
-                    {DIAS_SEMANA[selectedDate.getDay()]} - {selectedDateSlots.length} turnos
+                    {DIAS_SEMANA[selectedDate.getDay()]} · {selectedDateSlots.length} turnos · cada{' '}
+                    {slotStepMinutes} min
                   </p>
                 </div>
                 <div className="flex gap-2">
@@ -500,7 +519,10 @@ export default function HorariosContent({ barberId, barberName }: HorariosConten
           </div>
           <div className="flex items-start gap-2">
             <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-white/30" />
-            <span><strong className="text-white/90">Duración por turno:</strong> 40 minutos</span>
+            <span>
+              <strong className="text-white/90">Intervalo de turnos:</strong> cada {slotStepMinutes}{' '}
+              min (según tu servicio más corto)
+            </span>
           </div>
         </div>
       </div>

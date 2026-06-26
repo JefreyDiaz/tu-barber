@@ -35,9 +35,7 @@ export async function sendTwilioTemplateMessage(
     });
 
     const ok = message.status !== 'failed' && message.status !== 'undelivered';
-    if (ok) {
-      console.log(`[Twilio] Message ${message.sid} queued (${message.status}) → ${to}`);
-    } else {
+    if (!ok) {
       console.error(`[Twilio] Message ${message.sid} status: ${message.status}`);
     }
     return ok;

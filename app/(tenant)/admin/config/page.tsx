@@ -36,6 +36,7 @@ export default function AdminConfigPage() {
     subscriptionStatus: 'none',
     trialDaysLeft: null as number | null,
     domainVerified: false,
+    canUseOwnTwilio: false,
     domainVerification: [] as Array<{ type: string; domain: string; value: string }>,
   });
 
@@ -59,6 +60,7 @@ export default function AdminConfigPage() {
             subscriptionStatus: json.data.subscriptionStatus ?? 'none',
             trialDaysLeft: json.data.trialDaysLeft ?? null,
             domainVerified: json.data.domainVerified ?? false,
+            canUseOwnTwilio: json.data.canUseOwnTwilio ?? false,
           }));
           if (json.data.scheduleJson) {
             setSchedule(json.data.scheduleJson as ScheduleConfig);
@@ -145,13 +147,13 @@ export default function AdminConfigPage() {
     <div className={ui.pageWide}>
       <div>
         <h1 className={ui.title}>Configuración</h1>
-        <p className={ui.subtitle}>Horarios, WhatsApp (Twilio) y dominio personalizado</p>
+        <p className={ui.subtitle}>Horarios, WhatsApp propio (plan Cadena) y dominio personalizado</p>
       </div>
       {message && <div className={ui.alertInfo}>{message}</div>}
       <section>
         <h2 className={ui.sectionTitle}>Horarios de la barbería</h2>
         <p className={`mb-4 mt-1 ${ui.muted}`}>
-          Turnos de 40 minutos dentro de cada bloque horario.
+          Los turnos en reservas y bloqueos usan el intervalo del servicio más corto activo.
         </p>
         <form onSubmit={handleSaveSchedule}>
           <ScheduleEditor value={schedule} onChange={setSchedule} />
@@ -160,10 +162,10 @@ export default function AdminConfigPage() {
           </button>
         </form>
       </section>
-      {(form.effectivePlan === 'negocio' || form.effectivePlan === 'cadena') && (
+      {form.canUseOwnTwilio && (
         <section>
           <form onSubmit={handleSaveTwilio} className="max-w-lg space-y-4">
-            <h2 className={ui.sectionTitle}>Twilio WhatsApp (Negocio / Cadena)</h2>
+            <h2 className={ui.sectionTitle}>Twilio WhatsApp (plan Cadena)</h2>
             <p className={`text-sm ${ui.muted}`}>
               Deja vacío para usar el WhatsApp de TuBarber. Si configuras Account SID y Auth Token,
               los mensajes salen de tu cuenta Twilio.

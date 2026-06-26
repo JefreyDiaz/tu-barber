@@ -7,6 +7,7 @@ import { sendBookingConfirmation, sendBarberNotification } from '@/lib/messaging
 import { auth } from '@/lib/auth';
 import { requireApiTenant, tenantApiErrorResponse } from '@/lib/tenant/api-helper';
 import { scopedPrisma, assertBarberInTenant } from '@/lib/tenant/prisma-scoped';
+import { resolveSlotStepMinutes } from '@/lib/slot-step';
 import { assertSameTenant } from '@/lib/tenant/permissions';
 import { prisma } from '@/lib/prisma';
 
@@ -88,6 +89,12 @@ export async function POST(request: NextRequest) {
 
     const durationMinutes = service.durationMinutes;
 
+    const activeServices = await db.service.findMany({
+      where: { isActive: true },
+      select: { durationMinutes: true },
+    });
+    const slotStepMinutes = resolveSlotStepMinutes(activeServices, settings?.slotDurationMinutes);
+
     const [year, month, day] = date.split('-').map(Number);
     const dateTime = combineDateAndTime(new Date(year, month - 1, day), time);
 
@@ -118,7 +125,8 @@ export async function POST(request: NextRequest) {
       durationMinutes,
       scheduleJson,
       occupiedIntervals,
-      new Set()
+      new Set(),
+      slotStepMinutes
     );
 
     if (!available.includes(time)) {
@@ -168,7 +176,8 @@ export async function POST(request: NextRequest) {
         bookingId: booking.id,
         tenantSlug: tenant.slug,
       },
-      tenantSettings
+      tenantSettings,
+      tenant
     );
 
     if (booking.barber.phone) {
@@ -180,7 +189,8 @@ export async function POST(request: NextRequest) {
           customerPhone: booking.customerPhone,
           dateTime: booking.dateTime,
         },
-        tenantSettings
+        tenantSettings,
+        tenant
       );
     }
 

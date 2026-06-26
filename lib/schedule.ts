@@ -1,5 +1,5 @@
 import { colombiaToUTC, getColombiaComponents } from './date-utils';
-import { DEFAULT_SCHEDULE, SLOT_STEP_MINUTES } from './tenant/defaults';
+import { DEFAULT_SCHEDULE } from './tenant/defaults';
 import { fitsInSchedule } from './slot-availability';
 
 export type TimeBlock = { start: number; end: number };
@@ -113,12 +113,14 @@ export function getScheduleForDay(dayOfWeek: number): TimeBlock[] | null {
 }
 
 /**
- * Genera horarios candidatos cada SLOT_STEP_MINUTES dentro de los bloques del día
+ * Genera horarios candidatos cada `stepMinutes` dentro de los bloques del día.
+ * Por defecto el paso coincide con la duración mínima a cubrir (servicio más corto).
  */
 export function getAvailableTimeSlots(
   date: Date,
   scheduleJson?: ScheduleConfig | null,
-  durationMinutes = SLOT_DURATION_MINUTES
+  stepMinutes = 30,
+  minDurationMinutes = stepMinutes
 ): string[] {
   const dayOfWeek = date.getDay();
   const blocks = getScheduleForDayFromConfig(dayOfWeek, scheduleJson);
@@ -126,7 +128,7 @@ export function getAvailableTimeSlots(
 
   const slots: string[] = [];
   for (const block of blocks) {
-    for (let m = block.start; m + durationMinutes <= block.end; m += SLOT_STEP_MINUTES) {
+    for (let m = block.start; m + minDurationMinutes <= block.end; m += stepMinutes) {
       slots.push(formatMinutesToAmPm(m));
     }
   }

@@ -5,22 +5,28 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import PlatformLogo from '@/components/PlatformLogo';
+import PasswordInput from '@/components/PasswordInput';
 
 interface LoginFormProps {
   tenantId?: string | null;
   tenantSlug?: string | null;
   tenantName?: string;
+  tenantDisplayHost?: string;
   platformLogin?: boolean;
 }
 
-export function LoginForm({ tenantId, tenantSlug, tenantName, platformLogin = false }: LoginFormProps) {
+export function LoginForm({
+  tenantId,
+  tenantSlug,
+  tenantName,
+  tenantDisplayHost,
+  platformLogin = false,
+}: LoginFormProps) {
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
-  const homeHref = tenantSlug ? `/?tenant=${encodeURIComponent(tenantSlug)}` : '/';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,8 +48,7 @@ export function LoginForm({ tenantId, tenantSlug, tenantName, platformLogin = fa
         return;
       }
 
-      const adminPath = tenantSlug ? `/admin?tenant=${encodeURIComponent(tenantSlug)}` : '/admin';
-      router.push(platformLogin ? '/platform/tenants' : adminPath);
+      router.push(platformLogin ? '/platform/tenants' : '/admin');
       router.refresh();
     } catch {
       setError('Error al iniciar sesión');
@@ -57,7 +62,7 @@ export function LoginForm({ tenantId, tenantSlug, tenantName, platformLogin = fa
         {platformLogin ? (
           <PlatformLogo size="lg" href="/" priority />
         ) : (
-          <Link href={homeHref} className="inline-block">
+          <Link href="/" className="inline-block">
             <h1 className="max-w-xs text-2xl font-bold leading-tight tracking-tight text-white sm:max-w-md sm:text-3xl">
               {tenantName ?? 'Mi Barbería'}
             </h1>
@@ -66,8 +71,8 @@ export function LoginForm({ tenantId, tenantSlug, tenantName, platformLogin = fa
         <p className="mt-2 text-sm text-white/45">
           {platformLogin ? 'Panel de administración de plataforma' : 'Panel de administración'}
         </p>
-        {!platformLogin && tenantSlug && (
-          <p className="mt-1 font-mono text-xs text-amber-400/70">{tenantSlug}.tubarber.com</p>
+        {!platformLogin && tenantDisplayHost && (
+          <p className="mt-1 font-mono text-xs text-amber-400/70">{tenantDisplayHost}</p>
         )}
       </div>
 
@@ -104,13 +109,11 @@ export function LoginForm({ tenantId, tenantSlug, tenantName, platformLogin = fa
             <label htmlFor="password" className="mb-2 block text-sm font-medium text-white/75">
               Contraseña
             </label>
-            <input
+            <PasswordInput
               id="password"
-              type="password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="glass-input w-full px-4 py-3 text-sm"
               placeholder="••••••••"
               autoComplete="current-password"
             />
@@ -126,10 +129,7 @@ export function LoginForm({ tenantId, tenantSlug, tenantName, platformLogin = fa
         </form>
 
         <div className="mt-6 text-center">
-          <Link
-            href={platformLogin ? '/' : homeHref}
-            className="text-sm text-white/45 hover:text-amber-400/90"
-          >
+          <Link href="/" className="text-sm text-white/45 hover:text-amber-400/90">
             ← Volver al inicio
           </Link>
         </div>
