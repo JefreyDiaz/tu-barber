@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { usernameSchema } from '@/lib/validations/username';
 
 export const createUserSchema = z.object({
   name: z
@@ -6,11 +7,7 @@ export const createUserSchema = z.object({
     .min(2, 'El nombre debe tener al menos 2 caracteres')
     .max(50, 'El nombre no puede exceder 50 caracteres')
     .trim(),
-  username: z
-    .string()
-    .min(3, 'El usuario debe tener al menos 3 caracteres')
-    .max(30, 'El usuario no puede exceder 30 caracteres')
-    .regex(/^[a-zA-Z0-9_]+$/, 'Solo letras, números y guión bajo'),
+  username: usernameSchema,
   password: z
     .string()
     .min(8, 'La contraseña debe tener al menos 8 caracteres')
@@ -35,11 +32,7 @@ export const updateUserSchema = z.object({
     .min(2, 'El nombre debe tener al menos 2 caracteres')
     .max(50, 'El nombre no puede exceder 50 caracteres')
     .trim(),
-  username: z
-    .string()
-    .min(3, 'El usuario debe tener al menos 3 caracteres')
-    .max(30, 'El usuario no puede exceder 30 caracteres')
-    .regex(/^[a-zA-Z0-9_]+$/, 'Solo letras, números y guión bajo'),
+  username: usernameSchema,
   password: z
     .string()
     .min(8, 'La contraseña debe tener al menos 8 caracteres')

@@ -5,6 +5,7 @@ import { customDomainSchema } from '@/lib/validations/tenant';
 import { addDomainToVercel, checkDomainVerification } from '@/lib/vercel/domains';
 import { canUseCustomDomain } from '@/lib/tenant/subscription';
 import { sendTenantWelcomeMessage } from '@/lib/messaging/welcome';
+import { notifyTenantApproved } from '@/lib/email/notify-tenant-approved';
 import { startTrialEndDate } from '@/lib/tenant/subscription';
 
 export const dynamic = 'force-dynamic';
@@ -71,6 +72,15 @@ export async function PATCH(
         planId: approvedPlan,
         username: dueno?.username ?? '—',
       }).catch((err) => console.error('[welcome]', err));
+
+      void notifyTenantApproved({
+        shopName: tenant.name,
+        slug: tenant.slug,
+        plan: approvedPlan,
+        ownerName: tenant.onboarding.ownerName,
+        ownerEmail: tenant.onboarding.ownerEmail,
+        username: dueno?.username ?? '—',
+      });
     }
   } else if (action === 'reject') {
     await prisma.$transaction([

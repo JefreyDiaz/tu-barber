@@ -42,7 +42,6 @@ function tenantUrls(slug: string) {
   return {
     public: buildTenantUrl(slug, '/'),
     login: buildTenantUrl(slug, '/login'),
-    admin: buildTenantUrl(slug, '/admin'),
   };
 }
 
@@ -257,13 +256,6 @@ function TenantCard({
               className="btn-glass rounded-xl px-3 py-2 text-xs font-medium"
             >
               Login dueño
-            </Link>
-            <Link
-              href={buildTenantUrl(tenant.slug, '/admin')}
-              target="_blank"
-              className="btn-glass rounded-xl px-3 py-2 text-xs font-medium"
-            >
-              Panel admin
             </Link>
             <CopyLinkButton href={urls.public} label="Copiar sitio" />
             <CopyLinkButton href={urls.login} label="Copiar login" />

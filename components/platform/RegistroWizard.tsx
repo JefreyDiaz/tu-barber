@@ -5,7 +5,9 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import PlanCard from '@/components/platform/PlanCard';
 import PlatformLogo from '@/components/PlatformLogo';
+import PasswordInput from '@/components/PasswordInput';
 import { PLAN_LIST, TRIAL_DAYS, type PlanId, isValidPlanId } from '@/lib/plans';
+import { isUsernameValid, sanitizeUsernameInput } from '@/lib/validations/username';
 
 const STEPS = ['Plan', 'Barbería', 'Cuenta'] as const;
 const ROOT_DOMAIN = process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? 'tubarber.co';
@@ -25,7 +27,7 @@ function isAccountStepValid(form: {
     form.ownerName.trim().length >= 2 &&
     form.ownerEmail.includes('@') &&
     /^\d{10}$/.test(form.ownerPhone) &&
-    form.username.trim().length >= 3 &&
+    isUsernameValid(form.username) &&
     form.password.length >= 8
   );
 }
@@ -255,8 +257,10 @@ function RegistroWizardInner() {
             <WizardField
               label="Usuario de acceso"
               value={form.username}
-              onChange={(v) => setForm((f) => ({ ...f, username: v }))}
+              onChange={(v) => setForm((f) => ({ ...f, username: sanitizeUsernameInput(v) }))}
               required
+              placeholder="mi_usuario"
+              hint="Letras, números, guión (-) y guión bajo (_). Sin espacios."
             />
             <WizardField
               label="Contraseña"
@@ -337,15 +341,25 @@ function WizardField({
   return (
     <div>
       <label className="mb-1.5 block text-sm font-medium text-white/80">{label}</label>
-      <input
-        type={type}
-        required={required}
-        value={value}
-        placeholder={placeholder}
-        minLength={type === 'password' ? 8 : undefined}
-        onChange={(e) => onChange(e.target.value)}
-        className="glass-input w-full px-4 py-3 text-sm"
-      />
+      {type === 'password' ? (
+        <PasswordInput
+          required={required}
+          value={value}
+          placeholder={placeholder}
+          minLength={8}
+          autoComplete="new-password"
+          onChange={(e) => onChange(e.target.value)}
+        />
+      ) : (
+        <input
+          type={type}
+          required={required}
+          value={value}
+          placeholder={placeholder}
+          onChange={(e) => onChange(e.target.value)}
+          className="glass-input w-full px-4 py-3 text-sm"
+        />
+      )}
       {hint && <p className="mt-1.5 text-xs text-white/40">{hint}</p>}
     </div>
   );

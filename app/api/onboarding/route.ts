@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { hashPassword } from '@/lib/password';
 import { notifyNewTenantRegistration } from '@/lib/email/notify-new-tenant';
+import { notifyTenantRegistrationReceived } from '@/lib/email/notify-tenant-registration-received';
 import { onboardingSchema, formatOnboardingValidationError } from '@/lib/validations/tenant';
 import { DEFAULT_SCHEDULE, DEFAULT_SERVICES } from '@/lib/tenant/defaults';
 
@@ -76,6 +77,14 @@ export async function POST(request: NextRequest) {
       ownerEmail,
       ownerPhone,
       username,
+    });
+
+    void notifyTenantRegistrationReceived({
+      shopName,
+      slug,
+      plan,
+      ownerName,
+      ownerEmail,
     });
 
     return NextResponse.json({ success: true, data: tenant }, { status: 201 });

@@ -21,14 +21,18 @@ function parseRecipientList(raw: string | undefined): string[] {
   return recipients;
 }
 
-export function getResendConfig(): ResendConfig | null {
+export function getResendSendConfig(): { apiKey: string; from: string } | null {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM;
+  if (!apiKey || !from) return null;
+  return { apiKey, from };
+}
+
+export function getResendConfig(): ResendConfig | null {
+  const sendConfig = getResendSendConfig();
   const notifyTo = parseRecipientList(process.env.RESEND_TENANT_NOTIFY_TO);
-
-  if (!apiKey || !from || notifyTo.length === 0) return null;
-
-  return { apiKey, from, notifyTo };
+  if (!sendConfig || notifyTo.length === 0) return null;
+  return { ...sendConfig, notifyTo };
 }
 
 export function getPlatformAppUrl(): string {

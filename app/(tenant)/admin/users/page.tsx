@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import PhotoUploadField from '@/components/PhotoUploadField';
 import { ui } from '@/lib/admin-ui';
 import { tenantApiUrl } from '@/lib/tenant/client-api';
+import { sanitizeUsernameInput } from '@/lib/validations/username';
 
 type User = {
   id: string;
@@ -150,7 +151,7 @@ function EditUserModal({
             <div>
               <label htmlFor="edit-username" className={ui.label}>Usuario (login) *</label>
               <input id="edit-username" type="text" required minLength={3} maxLength={30}
-                value={form.username} onChange={(e) => setForm((f) => ({ ...f, username: e.target.value.toLowerCase().replaceAll(/\s/g, '_') }))}
+                value={form.username} onChange={(e) => setForm((f) => ({ ...f, username: sanitizeUsernameInput(e.target.value) }))}
                 className={ui.input} />
             </div>
             <div>
@@ -493,7 +494,7 @@ export default function AdminUsersPage() {
               <div>
                 <label htmlFor="username" className={ui.label}>Usuario (login) *</label>
                 <input id="username" type="text" required minLength={3} maxLength={30}
-                  value={form.username} onChange={(e) => setForm((f) => ({ ...f, username: e.target.value.toLowerCase().replaceAll(/\s/g, '_') }))}
+                  value={form.username} onChange={(e) => setForm((f) => ({ ...f, username: sanitizeUsernameInput(e.target.value) }))}
                   className={ui.input}
                   placeholder="Ej. juanperez" />
                 <p className={`mt-1 ${ui.muted}`}>Solo letras, números y guión bajo</p>

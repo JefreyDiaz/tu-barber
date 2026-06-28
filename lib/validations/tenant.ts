@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { usernameSchema } from '@/lib/validations/username';
 import { PLAN_IDS } from '@/lib/plans';
 
 const slugSchema = z
@@ -20,7 +21,7 @@ export const onboardingSchema = z.object({
     .string()
     .regex(/^\d{10}$/, 'Debe tener exactamente 10 dígitos')
     .transform((s) => '+57' + s),
-  username: z.string().trim().min(3, 'Mínimo 3 caracteres').max(30, 'Máximo 30 caracteres'),
+  username: usernameSchema,
   password: z.string().min(8, 'Mínimo 8 caracteres'),
   plan: z.enum(PLAN_IDS, { error: 'Plan inválido' }).default('negocio'),
 });
