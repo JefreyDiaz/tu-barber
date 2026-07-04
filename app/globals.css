@@ -201,6 +201,33 @@ body {
 
 /* ===== Platform / SaaS landing (glassmorphism) ===== */
 
+@keyframes barbershopsMarquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.barbershops-marquee {
+  animation: barbershopsMarquee 50s linear infinite;
+}
+
+.barbershops-marquee:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .barbershops-marquee {
+    animation: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100% !important;
+    max-width: 100%;
+  }
+}
+
 .platform-bg {
   background:
     radial-gradient(ellipse 80% 60% at 50% -10%, rgba(229, 184, 105, 0.18), transparent),

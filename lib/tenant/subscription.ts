@@ -11,11 +11,32 @@ export interface TenantSubscription {
   plan: string;
   subscriptionStatus: string;
   trialEndsAt: Date | null;
+  subscriptionEndsAt?: Date | null;
 }
 
 export function startTrialEndDate(from: Date = new Date()): Date {
   const end = new Date(from);
   end.setDate(end.getDate() + TRIAL_DAYS);
+  return end;
+}
+
+/** When the current access period ends (trial or paid month). */
+export function getSubscriptionPeriodEnd(tenant: TenantSubscription): Date | null {
+  if (tenant.subscriptionStatus === 'trialing') {
+    return tenant.trialEndsAt;
+  }
+  if (
+    tenant.subscriptionStatus === 'active' ||
+    tenant.subscriptionStatus === 'past_due'
+  ) {
+    return tenant.subscriptionEndsAt ?? tenant.trialEndsAt;
+  }
+  return null;
+}
+
+export function nextSubscriptionPeriodEnd(from: Date = new Date()): Date {
+  const end = new Date(from);
+  end.setMonth(end.getMonth() + 1);
   return end;
 }
 

@@ -4,6 +4,8 @@ import { PLAN_LIST, TRIAL_DAYS } from '@/lib/plans';
 import PlanCard from '@/components/platform/PlanCard';
 import FaqAccordion from '@/components/platform/FaqAccordion';
 import PlatformLogo from '@/components/PlatformLogo';
+import ActiveBarbershopsCarousel from '@/components/platform/ActiveBarbershopsCarousel';
+import type { ShowcaseBarbershop } from '@/lib/tenant/public-directory';
 
 function FeatureIconBox({ children }: { readonly children: ReactNode }) {
   return (
@@ -82,7 +84,11 @@ const FAQ = [
   },
 ];
 
-export default function PlatformLanding() {
+export default function PlatformLanding({
+  barbershops = [],
+}: {
+  barbershops?: ShowcaseBarbershop[];
+}) {
   return (
     <div className="platform-bg min-h-screen min-h-[100dvh] text-white">
       {/* Nav */}
@@ -129,6 +135,8 @@ export default function PlatformLanding() {
             </div>
           </div>
         </section>
+
+        <ActiveBarbershopsCarousel shops={barbershops} />
 
         {/* Features */}
         <section className="py-10">

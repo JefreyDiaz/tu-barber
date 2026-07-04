@@ -41,8 +41,21 @@ Templates usan variables `{{1}}`, `{{2}}`, … Ver `.cursor/rules/twilio-messagi
 
 ### Cron recordatorios
 
-- `CRON_SECRET` — protege `GET /api/cron/reminders`
-- Llamar cada 15 min con `Authorization: Bearer <CRON_SECRET>`
+- `CRON_SECRET` — protege los endpoints cron
+- `GET /api/cron/reminders` — recordatorios de reservas (cada 15 min)
+- `GET /api/cron/subscription-reminders` — vencimientos de suscripción (1 vez al día, ej. 9:00 AM Bogotá)
+
+Ambos con `Authorization: Bearer <CRON_SECRET>`.
+
+### Suscripción manual (sin pasarela)
+
+- `SUBSCRIPTION_PAYMENT_PHONES` — números para transferencia, separados por coma (ej. `311 240 5194, 300 123 4567`)
+- `TWILIO_CONTENT_SID_RENEWAL` — template WhatsApp recordatorio de renovación (variables {{1}}–{{6}}, ver abajo)
+
+Template renovación sugerido:
+> Hola {{1}}, te escribimos de TuBarber. Tu {{3}} de *{{2}}* vence mañana ({{4}}). Para continuar sin interrupciones, realiza tu pago hoy a: {{5}}. Valor: {{6}}. Si ya pagaste, ignora este mensaje — con gusto confirmamos tu abono.
+
+Variables: 1=nombre dueño, 2=barbería, 3=tipo período, 4=fecha vencimiento, 5=teléfonos pago, 6=precio plan.
 
 ## Desarrollo local
 

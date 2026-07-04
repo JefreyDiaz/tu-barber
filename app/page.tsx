@@ -5,6 +5,7 @@ import TenantSiteShell from '@/components/TenantSiteShell';
 import Image from 'next/image';
 import { assertTenantExists, getTenantFromHeaders } from '@/lib/tenant/context';
 import { resolveTenantBranding } from '@/lib/tenant/branding';
+import { getActiveBarbershopsForShowcase } from '@/lib/tenant/public-directory';
 import { scopedPrisma } from '@/lib/tenant/prisma-scoped';
 import { redirect } from 'next/navigation';
 
@@ -15,7 +16,8 @@ export default async function Home() {
   const tenant = await getTenantFromHeaders();
 
   if (!tenant) {
-    return <PlatformLanding />;
+    const barbershops = await getActiveBarbershopsForShowcase();
+    return <PlatformLanding barbershops={barbershops} />;
   }
 
   if (tenant.status !== 'active') {

@@ -15,6 +15,7 @@ All WhatsApp messaging goes through **Twilio Content API** (approved utility tem
 - `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_WHATSAPP_FROM`
 - `TWILIO_CONTENT_SID_BOOKING`, `TWILIO_CONTENT_SID_BARBER`, `TWILIO_CONTENT_SID_REMINDER`
 - `TWILIO_CONTENT_SID_WELCOME` (optional, on tenant approval)
+- `TWILIO_CONTENT_SID_RENEWAL` (optional, 1 day before subscription/trial ends)
 
 ## Config resolution
 
@@ -28,6 +29,8 @@ All WhatsApp messaging goes through **Twilio Content API** (approved utility tem
 **Barber:** 1=barberName, 2=customerName, 3=customerPhone, 4=bookingDate, 5=bookingTime
 
 **Welcome:** 1=ownerName, 2=shopName, 3=planSummary, 4=adminLoginUrl, 5=username, 6=bookingUrl
+
+**Renewal:** 1=ownerName, 2=shopName, 3=periodType, 4=expiresDate, 5=paymentPhones, 6=planPrice
 
 ## Fail-safe
 

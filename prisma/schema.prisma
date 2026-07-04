@@ -19,6 +19,8 @@ model Tenant {
   plan               String    @default("emprendedor") // emprendedor | negocio | cadena
   subscriptionStatus String    @default("none")    // none | trialing | active | past_due | canceled
   trialEndsAt        DateTime?
+  subscriptionEndsAt DateTime?
+  renewalReminderSentFor DateTime?
   timezone           String    @default("America/Bogota")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt

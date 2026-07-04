@@ -15,6 +15,7 @@ interface TenantRow {
   plan: string;
   subscriptionStatus: string;
   trialEndsAt: string | null;
+  subscriptionEndsAt: string | null;
   customDomain: string | null;
   createdAt: string;
   updatedAt: string;
@@ -102,6 +103,18 @@ function CopyLinkButton({ href, label }: { href: string; label: string }) {
   );
 }
 
+function periodEndForTenant(tenant: TenantRow): string | null {
+  if (tenant.subscriptionStatus === 'trialing') return tenant.trialEndsAt;
+  if (tenant.subscriptionStatus === 'active' || tenant.subscriptionStatus === 'past_due') {
+    return tenant.subscriptionEndsAt ?? tenant.trialEndsAt;
+  }
+  return null;
+}
+
+function periodEndLabel(subscriptionStatus: string): string {
+  return subscriptionStatus === 'trialing' ? 'Prueba hasta' : 'Vence';
+}
+
 function TenantCard({
   tenant,
   onAction,
@@ -116,6 +129,7 @@ function TenantCard({
     tenant.subscriptionStatus === 'trialing' && tenant.trialEndsAt
       ? getTrialDaysRemaining(new Date(tenant.trialEndsAt))
       : null;
+  const periodEnd = periodEndForTenant(tenant);
 
   const subLabels: Record<string, string> = {
     none: 'Sin suscripción',
@@ -173,10 +187,8 @@ function TenantCard({
               value={formatDate(tenant.onboarding?.reviewedAt)}
             />
             <InfoCell
-              label="Prueba hasta"
-              value={
-                tenant.trialEndsAt ? formatDate(tenant.trialEndsAt) : '—'
-              }
+              label={periodEndLabel(tenant.subscriptionStatus)}
+              value={periodEnd ? formatDate(periodEnd) : '—'}
             />
             <InfoCell
               label="Suscripción"
@@ -215,14 +227,26 @@ function TenantCard({
             </>
           )}
           {tenant.status === 'active' && (
-            <button
-              type="button"
-              disabled={acting === tenant.id}
-              onClick={() => onAction(tenant.id, 'suspend')}
-              className="rounded-xl bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-500 disabled:opacity-50"
-            >
-              Suspender
-            </button>
+            <>
+              {['trialing', 'active', 'past_due'].includes(tenant.subscriptionStatus) && (
+                <button
+                  type="button"
+                  disabled={acting === tenant.id}
+                  onClick={() => onAction(tenant.id, 'renew')}
+                  className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500 disabled:opacity-50"
+                >
+                  Registrar pago
+                </button>
+              )}
+              <button
+                type="button"
+                disabled={acting === tenant.id}
+                onClick={() => onAction(tenant.id, 'suspend')}
+                className="rounded-xl bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-500 disabled:opacity-50"
+              >
+                Suspender
+              </button>
+            </>
           )}
           {tenant.status === 'suspended' && (
             <button
@@ -289,11 +313,29 @@ export default function PlatformTenantsPage() {
   const [acting, setActing] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | 'pending' | 'active' | 'trialing'>('all');
 
+  const [loadError, setLoadError] = useState<string | null>(null);
+
   async function load() {
-    const res = await fetch('/api/platform/tenants');
-    const json = await res.json();
-    if (json.success) setTenants(json.data);
-    setLoading(false);
+    setLoadError(null);
+    try {
+      const res = await fetch('/api/platform/tenants');
+      const text = await res.text();
+      if (!text.trim()) {
+        throw new Error('Respuesta vacía del servidor');
+      }
+      const json = JSON.parse(text) as { success?: boolean; data?: TenantRow[]; error?: string };
+      if (!res.ok || !json.success) {
+        throw new Error(json.error ?? `Error ${res.status}`);
+      }
+      setTenants(json.data ?? []);
+    } catch (err) {
+      console.error('[platform/tenants]', err);
+      setLoadError(
+        err instanceof Error ? err.message : 'No se pudieron cargar las barberías'
+      );
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -388,6 +430,22 @@ export default function PlatformTenantsPage() {
             </button>
           ))}
         </div>
+
+        {loadError && (
+          <div className="mb-4 rounded-2xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+            {loadError}
+            <button
+              type="button"
+              onClick={() => {
+                setLoading(true);
+                void load();
+              }}
+              className="ml-3 underline hover:text-red-200"
+            >
+              Reintentar
+            </button>
+          </div>
+        )}
 
         {loading ? (
           <div className="glass-card p-8 text-center text-white/50">Cargando barberías...</div>

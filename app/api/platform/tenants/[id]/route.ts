@@ -3,10 +3,14 @@ import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth';
 import { customDomainSchema } from '@/lib/validations/tenant';
 import { addDomainToVercel, checkDomainVerification } from '@/lib/vercel/domains';
-import { canUseCustomDomain } from '@/lib/tenant/subscription';
+import {
+  canUseCustomDomain,
+  getSubscriptionPeriodEnd,
+  nextSubscriptionPeriodEnd,
+  startTrialEndDate,
+} from '@/lib/tenant/subscription';
 import { sendTenantWelcomeMessage } from '@/lib/messaging/welcome';
 import { notifyTenantApproved } from '@/lib/email/notify-tenant-approved';
-import { startTrialEndDate } from '@/lib/tenant/subscription';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,7 +26,7 @@ export async function PATCH(
   const { id } = await params;
   const body = await request.json();
   const { action, rejectionNote, plan } = body as {
-    action: 'approve' | 'reject' | 'suspend' | 'reactivate';
+    action: 'approve' | 'reject' | 'suspend' | 'reactivate' | 'renew';
     rejectionNote?: string;
     plan?: string;
   };
@@ -98,6 +102,20 @@ export async function PATCH(
     await prisma.tenant.update({ where: { id }, data: { status: 'suspended' } });
   } else if (action === 'reactivate') {
     await prisma.tenant.update({ where: { id }, data: { status: 'active' } });
+  } else if (action === 'renew') {
+    const currentEnd = getSubscriptionPeriodEnd(tenant) ?? new Date();
+    const base = currentEnd > new Date() ? currentEnd : new Date();
+    const subscriptionEndsAt = nextSubscriptionPeriodEnd(base);
+
+    await prisma.tenant.update({
+      where: { id },
+      data: {
+        status: 'active',
+        subscriptionStatus: 'active',
+        subscriptionEndsAt,
+        renewalReminderSentFor: null,
+      },
+    });
   } else {
     return NextResponse.json({ success: false, error: 'Acción inválida' }, { status: 400 });
   }

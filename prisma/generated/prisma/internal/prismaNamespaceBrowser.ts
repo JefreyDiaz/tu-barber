@@ -85,6 +85,8 @@ export const TenantScalarFieldEnum = {
   plan: 'plan',
   subscriptionStatus: 'subscriptionStatus',
   trialEndsAt: 'trialEndsAt',
+  subscriptionEndsAt: 'subscriptionEndsAt',
+  renewalReminderSentFor: 'renewalReminderSentFor',
   timezone: 'timezone',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

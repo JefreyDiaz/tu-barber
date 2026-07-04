@@ -6,6 +6,7 @@ export interface TwilioConfig {
   contentSidBarber?: string;
   contentSidReminder?: string;
   contentSidWelcome?: string;
+  contentSidRenewal?: string;
 }
 
 export interface TenantTwilioSettings {

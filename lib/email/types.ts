@@ -31,3 +31,15 @@ export interface TenantApprovedPayload {
   ownerEmail: string;
   username: string;
 }
+
+export interface SubscriptionExpiringAdminPayload {
+  shopName: string;
+  slug: string;
+  plan: string;
+  ownerName: string;
+  ownerEmail: string;
+  ownerPhone: string;
+  periodEnd: Date;
+  timezone: string;
+  subscriptionStatus: string;
+}

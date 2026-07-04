@@ -28,6 +28,9 @@ export function getPlatformTwilioConfig(): TwilioConfig | null {
     contentSidWelcome:
       process.env.TWILIO_CONTENT_SID_WELCOME ??
       process.env.TWILIO_WHATSAPP_WELCOME_TEMPLATE_SID,
+    contentSidRenewal:
+      process.env.TWILIO_CONTENT_SID_RENEWAL ??
+      process.env.TWILIO_WHATSAPP_RENEWAL_TEMPLATE_SID,
   };
 }
 
