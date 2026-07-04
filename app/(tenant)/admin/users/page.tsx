@@ -6,6 +6,7 @@ import PhotoUploadField from '@/components/PhotoUploadField';
 import { ui } from '@/lib/admin-ui';
 import { tenantApiUrl } from '@/lib/tenant/client-api';
 import { sanitizeUsernameInput } from '@/lib/validations/username';
+import { useToast } from '@/components/ToastProvider';
 
 type User = {
   id: string;
@@ -71,6 +72,7 @@ function EditUserModal({
   onClose: () => void;
   onSuccess: () => void;
 }>) {
+  const toast = useToast();
   const [form, setForm] = useState({
     name: user.name,
     username: user.username,
@@ -110,6 +112,7 @@ function EditUserModal({
         setError(data.error ?? 'Error al actualizar usuario');
         return;
       }
+      toast.success('Usuario actualizado correctamente');
       onSuccess();
       onClose();
     } catch {
@@ -225,6 +228,7 @@ function EditUserLimitedModal({
   onClose: () => void;
   onSuccess: () => void;
 }>) {
+  const toast = useToast();
   const [form, setForm] = useState({
     name: user.name,
     phone: user.phone ? user.phone.replace('+57', '') : '',
@@ -258,6 +262,7 @@ function EditUserLimitedModal({
         setError(data.error ?? 'Error al actualizar');
         return;
       }
+      toast.success('Usuario actualizado correctamente');
       onSuccess();
       onClose();
     } catch {
@@ -379,6 +384,7 @@ function DeleteConfirmModal({
 
 export default function AdminUsersPage() {
   const { data: session } = useSession();
+  const toast = useToast();
   const currentRole = session?.user?.role;
   const isAdmin = currentRole === 'admin';
   const isOwner = currentRole === 'dueno';

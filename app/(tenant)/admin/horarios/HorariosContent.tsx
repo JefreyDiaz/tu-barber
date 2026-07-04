@@ -2,10 +2,14 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { ui } from '@/lib/admin-ui';
-import { getAvailableTimeSlots, getScheduleForDay } from '@/lib/schedule';
+import { getAvailableTimeSlots, getScheduleForDayFromConfig } from '@/lib/schedule';
+import type { ScheduleConfig } from '@/lib/schedule';
+import { DEFAULT_SCHEDULE } from '@/lib/tenant/defaults';
 import { DEFAULT_SLOT_STEP_MINUTES } from '@/lib/slot-step';
+import { buildScheduleSummary, scheduleSummaryDotClass } from '@/lib/schedule-summary';
 import { formatColombiaTime, toColombiaDateString } from '@/lib/date-utils';
 import { tenantApiUrl } from '@/lib/tenant/client-api';
+import { useToast } from '@/components/ToastProvider';
 
 type BlockedSlot = {
   id: string;
@@ -50,13 +54,14 @@ interface HorariosContentProps {
 }
 
 export default function HorariosContent({ barberId, barberName }: HorariosContentProps) {
+  const toast = useToast();
   const [blocks, setBlocks] = useState<BlockedSlot[]>([]);
   const [blocksLoading, setBlocksLoading] = useState(false);
   const [bookedMap, setBookedMap] = useState<Map<string, Set<string>>>(new Map());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [slotStepMinutes, setSlotStepMinutes] = useState(DEFAULT_SLOT_STEP_MINUTES);
+  const [scheduleJson, setScheduleJson] = useState<ScheduleConfig>(DEFAULT_SCHEDULE);
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -110,6 +115,15 @@ export default function HorariosContent({ barberId, barberName }: HorariosConten
   }, [loadBookings]);
 
   useEffect(() => {
+    fetch(tenantApiUrl('/api/admin/settings'))
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.data?.scheduleJson) {
+          setScheduleJson(data.data.scheduleJson as ScheduleConfig);
+        }
+      })
+      .catch(() => {});
+
     fetch(tenantApiUrl('/api/services'))
       .then((res) => res.json())
       .then((data) => {
@@ -128,8 +142,10 @@ export default function HorariosContent({ barberId, barberName }: HorariosConten
 
   // Slots del día seleccionado
   const selectedDateSlots = selectedDate
-    ? getAvailableTimeSlots(selectedDate, null, slotStepMinutes, slotStepMinutes)
+    ? getAvailableTimeSlots(selectedDate, scheduleJson, slotStepMinutes, slotStepMinutes)
     : [];
+
+  const scheduleSummary = buildScheduleSummary(scheduleJson, slotStepMinutes);
 
   // Filtrar bloqueos del día seleccionado comparando strings YYYY-MM-DD
   const dayBlocks = blocks.filter((b) => {
@@ -155,8 +171,8 @@ export default function HorariosContent({ barberId, barberName }: HorariosConten
   });
 
   const showMessage = (type: 'success' | 'error', text: string) => {
-    setMessage({ type, text });
-    setTimeout(() => setMessage(null), 3000);
+    if (type === 'success') toast.success(text);
+    else toast.error(text);
   };
 
   // Bloquear día completo
@@ -266,7 +282,9 @@ export default function HorariosContent({ barberId, barberName }: HorariosConten
     displayMonth.getFullYear() < maxDate.getFullYear() ||
     (displayMonth.getFullYear() === maxDate.getFullYear() && displayMonth.getMonth() < maxDate.getMonth());
 
-  const hasSchedule = selectedDate ? getScheduleForDay(selectedDate.getDay()) !== null : false;
+  const hasSchedule = selectedDate
+    ? getScheduleForDayFromConfig(selectedDate.getDay(), scheduleJson) !== null
+    : false;
 
   return (
     <div className={ui.page}>
@@ -276,12 +294,6 @@ export default function HorariosContent({ barberId, barberName }: HorariosConten
           {barberName}, bloquea días completos o turnos específicos de tu agenda
         </p>
       </div>
-
-      {message && (
-        <div className={message.type === 'success' ? ui.alertSuccess : ui.alertError}>
-          {message.text}
-        </div>
-      )}
 
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Calendario */}
@@ -501,29 +513,16 @@ export default function HorariosContent({ barberId, barberName }: HorariosConten
       <div className={ui.card}>
         <h3 className={`mb-3 text-sm ${ui.sectionTitle}`}>Horarios configurados</h3>
         <div className="space-y-2 text-sm text-white/70">
-          <div className="flex items-start gap-2">
-            <span className="h-2 w-2 rounded-full bg-blue-500 mt-1.5 shrink-0" />
-            <span><strong>Lun, Mar, Jue, Vie:</strong> 7:40-11:40 AM | 2:00-7:30 PM | 8:00-10:00 PM</span>
-          </div>
-          <div className="flex items-start gap-2">
-            <span className="h-2 w-2 rounded-full bg-red-400 mt-1.5 shrink-0" />
-            <span><strong>Miércoles:</strong> No trabaja</span>
-          </div>
-          <div className="flex items-start gap-2">
-            <span className="h-2 w-2 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
-            <span><strong>Sáb, Dom:</strong> 7 AM-1 PM | 1:40-10 PM</span>
-          </div>
-          <div className="flex items-start gap-2">
-            <span className="h-2 w-2 rounded-full bg-amber-400 mt-1.5 shrink-0" />
-            <span><strong>Comida:</strong> 7:30-8:00 PM (Lun-Vie) | 1:00-1:40 PM (Sáb-Dom)</span>
-          </div>
-          <div className="flex items-start gap-2">
-            <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-white/30" />
-            <span>
-              <strong className="text-white/90">Intervalo de turnos:</strong> cada {slotStepMinutes}{' '}
-              min (según tu servicio más corto)
-            </span>
-          </div>
+          {scheduleSummary.map((line) => (
+            <div key={`${line.kind}-${line.label}-${line.detail}`} className="flex items-start gap-2">
+              <span
+                className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${scheduleSummaryDotClass(line.color)}`}
+              />
+              <span>
+                <strong className="text-white/90">{line.label}:</strong> {line.detail}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
     </div>

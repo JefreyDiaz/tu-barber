@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { ui } from '@/lib/admin-ui';
 import { tenantApiUrl } from '@/lib/tenant/client-api';
+import { useToast } from '@/components/ToastProvider';
 
 type Service = {
   id: string;
@@ -15,12 +16,12 @@ type Service = {
 const emptyForm = { name: '', durationMinutes: 30 };
 
 export default function AdminServicesPage() {
+  const toast = useToast();
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState(emptyForm);
   const [editing, setEditing] = useState<Service | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   function load() {
@@ -60,7 +61,6 @@ export default function AdminServicesPage() {
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    setSuccess(null);
     setSubmitting(true);
     try {
       const res = await fetch(tenantApiUrl('/api/admin/services'), {
@@ -70,14 +70,14 @@ export default function AdminServicesPage() {
       });
       const json = await res.json();
       if (!res.ok) {
-        setError(json.error ?? 'Error al crear');
+        toast.error(json.error ?? 'Error al crear');
         return;
       }
-      setSuccess('Servicio creado');
+      toast.success('Servicio creado correctamente');
       setForm(emptyForm);
       load();
     } catch {
-      setError('Error de conexión');
+      toast.error('Error de conexión');
     } finally {
       setSubmitting(false);
     }
@@ -87,7 +87,6 @@ export default function AdminServicesPage() {
     e.preventDefault();
     if (!editing) return;
     setSubmitting(true);
-    setError(null);
     try {
       const res = await fetch(tenantApiUrl(`/api/admin/services/${editing.id}`), {
         method: 'PUT',
@@ -100,14 +99,14 @@ export default function AdminServicesPage() {
       });
       const json = await res.json();
       if (!res.ok) {
-        setError(json.error ?? 'Error al guardar');
+        toast.error(json.error ?? 'Error al guardar');
         return;
       }
-      setSuccess('Servicio actualizado');
+      toast.success('Servicio actualizado correctamente');
       setEditing(null);
       load();
     } catch {
-      setError('Error de conexión');
+      toast.error('Error de conexión');
     } finally {
       setSubmitting(false);
     }
@@ -117,8 +116,11 @@ export default function AdminServicesPage() {
     if (!confirm('¿Eliminar este servicio?')) return;
     const res = await fetch(tenantApiUrl(`/api/admin/services/${id}`), { method: 'DELETE' });
     if (res.ok) {
-      setSuccess('Servicio eliminado');
+      toast.success('Servicio eliminado correctamente');
       load();
+    } else {
+      const json = await res.json().catch(() => ({}));
+      toast.error(json.error ?? 'Error al eliminar');
     }
   }
 
@@ -134,9 +136,6 @@ export default function AdminServicesPage() {
 
       {error && (
         <div className={ui.alertError}>{error}</div>
-      )}
-      {success && (
-        <div className={ui.alertSuccess}>{success}</div>
       )}
 
       <form onSubmit={handleCreate} className={ui.card}>

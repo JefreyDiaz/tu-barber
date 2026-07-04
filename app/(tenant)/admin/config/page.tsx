@@ -5,6 +5,7 @@ import ScheduleEditor, { type ScheduleConfig } from '@/components/ScheduleEditor
 import { ui } from '@/lib/admin-ui';
 import { DEFAULT_SCHEDULE } from '@/lib/tenant/defaults';
 import { tenantApiUrl } from '@/lib/tenant/client-api';
+import { useToast } from '@/components/ToastProvider';
 
 const TWILIO_FIELDS = [
   { key: 'twilioAccountSid', label: 'Account SID' },
@@ -18,9 +19,9 @@ const TWILIO_FIELDS = [
 type TwilioFieldKey = (typeof TWILIO_FIELDS)[number]['key'];
 
 export default function AdminConfigPage() {
+  const toast = useToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
   const [tenantId, setTenantId] = useState('');
   const [schedule, setSchedule] = useState<ScheduleConfig>(DEFAULT_SCHEDULE);
   const [form, setForm] = useState({
@@ -73,7 +74,6 @@ export default function AdminConfigPage() {
   async function handleSaveTwilio(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
-    setMessage(null);
     const res = await fetch(tenantApiUrl('/api/admin/settings'), {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -88,13 +88,13 @@ export default function AdminConfigPage() {
     });
     const json = await res.json();
     setSaving(false);
-    setMessage(json.success ? 'Twilio guardado' : json.error ?? 'Error al guardar');
+    if (json.success) toast.success('Twilio guardado correctamente');
+    else toast.error(json.error ?? 'Error al guardar');
   }
 
   async function handleSaveSchedule(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
-    setMessage(null);
     const res = await fetch(tenantApiUrl('/api/admin/settings'), {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -102,7 +102,8 @@ export default function AdminConfigPage() {
     });
     const json = await res.json();
     setSaving(false);
-    setMessage(json.success ? 'Horarios guardados' : json.error ?? 'Error al guardar horarios');
+    if (json.success) toast.success('Horarios guardados correctamente');
+    else toast.error(json.error ?? 'Error al guardar horarios');
   }
 
   async function saveCustomDomain() {
@@ -121,9 +122,9 @@ export default function AdminConfigPage() {
         domainVerified: json.data?.domainVerified ?? false,
         domainVerification: json.verification ?? [],
       }));
-      setMessage(json.hint ?? 'Dominio registrado');
+      toast.success(json.hint ?? 'Dominio registrado correctamente');
     } else {
-      setMessage(json.error ?? 'Error');
+      toast.error(json.error ?? 'Error');
     }
   }
 
@@ -137,7 +138,8 @@ export default function AdminConfigPage() {
         domainVerified: json.data.verified,
         domainVerification: json.verification ?? [],
       }));
-      setMessage(json.data.verified ? 'Dominio verificado' : 'Pendiente de verificación DNS');
+      if (json.data.verified) toast.success('Dominio verificado correctamente');
+      else toast.error('Pendiente de verificación DNS');
     }
   }
 
@@ -149,7 +151,6 @@ export default function AdminConfigPage() {
         <h1 className={ui.title}>Configuración</h1>
         <p className={ui.subtitle}>Horarios, WhatsApp propio (plan Cadena) y dominio personalizado</p>
       </div>
-      {message && <div className={ui.alertInfo}>{message}</div>}
       <section>
         <h2 className={ui.sectionTitle}>Horarios de la barbería</h2>
         <p className={`mb-4 mt-1 ${ui.muted}`}>

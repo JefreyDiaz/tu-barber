@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { ui } from '@/lib/admin-ui';
 import { COLOMBIA_TZ } from '@/lib/date-utils';
+import { useToast } from '@/components/ToastProvider';
 
 type Booking = {
   id: string;
@@ -23,13 +24,12 @@ const toLocalDateString = (date: Date) => {
 const getTodayString = () => toLocalDateString(new Date());
 
 export default function MisReservasPage() {
+  const toast = useToast();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterDate, setFilterDate] = useState<string>(getTodayString());
   const [cancelTarget, setCancelTarget] = useState<Booking | null>(null);
   const [isCancelling, setIsCancelling] = useState(false);
-  const [actionError, setActionError] = useState<string | null>(null);
-  const [actionSuccess, setActionSuccess] = useState<string | null>(null);
 
   useEffect(() => {
     fetch('/api/bookings/mis-reservas')
@@ -74,7 +74,6 @@ export default function MisReservasPage() {
     items.toSorted((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime());
 
   const openCancelModal = (booking: Booking) => {
-    setActionError(null);
     setCancelTarget(booking);
   };
 
@@ -87,8 +86,6 @@ export default function MisReservasPage() {
     if (!cancelTarget) return;
 
     setIsCancelling(true);
-    setActionError(null);
-    setActionSuccess(null);
 
     try {
       const response = await fetch(`/api/bookings/${cancelTarget.id}`, {
@@ -97,15 +94,15 @@ export default function MisReservasPage() {
       const data = await response.json();
 
       if (!response.ok || !data.success) {
-        setActionError(data.error || 'No se pudo cancelar la reserva');
+        toast.error(data.error || 'No se pudo cancelar la reserva');
         return;
       }
 
       setBookings((prev) => prev.filter((booking) => booking.id !== cancelTarget.id));
-      setActionSuccess(`Cita de las ${formatTime(cancelTarget.dateTime)} cancelada correctamente.`);
+      toast.success(`Cita de las ${formatTime(cancelTarget.dateTime)} cancelada correctamente`);
       setCancelTarget(null);
     } catch {
-      setActionError('Error de conexión. Intenta de nuevo.');
+      toast.error('Error de conexión. Intenta de nuevo.');
     } finally {
       setIsCancelling(false);
     }
@@ -166,17 +163,6 @@ export default function MisReservasPage() {
           </span>
         )}
       </div>
-
-      {actionSuccess && (
-        <div className={ui.alertSuccess}>
-          {actionSuccess}
-        </div>
-      )}
-      {actionError && (
-        <div className={ui.alertError}>
-          {actionError}
-        </div>
-      )}
 
       {loading ? (
         <div className="flex items-center justify-center py-12">

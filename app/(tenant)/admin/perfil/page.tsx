@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import PhotoUploadField from '@/components/PhotoUploadField';
 import { ui } from '@/lib/admin-ui';
 import { tenantApiUrl } from '@/lib/tenant/client-api';
+import { useToast } from '@/components/ToastProvider';
 
 type Profile = {
   id: string;
@@ -17,11 +18,11 @@ type Profile = {
 
 export default function AdminPerfilPage() {
   const { data: session, update } = useSession();
+  const toast = useToast();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
   const [form, setForm] = useState({ name: '', phone: '', password: '' });
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
 
@@ -49,8 +50,6 @@ export default function AdminPerfilPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
-    setError(null);
-    setSuccess(null);
     try {
       const res = await fetch(tenantApiUrl('/api/admin/me'), {
         method: 'PATCH',
@@ -64,14 +63,14 @@ export default function AdminPerfilPage() {
       });
       const json = await res.json();
       if (!res.ok) {
-        setError(json.error ?? 'Error al guardar');
+        toast.error(json.error ?? 'Error al guardar');
         return;
       }
-      setSuccess('Perfil actualizado');
+      toast.success('Perfil actualizado correctamente');
       setProfile(json.data);
       await update({ name: json.data.name, image: json.data.photo });
     } catch {
-      setError('Error de conexión');
+      toast.error('Error de conexión');
     } finally {
       setSaving(false);
     }
@@ -97,9 +96,6 @@ export default function AdminPerfilPage() {
       {error && (
         <div className={ui.alertError}>{error}</div>
       )}
-      {success && (
-        <div className={ui.alertSuccess}>{success}</div>
-      )}
 
       <form onSubmit={handleSubmit} className={`space-y-6 ${ui.card}`}>
         <PhotoUploadField
@@ -107,7 +103,7 @@ export default function AdminPerfilPage() {
           currentPhoto={photoUrl}
           onUploaded={async (url) => {
             setPhotoUrl(url);
-            setSuccess('Foto actualizada');
+            toast.success('Foto actualizada correctamente');
             await update({ image: url });
           }}
         />

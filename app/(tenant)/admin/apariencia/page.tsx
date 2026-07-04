@@ -9,11 +9,12 @@ import {
   DEFAULT_SECONDARY_COLOR,
 } from '@/lib/tenant/branding';
 import { tenantApiUrl } from '@/lib/tenant/client-api';
+import { useToast } from '@/components/ToastProvider';
 
 export default function AdminAparienciaPage() {
+  const toast = useToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
   const [form, setForm] = useState({
     logoUrl: '',
     backgroundUrl: '',
@@ -71,25 +72,23 @@ export default function AdminAparienciaPage() {
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
-    setMessage(null);
 
     try {
       await persistBranding(form);
-      setMessage('Apariencia guardada');
+      toast.success('Apariencia guardada correctamente');
     } catch (err) {
-      setMessage(err instanceof Error ? err.message : 'Error de conexión al guardar');
+      toast.error(err instanceof Error ? err.message : 'Error de conexión al guardar');
     } finally {
       setSaving(false);
     }
   }
 
   async function resetBackground() {
-    setMessage(null);
     try {
       await persistBranding({ backgroundUrl: '' });
-      setMessage('Fondo restaurado al predeterminado');
+      toast.success('Fondo restaurado correctamente');
     } catch (err) {
-      setMessage(err instanceof Error ? err.message : 'Error al restaurar fondo');
+      toast.error(err instanceof Error ? err.message : 'Error al restaurar fondo');
     }
   }
 
@@ -121,18 +120,6 @@ export default function AdminAparienciaPage() {
           Personaliza cómo ven tus clientes la página principal y el flujo de reservas
         </p>
       </div>
-
-      {message && (
-        <p
-          className={
-            message === 'Apariencia guardada' || message === 'Fondo restaurado al predeterminado'
-              ? ui.alertSuccess
-              : ui.alertError
-          }
-        >
-          {message}
-        </p>
-      )}
 
       <form onSubmit={handleSave} className="space-y-8">
         <section className={ui.card}>
