@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import Image from 'next/image';
 import { tenantApiUrl } from '@/lib/tenant/client-api';
+import { useToast } from '@/components/ToastProvider';
 
 interface PhotoUploadFieldProps {
   userId: string;
@@ -17,6 +18,7 @@ export default function PhotoUploadField({
   onUploaded,
   label = 'Foto de perfil',
 }: PhotoUploadFieldProps) {
+  const toast = useToast();
   const inputRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(currentPhoto ?? null);
   const [uploading, setUploading] = useState(false);
@@ -40,8 +42,11 @@ export default function PhotoUploadField({
       }
       setPreview(json.data.url);
       onUploaded(json.data.url);
+      toast.success('Foto guardada correctamente');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al subir imagen');
+      const msg = err instanceof Error ? err.message : 'Error al subir imagen';
+      setError(msg);
+      toast.error(msg);
     } finally {
       setUploading(false);
     }

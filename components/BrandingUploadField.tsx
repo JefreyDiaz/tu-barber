@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { tenantApiUrl } from '@/lib/tenant/client-api';
+import { useToast } from '@/components/ToastProvider';
 import { isVideoBackground } from '@/lib/tenant/branding';
 import { BRANDING_UPLOAD_LIMITS } from '@/lib/supabase/storage';
 
@@ -40,11 +41,11 @@ export default function BrandingUploadField({
   hint,
   previewClassName,
 }: BrandingUploadFieldProps) {
+  const toast = useToast();
   const inputRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(currentUrl ?? null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     setPreview(currentUrl ?? null);
@@ -52,7 +53,6 @@ export default function BrandingUploadField({
 
   async function handleFile(file: File) {
     setError(null);
-    setSaved(false);
 
     const validationError = validateBrandingFile(file, kind);
     if (validationError) {
@@ -86,9 +86,11 @@ export default function BrandingUploadField({
       }
       setPreview(json.data.url);
       await onUploaded(json.data.url);
-      setSaved(true);
+      toast.success('Archivo guardado correctamente');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al subir archivo');
+      const msg = err instanceof Error ? err.message : 'Error al subir archivo';
+      setError(msg);
+      toast.error(msg);
     } finally {
       setUploading(false);
     }
@@ -142,9 +144,6 @@ export default function BrandingUploadField({
             {uploading ? 'Subiendo...' : preview ? 'Cambiar archivo' : 'Subir archivo'}
           </button>
           <p className="mt-1 text-xs text-white/40">{hint}</p>
-          {saved && !error && (
-            <p className="mt-1 text-xs text-emerald-400/90">Archivo guardado correctamente</p>
-          )}
         </div>
       </div>
       {error && <p className="mt-2 text-sm text-red-300">{error}</p>}

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { signOut } from 'next-auth/react';
 import { PLANS, getTrialDaysRemaining, normalizePlanId } from '@/lib/plans';
 import PlatformLogo from '@/components/PlatformLogo';
+import { useToast } from '@/components/ToastProvider';
 import { buildTenantUrl, formatTenantHost } from '@/lib/tenant/urls';
 
 interface TenantRow {
@@ -308,6 +309,7 @@ function InfoCell({ label, value }: { label: string; value: string }) {
 }
 
 export default function PlatformTenantsPage() {
+  const toast = useToast();
   const [tenants, setTenants] = useState<TenantRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [acting, setActing] = useState<string | null>(null);
@@ -344,13 +346,24 @@ export default function PlatformTenantsPage() {
 
   async function action(id: string, actionName: string) {
     setActing(id);
-    await fetch(`/api/platform/tenants/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: actionName }),
-    });
-    await load();
-    setActing(null);
+    try {
+      const res = await fetch(`/api/platform/tenants/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: actionName }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.success) {
+        toast.error(json.error ?? 'No se pudo completar la acción');
+        return;
+      }
+      toast.success('Cambios guardados correctamente');
+      await load();
+    } catch {
+      toast.error('Error de conexión');
+    } finally {
+      setActing(null);
+    }
   }
 
   const stats = useMemo(() => {

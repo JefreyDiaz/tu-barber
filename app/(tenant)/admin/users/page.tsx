@@ -393,7 +393,6 @@ export default function AdminUsersPage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
   const [form, setForm] = useState(defaultForm);
 
   const [editingUser, setEditingUser] = useState<User | null>(null);
@@ -416,7 +415,6 @@ export default function AdminUsersPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    setSuccess(null);
     setSubmitting(true);
 
     try {
@@ -440,7 +438,7 @@ export default function AdminUsersPage() {
         setError(data.error ?? 'Error al crear usuario');
         return;
       }
-      setSuccess('Usuario creado correctamente');
+      toast.success('Usuario creado correctamente');
       setForm(defaultForm);
       fetchUsers();
     } catch {
@@ -461,14 +459,14 @@ export default function AdminUsersPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error ?? 'Error al eliminar usuario');
+        toast.error(data.error ?? 'Error al eliminar usuario');
         return;
       }
-      setSuccess('Usuario eliminado correctamente');
+      toast.success('Usuario eliminado correctamente');
       setDeletingUser(null);
       fetchUsers();
     } catch {
-      setError('Error de conexión');
+      toast.error('Error de conexión');
     } finally {
       setDeleteLoading(false);
     }
@@ -485,9 +483,6 @@ export default function AdminUsersPage() {
           <form onSubmit={handleSubmit} className={ui.card}>
             {error && (
               <div className={`mb-4 ${ui.alertError}`}>{error}</div>
-            )}
-            {success && (
-              <div className={`mb-4 ${ui.alertSuccess}`}>{success}</div>
             )}
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
@@ -561,15 +556,8 @@ export default function AdminUsersPage() {
       )}
 
       {/* Mensajes para dueño */}
-      {isOwner && (
-        <>
-          {error && (
-            <div className={ui.alertError}>{error}</div>
-          )}
-          {success && (
-            <div className={ui.alertSuccess}>{success}</div>
-          )}
-        </>
+      {isOwner && error && (
+        <div className={ui.alertError}>{error}</div>
       )}
 
       {/* Lista de usuarios */}
