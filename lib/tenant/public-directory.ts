@@ -1,12 +1,15 @@
 import { prisma } from '@/lib/prisma';
+import { getPlatformAppUrl } from '@/lib/email/get-config';
 import { buildTenantUrl } from '@/lib/tenant/urls';
+import {
+  BARBERSHOPS_SECTION_ID,
+  type ShowcaseBarbershop,
+} from '@/lib/tenant/showcase';
 
-export interface ShowcaseBarbershop {
-  slug: string;
-  name: string;
-  logoUrl: string | null;
-  href: string;
-}
+export type { ShowcaseBarbershop } from '@/lib/tenant/showcase';
+export { BARBERSHOPS_SECTION_ID, BARBERSHOPS_SECTION_HASH } from '@/lib/tenant/showcase';
+
+export const BARBERSHOPS_LANDING_URL = `${getPlatformAppUrl()}#${BARBERSHOPS_SECTION_ID}`;
 
 /** Active tenants for the platform landing showcase carousel. */
 export async function getActiveBarbershopsForShowcase(): Promise<ShowcaseBarbershop[]> {

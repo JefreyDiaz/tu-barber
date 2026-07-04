@@ -201,7 +201,7 @@ body {
 
 /* ===== Platform / SaaS landing (glassmorphism) ===== */
 
-@keyframes barbershopsMarquee {
+@keyframes barbershopsMarqueeLeft {
   from {
     transform: translateX(0);
   }
@@ -210,16 +210,31 @@ body {
   }
 }
 
-.barbershops-marquee {
-  animation: barbershopsMarquee 50s linear infinite;
+@keyframes barbershopsMarqueeRight {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
-.barbershops-marquee:hover {
+.barbershops-marquee-left {
+  animation: barbershopsMarqueeLeft 55s linear infinite;
+}
+
+.barbershops-marquee-right {
+  animation: barbershopsMarqueeRight 55s linear infinite;
+}
+
+.barbershops-marquee-left:hover,
+.barbershops-marquee-right:hover {
   animation-play-state: paused;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .barbershops-marquee {
+  .barbershops-marquee-left,
+  .barbershops-marquee-right {
     animation: none;
     flex-wrap: wrap;
     justify-content: center;

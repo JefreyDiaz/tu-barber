@@ -5,7 +5,7 @@ import PlanCard from '@/components/platform/PlanCard';
 import FaqAccordion from '@/components/platform/FaqAccordion';
 import PlatformLogo from '@/components/PlatformLogo';
 import ActiveBarbershopsCarousel from '@/components/platform/ActiveBarbershopsCarousel';
-import type { ShowcaseBarbershop } from '@/lib/tenant/public-directory';
+import type { ShowcaseBarbershop } from '@/lib/tenant/showcase';
 
 function FeatureIconBox({ children }: { readonly children: ReactNode }) {
   return (
