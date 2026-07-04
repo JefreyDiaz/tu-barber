@@ -237,8 +237,10 @@ body {
   overscroll-behavior-x: contain;
   -webkit-overflow-scrolling: touch;
   scroll-snap-type: x proximity;
+  scroll-behavior: auto;
   scrollbar-width: none;
   touch-action: pan-x;
+  max-width: 100%;
 }
 
 .barbershops-touch-row::-webkit-scrollbar {
@@ -253,6 +255,10 @@ body {
     justify-content: center;
     width: 100% !important;
     max-width: 100%;
+  }
+
+  .barbershops-touch-row {
+    overflow-x: auto;
   }
 }
 

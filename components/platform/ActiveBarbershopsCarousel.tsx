@@ -121,26 +121,86 @@ function splitIntoRows(shops: readonly ShowcaseBarbershop[]): [ShowcaseBarbersho
   return [row1, row2];
 }
 
-function buildMarqueeTrack(rowShops: readonly ShowcaseBarbershop[]): ShowcaseBarbershop[] {
+function buildScrollTrack(rowShops: readonly ShowcaseBarbershop[]): ShowcaseBarbershop[] {
   if (rowShops.length === 0) return [];
   const segment: ShowcaseBarbershop[] = [];
-  while (segment.length < Math.max(6, rowShops.length * 2)) {
+  while (segment.length < Math.max(8, rowShops.length * 2)) {
     segment.push(...rowShops);
   }
   return [...segment, ...segment];
 }
 
-function TouchScrollRow({
+function buildMarqueeTrack(rowShops: readonly ShowcaseBarbershop[]): ShowcaseBarbershop[] {
+  return buildScrollTrack(rowShops);
+}
+
+function MobileAutoScrollRow({
   shops,
+  direction,
   rowKey,
 }: {
   readonly shops: readonly ShowcaseBarbershop[];
+  readonly direction: 'left' | 'right';
   readonly rowKey: string;
 }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const pausedRef = useRef(false);
+
+  const track = useMemo(() => buildScrollTrack(shops), [shops]);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el || shops.length === 0) return;
+
+    const segmentWidth = el.scrollWidth / 2;
+    if (direction === 'right' && segmentWidth > 0) {
+      el.scrollLeft = segmentWidth * 0.25;
+    }
+
+    let frameId = 0;
+    const speed = direction === 'left' ? 0.55 : -0.55;
+
+    const tick = () => {
+      if (!pausedRef.current && el.scrollWidth > el.clientWidth) {
+        el.scrollLeft += speed;
+        const half = el.scrollWidth / 2;
+        if (el.scrollLeft >= half) el.scrollLeft -= half;
+        if (el.scrollLeft <= 0) el.scrollLeft += half;
+      }
+      frameId = requestAnimationFrame(tick);
+    };
+
+    frameId = requestAnimationFrame(tick);
+
+    const pause = () => {
+      pausedRef.current = true;
+    };
+    const resume = () => {
+      pausedRef.current = false;
+    };
+
+    el.addEventListener('touchstart', pause, { passive: true });
+    el.addEventListener('touchend', resume, { passive: true });
+    el.addEventListener('touchcancel', resume, { passive: true });
+    el.addEventListener('pointerdown', pause);
+    el.addEventListener('pointerup', resume);
+    el.addEventListener('pointerleave', resume);
+
+    return () => {
+      cancelAnimationFrame(frameId);
+      el.removeEventListener('touchstart', pause);
+      el.removeEventListener('touchend', resume);
+      el.removeEventListener('touchcancel', resume);
+      el.removeEventListener('pointerdown', pause);
+      el.removeEventListener('pointerup', resume);
+      el.removeEventListener('pointerleave', resume);
+    };
+  }, [shops, direction]);
+
   if (shops.length === 0) return null;
 
   return (
-    <div className="barbershops-touch-row relative py-1 md:hidden">
+    <div className="relative w-full min-w-0 py-1 md:hidden">
       <div
         className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 bg-gradient-to-r from-[#0c0a09] to-transparent"
         aria-hidden
@@ -149,10 +209,12 @@ function TouchScrollRow({
         className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 bg-gradient-to-l from-[#0c0a09] to-transparent"
         aria-hidden
       />
-      <div className="flex w-max gap-3 px-4">
-        {shops.map((shop) => (
-          <ShopCard key={`${rowKey}-${shop.slug}`} shop={shop} compact />
-        ))}
+      <div ref={scrollRef} className="barbershops-touch-row w-full min-w-0">
+        <div className="flex w-max gap-3 px-4">
+          {track.map((shop, index) => (
+            <ShopCard key={`${rowKey}-${shop.slug}-${index}`} shop={shop} compact />
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -174,7 +236,7 @@ function MarqueeRow({
     direction === 'left' ? 'barbershops-marquee-left' : 'barbershops-marquee-right';
 
   return (
-    <div className="relative hidden overflow-hidden py-1 md:block">
+    <div className="relative hidden w-full min-w-0 overflow-hidden py-1 md:block">
       <div
         className="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-gradient-to-r from-[#0c0a09] to-transparent sm:w-16"
         aria-hidden
@@ -197,9 +259,9 @@ function CarouselRows({ shops }: { readonly shops: readonly ShowcaseBarbershop[]
   const singleRow = row2.length === 0;
 
   return (
-    <div className="space-y-3 sm:space-y-4">
-      <TouchScrollRow shops={row1} rowKey="touch-r1" />
-      {!singleRow && <TouchScrollRow shops={row2} rowKey="touch-r2" />}
+    <div className="w-full min-w-0 space-y-3 sm:space-y-4">
+      <MobileAutoScrollRow shops={row1} direction="right" rowKey="touch-r1" />
+      {!singleRow && <MobileAutoScrollRow shops={row2} direction="left" rowKey="touch-r2" />}
       <MarqueeRow shops={row1} direction="right" rowKey="r1" />
       {!singleRow && <MarqueeRow shops={row2} direction="left" rowKey="r2" />}
     </div>
@@ -341,12 +403,12 @@ export default function ActiveBarbershopsCarousel({ shops }: ActiveBarbershopsCa
         ) : null}
 
         {showCarousel && (
-          <>
+          <div className="w-full min-w-0">
             <p className="mb-3 text-center text-xs text-white/35 md:hidden">
-              Desliza con el dedo para ver más →
+              Desliza con el dedo para ver más · suelta para continuar
             </p>
             <CarouselRows shops={shops} />
-          </>
+          </div>
         )}
       </div>
     </section>
