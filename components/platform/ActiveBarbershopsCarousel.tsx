@@ -1,7 +1,7 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
+import LogoFrame from '@/components/LogoFrame';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ShowcaseBarbershop } from '@/lib/tenant/showcase';
 import { BARBERSHOPS_SECTION_HASH, BARBERSHOPS_SECTION_ID } from '@/lib/tenant/showcase';
@@ -55,18 +55,13 @@ function ShopCard({
         compact ? 'w-[132px] snap-start' : 'w-full'
       }`}
     >
-      <div className="relative flex h-[68px] w-[68px] items-center justify-center overflow-hidden rounded-xl bg-stone-900/80 ring-1 ring-white/10 transition-all group-hover:ring-amber-400/40 sm:h-[72px] sm:w-[72px]">
+      <div className="relative flex h-10 w-24 items-center justify-center transition-all group-hover:scale-[1.02]">
         {shop.logoUrl ? (
-          <Image
-            src={shop.logoUrl}
-            alt=""
-            width={72}
-            height={72}
-            className="h-full w-full object-contain p-2"
-            unoptimized={shop.logoUrl.includes('?v=')}
-          />
+          <LogoFrame src={shop.logoUrl} alt="" size="carousel" className="shadow-none ring-white/10 group-hover:ring-amber-400/40" />
         ) : (
-          <span className="text-2xl font-bold text-amber-400/90">{initial}</span>
+          <div className="flex h-10 w-24 items-center justify-center overflow-hidden rounded-full bg-stone-900/80 ring-1 ring-white/10 transition-all group-hover:ring-amber-400/40">
+            <span className="text-xl font-bold text-amber-400/90">{initial}</span>
+          </div>
         )}
       </div>
       <p className="line-clamp-2 text-center text-sm font-semibold leading-snug text-white/85 transition-colors group-hover:text-amber-100">
@@ -86,18 +81,13 @@ function SearchResultCard({ shop }: { readonly shop: ShowcaseBarbershop }) {
       rel="noopener noreferrer"
       className="group flex items-center gap-3 rounded-2xl border border-white/8 bg-white/[0.04] p-3 transition-all hover:border-amber-400/35 hover:bg-amber-400/[0.06]"
     >
-      <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-stone-900/80 ring-1 ring-white/10">
+      <div className="flex h-10 w-24 shrink-0 items-center justify-center">
         {shop.logoUrl ? (
-          <Image
-            src={shop.logoUrl}
-            alt=""
-            width={48}
-            height={48}
-            className="h-full w-full object-contain p-1.5"
-            unoptimized={shop.logoUrl.includes('?v=')}
-          />
+          <LogoFrame src={shop.logoUrl} alt="" size="carousel" className="shadow-none ring-white/10" />
         ) : (
-          <span className="text-lg font-bold text-amber-400/90">{initial}</span>
+          <div className="flex h-10 w-24 items-center justify-center overflow-hidden rounded-full bg-stone-900/80 ring-1 ring-white/10">
+            <span className="text-lg font-bold text-amber-400/90">{initial}</span>
+          </div>
         )}
       </div>
       <div className="min-w-0 flex-1">

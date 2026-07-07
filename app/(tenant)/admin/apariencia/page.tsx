@@ -124,12 +124,14 @@ export default function AdminAparienciaPage() {
       <form onSubmit={handleSave} className="space-y-8">
         <section className={ui.card}>
           <h2 className={ui.sectionTitle}>Logo</h2>
-          <p className={`mt-1 ${ui.muted}`}>Se muestra en la página principal de tu barbería</p>
+          <p className={`mt-1 ${ui.muted}`}>
+            Se muestra en forma de píldora horizontal en la página principal de tu barbería
+          </p>
           <div className="mt-4">
             <BrandingUploadField
               kind="logo"
               label="Logo de la barbería"
-              hint="JPG, PNG o WebP · máx. 2 MB · fondo transparente recomendado"
+              hint="JPG, PNG o WebP · máx. 2 MB · forma de píldora horizontal"
               currentUrl={form.logoUrl || null}
               onUploaded={async (url) => {
                 setForm((f) => ({ ...f, logoUrl: url }));

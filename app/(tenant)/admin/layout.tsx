@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth';
@@ -7,6 +6,7 @@ import { prisma } from '@/lib/prisma';
 import { SignOutButton } from './SignOutButton';
 import { AdminNav } from './AdminNav';
 import TrialBanner from './TrialBanner';
+import LogoFrame from '@/components/LogoFrame';
 import { getTenantFromHeaders } from '@/lib/tenant/context';
 import { TENANT_SLUG_HEADER } from '@/lib/tenant/context';
 import { extractSubdomain } from '@/lib/tenant/host';
@@ -85,15 +85,7 @@ export default async function AdminLayout({
               aria-label={logoUrl ? shopName : undefined}
             >
               {logoUrl ? (
-                <Image
-                  src={logoUrl}
-                  alt={shopName}
-                  width={160}
-                  height={64}
-                  className="h-8 w-auto max-w-[9rem] object-contain object-left sm:h-9 sm:max-w-[10rem]"
-                  unoptimized
-                  priority
-                />
+                <LogoFrame src={logoUrl} alt={shopName} size="admin" priority />
               ) : (
                 <span className="truncate text-base font-bold sm:text-lg">{headerTitle}</span>
               )}

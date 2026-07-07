@@ -5,13 +5,16 @@ import Link from 'next/link';
 import { signOut } from 'next-auth/react';
 import { PLANS, getTrialDaysRemaining, normalizePlanId } from '@/lib/plans';
 import PlatformLogo from '@/components/PlatformLogo';
+import LogoFrame from '@/components/LogoFrame';
 import { useToast } from '@/components/ToastProvider';
+import { LOGO_PILL_CLASS, logoFrameClassName } from '@/lib/logo-frame';
 import { buildTenantUrl, formatTenantHost } from '@/lib/tenant/urls';
 
 interface TenantRow {
   id: string;
   slug: string;
   name: string;
+  logoUrl: string | null;
   status: string;
   plan: string;
   subscriptionStatus: string;
@@ -116,6 +119,30 @@ function periodEndLabel(subscriptionStatus: string): string {
   return subscriptionStatus === 'trialing' ? 'Prueba hasta' : 'Vence';
 }
 
+function TenantCardLogo({ name, logoUrl }: { name: string; logoUrl: string | null }) {
+  const initial = name.trim().charAt(0).toUpperCase() || '?';
+
+  if (logoUrl) {
+    return (
+      <LogoFrame
+        src={logoUrl}
+        alt={name}
+        size="platform"
+        className="shadow-[0_4px_12px_rgba(0,0,0,0.3)] ring-white/10"
+      />
+    );
+  }
+
+  return (
+    <div
+      className={`flex shrink-0 items-center justify-center bg-white/[0.06] ring-1 ring-white/10 ${LOGO_PILL_CLASS} ${logoFrameClassName('platform')}`}
+      aria-hidden
+    >
+      <span className="text-base font-bold text-amber-400/85 sm:text-lg">{initial}</span>
+    </div>
+  );
+}
+
 function TenantCard({
   tenant,
   onAction,
@@ -141,7 +168,7 @@ function TenantCard({
   };
 
   return (
-    <article className="glass-card-strong p-5 sm:p-6">
+    <article className="glass-card-strong relative overflow-hidden p-5 sm:p-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
@@ -264,35 +291,48 @@ function TenantCard({
 
       {tenant.status === 'active' && (
         <div className="mt-5 border-t border-white/10 pt-4">
-          <p className="mb-3 text-xs font-medium uppercase tracking-wider text-white/40">
-            Enlaces de acceso
-          </p>
-          <div className="flex flex-wrap gap-2">
-            <Link
-              href={buildTenantUrl(tenant.slug, '/')}
-              target="_blank"
-              className="btn-accent rounded-xl px-3 py-2 text-xs font-semibold"
-            >
-              Ver sitio →
-            </Link>
-            <Link
-              href={buildTenantUrl(tenant.slug, '/login')}
-              target="_blank"
-              className="btn-glass rounded-xl px-3 py-2 text-xs font-medium"
-            >
-              Login dueño
-            </Link>
-            <CopyLinkButton href={urls.public} label="Copiar sitio" />
-            <CopyLinkButton href={urls.login} label="Copiar login" />
-          </div>
-          {tenant.owner && (
-            <p className="mt-2 text-xs text-white/35">
-              Usuario dueño: <span className="font-mono text-white/50">{tenant.owner.username}</span>
-              {!tenant.owner.isActive && (
-                <span className="ml-2 text-amber-400">(inactivo hasta aprobación)</span>
+          <div className="flex items-center justify-between gap-4">
+            <div className="min-w-0 flex-1">
+              <p className="mb-3 text-xs font-medium uppercase tracking-wider text-white/40">
+                Enlaces de acceso
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <Link
+                  href={buildTenantUrl(tenant.slug, '/')}
+                  target="_blank"
+                  className="btn-accent rounded-xl px-3 py-2 text-xs font-semibold"
+                >
+                  Ver sitio →
+                </Link>
+                <Link
+                  href={buildTenantUrl(tenant.slug, '/login')}
+                  target="_blank"
+                  className="btn-glass rounded-xl px-3 py-2 text-xs font-medium"
+                >
+                  Login dueño
+                </Link>
+                <CopyLinkButton href={urls.public} label="Copiar sitio" />
+                <CopyLinkButton href={urls.login} label="Copiar login" />
+              </div>
+              {tenant.owner && (
+                <p className="mt-2 text-xs text-white/35">
+                  Usuario dueño: <span className="font-mono text-white/50">{tenant.owner.username}</span>
+                  {!tenant.owner.isActive && (
+                    <span className="ml-2 text-amber-400">(inactivo hasta aprobación)</span>
+                  )}
+                </p>
               )}
-            </p>
-          )}
+            </div>
+            <div className="shrink-0">
+              <TenantCardLogo name={tenant.name} logoUrl={tenant.logoUrl} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {tenant.status !== 'active' && (
+        <div className="mt-4 flex justify-end border-t border-white/10 pt-4">
+          <TenantCardLogo name={tenant.name} logoUrl={tenant.logoUrl} />
         </div>
       )}
     </article>

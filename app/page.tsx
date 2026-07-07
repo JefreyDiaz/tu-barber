@@ -1,8 +1,8 @@
 import BarberCarousel, { BarberSelectionText } from '@/components/BarberCarousel';
+import LogoFrame from '@/components/LogoFrame';
 import PlatformLanding from '@/components/PlatformLanding';
 import TenantPublicBackground from '@/components/TenantPublicBackground';
 import TenantSiteShell from '@/components/TenantSiteShell';
-import Image from 'next/image';
 import { assertTenantExists, getTenantFromHeaders } from '@/lib/tenant/context';
 import { resolveTenantBranding } from '@/lib/tenant/branding';
 import { getActiveBarbershopsForShowcase } from '@/lib/tenant/public-directory';
@@ -54,15 +54,14 @@ export default async function Home() {
         className="relative z-10 flex min-h-screen min-h-[100dvh] flex-col"
         style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
       >
-        <header className="flex shrink-0 w-full items-center justify-center pt-3 pb-1 sm:py-3 md:pt-2 md:pb-2 lg:pb-3">
+        <header className="flex shrink-0 w-full flex-col items-center justify-center pt-4 pb-3 sm:py-4 md:pt-3 md:pb-4 lg:pb-5">
           {branding.logoUrl ? (
-            <Image
+            <LogoFrame
               src={branding.logoUrl}
               alt={tenant.name}
-              width={500}
-              height={210}
-              className="mx-auto h-auto w-[280px] drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)] sm:w-[320px] md:w-[380px]"
+              size="landing"
               priority
+              className="mb-1 drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)]"
             />
           ) : (
             <h1 className="mx-auto max-w-md text-center text-2xl font-bold tracking-tight text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)] sm:text-3xl md:text-4xl animate-slide-in-top animation-delay-200">

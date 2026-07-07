@@ -14,6 +14,7 @@ export async function GET() {
     const tenants = await prisma.tenant.findMany({
       orderBy: { createdAt: 'desc' },
       include: {
+        settings: { select: { logoUrl: true } },
         onboarding: true,
         users: {
           where: { role: 'dueno' },
@@ -24,8 +25,9 @@ export async function GET() {
       },
     });
 
-    const data = tenants.map(({ users, ...t }) => ({
+    const data = tenants.map(({ users, settings, ...t }) => ({
       ...t,
+      logoUrl: settings?.logoUrl?.trim() || null,
       owner: users[0] ?? null,
     }));
 

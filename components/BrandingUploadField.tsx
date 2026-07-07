@@ -2,6 +2,9 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
+import LogoCropModal from '@/components/LogoCropModal';
+import LogoFrame from '@/components/LogoFrame';
+import { LOGO_PILL_CLASS } from '@/lib/logo-frame';
 import { tenantApiUrl } from '@/lib/tenant/client-api';
 import { useToast } from '@/components/ToastProvider';
 import { isVideoBackground } from '@/lib/tenant/branding';
@@ -46,20 +49,13 @@ export default function BrandingUploadField({
   const [preview, setPreview] = useState<string | null>(currentUrl ?? null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [cropFile, setCropFile] = useState<File | null>(null);
 
   useEffect(() => {
     setPreview(currentUrl ?? null);
   }, [currentUrl]);
 
-  async function handleFile(file: File) {
-    setError(null);
-
-    const validationError = validateBrandingFile(file, kind);
-    if (validationError) {
-      setError(validationError);
-      return;
-    }
-
+  async function uploadFile(file: File) {
     setUploading(true);
     try {
       const formData = new FormData();
@@ -96,29 +92,63 @@ export default function BrandingUploadField({
     }
   }
 
+  async function handleFile(file: File) {
+    setError(null);
+
+    const validationError = validateBrandingFile(file, kind);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
+    if (kind === 'logo') {
+      setCropFile(file);
+      return;
+    }
+
+    await uploadFile(file);
+  }
+
+  async function handleCroppedLogo(blob: Blob) {
+    const file = new File([blob], 'logo.png', { type: 'image/png' });
+    await uploadFile(file);
+  }
+
   const isVideo = preview ? isVideoBackground(preview) : false;
 
   return (
     <div>
       <p className="mb-2 block text-sm font-medium text-white/75">{label}</p>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
-        <div
-          className={`relative shrink-0 overflow-hidden rounded-2xl border border-white/15 bg-white/5 ${
-            previewClassName ?? (kind === 'logo' ? 'h-24 w-48' : 'h-32 w-full max-w-md')
-          }`}
-        >
-          {preview ? (
-            isVideo ? (
-              <video src={preview} className="h-full w-full object-cover" muted playsInline />
-            ) : (
-              <Image key={preview} src={preview} alt="" fill className="object-cover" unoptimized />
-            )
+        {kind === 'logo' ? (
+          preview ? (
+            <LogoFrame src={preview} alt="" size="preview" />
           ) : (
-            <div className="flex h-full min-h-[6rem] w-full items-center justify-center px-2 text-center text-xs text-white/35">
-              Sin archivo
+            <div
+              className={`relative flex shrink-0 items-center justify-center overflow-hidden border border-dashed border-white/20 bg-white/5 ${LOGO_PILL_CLASS} ${previewClassName ?? 'h-24 w-60'}`}
+            >
+              <span className="px-2 text-center text-xs text-white/35">Sin logo</span>
             </div>
-          )}
-        </div>
+          )
+        ) : (
+          <div
+            className={`relative shrink-0 overflow-hidden rounded-2xl border border-white/15 bg-white/5 ${
+              previewClassName ?? 'h-32 w-full max-w-md'
+            }`}
+          >
+            {preview ? (
+              isVideo ? (
+                <video src={preview} className="h-full w-full object-cover" muted playsInline />
+              ) : (
+                <Image key={preview} src={preview} alt="" fill className="object-cover" unoptimized />
+              )
+            ) : (
+              <div className="flex h-full min-h-[6rem] w-full items-center justify-center px-2 text-center text-xs text-white/35">
+                Sin archivo
+              </div>
+            )}
+          </div>
+        )}
         <div>
           <input
             ref={inputRef}
@@ -141,12 +171,19 @@ export default function BrandingUploadField({
             onClick={() => inputRef.current?.click()}
             className="btn-glass rounded-xl px-3 py-2 text-sm font-medium disabled:opacity-50"
           >
-            {uploading ? 'Subiendo...' : preview ? 'Cambiar archivo' : 'Subir archivo'}
+            {uploading ? 'Subiendo...' : preview ? 'Cambiar archivo' : kind === 'logo' ? 'Elegir logo' : 'Subir archivo'}
           </button>
           <p className="mt-1 text-xs text-white/40">{hint}</p>
         </div>
       </div>
       {error && <p className="mt-2 text-sm text-red-300">{error}</p>}
+      {cropFile && (
+        <LogoCropModal
+          file={cropFile}
+          onClose={() => setCropFile(null)}
+          onConfirm={handleCroppedLogo}
+        />
+      )}
     </div>
   );
 }
