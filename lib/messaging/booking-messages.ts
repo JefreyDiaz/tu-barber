@@ -1,4 +1,5 @@
 import { formatColombiaDate, formatColombiaTime } from '@/lib/date-utils';
+import { formatLocalPhoneDigits } from './phone';
 import {
   getPlatformTwilioConfig,
   getTenantAppUrl,
@@ -40,7 +41,9 @@ function bookingVariables(params: BookingMessageParams): string[] {
     params.barberName,
     formatColombiaDate(params.dateTime),
     formatColombiaTime(params.dateTime),
-    params.barberPhone ?? 'No disponible',
+    params.barberPhone
+      ? formatLocalPhoneDigits(params.barberPhone)
+      : 'No disponible',
     cancelUrl,
   ];
 }

@@ -5,8 +5,7 @@ import { customDomainSchema } from '@/lib/validations/tenant';
 import { addDomainToVercel, checkDomainVerification } from '@/lib/vercel/domains';
 import {
   canUseCustomDomain,
-  getSubscriptionPeriodEnd,
-  nextSubscriptionPeriodEnd,
+  nextSubscriptionPeriodEndAfterPayment,
   startTrialEndDate,
 } from '@/lib/tenant/subscription';
 import { sendTenantWelcomeMessage } from '@/lib/messaging/welcome';
@@ -103,9 +102,7 @@ export async function PATCH(
   } else if (action === 'reactivate') {
     await prisma.tenant.update({ where: { id }, data: { status: 'active' } });
   } else if (action === 'renew') {
-    const currentEnd = getSubscriptionPeriodEnd(tenant) ?? new Date();
-    const base = currentEnd > new Date() ? currentEnd : new Date();
-    const subscriptionEndsAt = nextSubscriptionPeriodEnd(base);
+    const subscriptionEndsAt = nextSubscriptionPeriodEndAfterPayment(tenant);
 
     await prisma.tenant.update({
       where: { id },

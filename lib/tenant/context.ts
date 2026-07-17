@@ -2,16 +2,13 @@ import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { findTenantBySlug } from './resolve';
 import type { ResolvedTenant } from './resolve';
+import {
+  TENANT_HEADERS,
+  TENANT_PLATFORM_HEADER,
+  TENANT_SLUG_HEADER,
+} from './headers';
 
-export const TENANT_HEADERS = {
-  id: 'x-tenant-id',
-  slug: 'x-tenant-slug',
-  status: 'x-tenant-status',
-  name: 'x-tenant-name',
-} as const;
-
-export const TENANT_SLUG_HEADER = 'x-tenant-slug';
-export const TENANT_PLATFORM_HEADER = 'x-is-platform';
+export { TENANT_HEADERS, TENANT_PLATFORM_HEADER, TENANT_SLUG_HEADER } from './headers';
 
 export async function isPlatformRequest(): Promise<boolean> {
   const h = await headers();

@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { signOut } from 'next-auth/react';
-import { PLANS, getTrialDaysRemaining, normalizePlanId } from '@/lib/plans';
+import { PLANS, getTrialDaysRemaining, normalizePlanId, getPaymentOverdueDays } from '@/lib/plans';
 import PlatformLogo from '@/components/PlatformLogo';
 import LogoFrame from '@/components/LogoFrame';
 import { useToast } from '@/components/ToastProvider';
@@ -86,6 +86,45 @@ function PlanBadge({ plan }: { plan: string }) {
   );
 }
 
+function PaymentPeriodBadge({ tenant, periodEnd }: { tenant: TenantRow; periodEnd: string | null }) {
+  if (!periodEnd) return null;
+
+  const endDate = new Date(periodEnd);
+  const overdueDays = getPaymentOverdueDays(endDate);
+  const formattedEnd = formatDate(periodEnd);
+
+  if (overdueDays !== null) {
+    const label =
+      overdueDays === 0
+        ? `Venció hoy (${formattedEnd})`
+        : `${overdueDays} ${overdueDays === 1 ? 'día' : 'días'} de retraso`;
+    return (
+      <span
+        className="rounded-full border border-red-500/40 bg-red-500/20 px-2.5 py-0.5 text-xs font-medium text-red-300"
+        title={`Venció el ${formattedEnd}`}
+      >
+        {label}
+      </span>
+    );
+  }
+
+  if (tenant.subscriptionStatus === 'trialing') {
+    const trialDays = getTrialDaysRemaining(endDate);
+    if (trialDays !== null && trialDays > 0) {
+      return (
+        <span
+          className="rounded-full bg-orange-500/20 px-2.5 py-0.5 text-xs font-medium text-orange-300"
+          title={`Prueba hasta ${formattedEnd}`}
+        >
+          {trialDays} {trialDays === 1 ? 'día' : 'días'} de prueba
+        </span>
+      );
+    }
+  }
+
+  return null;
+}
+
 function CopyLinkButton({ href, label }: { href: string; label: string }) {
   const [copied, setCopied] = useState(false);
 
@@ -153,10 +192,6 @@ function TenantCard({
   acting: string | null;
 }) {
   const urls = tenantUrls(tenant.slug);
-  const trialDays =
-    tenant.subscriptionStatus === 'trialing' && tenant.trialEndsAt
-      ? getTrialDaysRemaining(new Date(tenant.trialEndsAt))
-      : null;
   const periodEnd = periodEndForTenant(tenant);
 
   const subLabels: Record<string, string> = {
@@ -175,11 +210,7 @@ function TenantCard({
             <h2 className="text-lg font-bold text-white">{tenant.name}</h2>
             <StatusBadge status={tenant.status} />
             <PlanBadge plan={tenant.plan} />
-            {tenant.subscriptionStatus === 'trialing' && trialDays !== null && (
-              <span className="rounded-full bg-orange-500/20 px-2.5 py-0.5 text-xs font-medium text-orange-300">
-                {trialDays} días de prueba
-              </span>
-            )}
+            <PaymentPeriodBadge tenant={tenant} periodEnd={periodEnd} />
           </div>
 
           <p className="mt-1 font-mono text-sm text-amber-400/80">

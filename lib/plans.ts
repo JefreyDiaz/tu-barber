@@ -148,3 +148,11 @@ export function getTrialDaysRemaining(trialEndsAt: Date | null | undefined): num
   if (diff <= 0) return 0;
   return Math.ceil(diff / (1000 * 60 * 60 * 24));
 }
+
+/** Days since period end (trial or subscription). Null if not overdue. */
+export function getPaymentOverdueDays(periodEnd: Date | null | undefined): number | null {
+  if (!periodEnd) return null;
+  const diff = Date.now() - periodEnd.getTime();
+  if (diff <= 0) return null;
+  return Math.floor(diff / (1000 * 60 * 60 * 24));
+}

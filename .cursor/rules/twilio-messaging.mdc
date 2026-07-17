@@ -24,9 +24,13 @@ All WhatsApp messaging goes through **Twilio Content API** (approved utility tem
 
 ## Template variable order ({{1}}, {{2}}, … in Twilio Console)
 
-**Booking / Reminder:** 1=shopName, 2=customerName, 3=barberName, 4=bookingDate, 5=bookingTime, 6=barberPhone, 7=cancelUrl
+**Booking / Reminder** (`tubarber_booking_confirm_v1`, SID `HX808125…`):
+1=shopName, 2=customerName, 3=barberName, 4=bookingDate, 5=bookingTime, 6=barberPhone (10 dígitos), 7=cancelUrl
 
-**Barber:** 1=barberName, 2=customerName, 3=customerPhone, 4=bookingDate, 5=bookingTime
+**Barber** (`tubarber_barber_new_booking_v1`, SID `HX4db5ba…`):
+1=barberName, 2=customerName, 3=customerPhone, 4=bookingDate, 5=bookingTime
+
+Do not swap `TWILIO_CONTENT_SID_BOOKING` and `TWILIO_CONTENT_SID_BARBER` — if swapped, the client message shows the customer phone in `con {{3}}` instead of the barber name.
 
 **Welcome:** 1=ownerName, 2=shopName, 3=planSummary, 4=adminLoginUrl, 5=username, 6=bookingUrl
 

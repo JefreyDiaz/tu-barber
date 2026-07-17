@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { extractSubdomain, isBareLocalhost, isPlatformHost } from '@/lib/tenant/host';
+import {
+  TENANT_PATHNAME_HEADER,
+  TENANT_PLATFORM_HEADER,
+  TENANT_SLUG_HEADER,
+} from '@/lib/tenant/headers';
 
-export const TENANT_SLUG_HEADER = 'x-tenant-slug';
-export const TENANT_PLATFORM_HEADER = 'x-is-platform';
+export { TENANT_SLUG_HEADER } from '@/lib/tenant/headers';
+
 export const TENANT_SLUG_COOKIE = 'tenant-slug';
 
 export async function middleware(request: NextRequest) {
@@ -59,6 +64,7 @@ export async function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set(TENANT_SLUG_HEADER, slug);
   requestHeaders.set(TENANT_PLATFORM_HEADER, 'false');
+  requestHeaders.set(TENANT_PATHNAME_HEADER, pathname);
 
   const response = NextResponse.next({ request: { headers: requestHeaders } });
 

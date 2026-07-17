@@ -21,3 +21,11 @@ export function normalizeWhatsappFrom(from: string): string {
   if (trimmed.startsWith('+')) return `whatsapp:${trimmed}`;
   return `whatsapp:+${trimmed.replace(/\D/g, '')}`;
 }
+
+/** 10-digit local number for WhatsApp templates (e.g. {{6}} barber phone). */
+export function formatLocalPhoneDigits(phone: string, countryCode = DEFAULT_COUNTRY_CODE): string {
+  const digits = phone.replace(/\D/g, '');
+  if (digits.length === 10) return digits;
+  if (digits.startsWith(countryCode) && digits.length === 12) return digits.slice(countryCode.length);
+  return digits;
+}

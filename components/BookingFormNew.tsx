@@ -44,10 +44,15 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
   const router = useRouter();
   const homeHref = tenantHref('/');
 
+  const today = (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; })();
+  const minDate = new Date(today);
+  const maxDate = new Date(today);
+  maxDate.setDate(maxDate.getDate() + 30);
+
   const [selectedServiceId, setSelectedServiceId] = useState<string>('');
   const [services, setServices] = useState<ServiceOption[]>([]);
   const [servicesLoading, setServicesLoading] = useState(true);
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(() => new Date(today.getTime()));
   const [selectedTime, setSelectedTime] = useState<string>('');
   const [availableSlots, setAvailableSlots] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -57,11 +62,6 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
   const [formData, setFormData] = useState({ customerName: '', customerPhone: '' });
   const [datesWithNoSlots, setDatesWithNoSlots] = useState<Set<string>>(new Set());
   const [countdown, setCountdown] = useState(10);
-
-  const today = (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; })();
-  const minDate = new Date(today);
-  const maxDate = new Date(today);
-  maxDate.setDate(maxDate.getDate() + 30);
 
   const [displayMonth, setDisplayMonth] = useState<Date>(() => new Date(today.getFullYear(), today.getMonth(), 1));
   const goToMonth = (d: Date) => setDisplayMonth(new Date(d.getFullYear(), d.getMonth(), 1));
@@ -181,7 +181,7 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
         setSuccess(true);
         onSuccess?.();
         setFormData({ customerName: '', customerPhone: '' });
-        setSelectedDate(undefined);
+        setSelectedDate(new Date(today.getTime()));
         setSelectedTime('');
         setAvailableSlots([]);
       } else {

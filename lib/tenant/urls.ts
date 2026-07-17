@@ -67,6 +67,14 @@ export function formatTenantHost(slug: string, customDomain?: string | null): st
   return `${slug}.${rootDomain()}`;
 }
 
+/** Platform landing origin (no tenant subdomain). */
+export function buildPlatformOrigin(): string {
+  if (useLocalTenantUrls()) {
+    return `http://localhost:${DEFAULT_DEV_PORT}`;
+  }
+  return `https://${rootDomain()}`;
+}
+
 /** Full tenant URL with optional path */
 export function buildTenantUrl(slug: string, path = '/'): string {
   const normalized = path.startsWith('/') ? path : `/${path}`;

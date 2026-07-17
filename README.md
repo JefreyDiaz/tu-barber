@@ -32,8 +32,8 @@ Ver [`.env.example`](.env.example).
 - `TWILIO_ACCOUNT_SID` — Account SID (Twilio Console)
 - `TWILIO_AUTH_TOKEN` — Auth Token
 - `TWILIO_WHATSAPP_FROM` — Número emisor (ej. `+14155238886`)
-- `TWILIO_CONTENT_SID_BOOKING` — Content Template SID confirmación cliente
-- `TWILIO_CONTENT_SID_BARBER` — Content Template SID aviso barbero
+- `TWILIO_CONTENT_SID_BOOKING` — confirmación cliente (`tubarber_booking_confirm_v1`, `HX808125…`)
+- `TWILIO_CONTENT_SID_BARBER` — aviso barbero (`tubarber_barber_new_booking_v1`, `HX4db5ba…`)
 - `TWILIO_CONTENT_SID_REMINDER` — Content Template SID recordatorio
 - `TWILIO_CONTENT_SID_WELCOME` — Content Template SID bienvenida dueño (opcional)
 
