@@ -1,7 +1,8 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
+import ProfilePhotoCropModal from '@/components/ProfilePhotoCropModal';
 import { tenantApiUrl } from '@/lib/tenant/client-api';
 import { useToast } from '@/components/ToastProvider';
 
@@ -23,8 +24,13 @@ export default function PhotoUploadField({
   const [preview, setPreview] = useState<string | null>(currentPhoto ?? null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [cropFile, setCropFile] = useState<File | null>(null);
 
-  async function handleFile(file: File) {
+  useEffect(() => {
+    setPreview(currentPhoto ?? null);
+  }, [currentPhoto]);
+
+  async function uploadFile(file: File) {
     setError(null);
     setUploading(true);
     try {
@@ -52,13 +58,29 @@ export default function PhotoUploadField({
     }
   }
 
+  function handleFileSelected(file: File) {
+    setError(null);
+    setCropFile(file);
+  }
+
+  async function handleCroppedPhoto(blob: Blob) {
+    const file = new File([blob], 'profile-photo.png', { type: 'image/png' });
+    await uploadFile(file);
+  }
+
   return (
     <div>
       <p className="mb-2 block text-sm font-medium text-white/75">{label}</p>
       <div className="flex items-center gap-4">
-        <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full border border-white/15 bg-white/5">
+        <div className="relative aspect-[7/10] h-32 shrink-0 overflow-hidden border border-white/15 bg-white/5">
           {preview ? (
-            <Image src={preview} alt="" fill className="object-cover" unoptimized />
+            <Image
+              src={preview}
+              alt=""
+              fill
+              className="object-contain object-bottom"
+              unoptimized
+            />
           ) : (
             <div className="flex h-full w-full items-center justify-center px-1 text-center text-xs text-white/35">
               Sin foto
@@ -73,7 +95,8 @@ export default function PhotoUploadField({
             className="hidden"
             onChange={(e) => {
               const f = e.target.files?.[0];
-              if (f) handleFile(f);
+              if (f) handleFileSelected(f);
+              e.target.value = '';
             }}
           />
           <button
@@ -88,6 +111,13 @@ export default function PhotoUploadField({
         </div>
       </div>
       {error && <p className="mt-2 text-sm text-red-300">{error}</p>}
+      {cropFile && (
+        <ProfilePhotoCropModal
+          file={cropFile}
+          onClose={() => setCropFile(null)}
+          onConfirm={handleCroppedPhoto}
+        />
+      )}
     </div>
   );
 }
