@@ -11,6 +11,17 @@ export async function hashPassword(password: string): Promise<string> {
   return `${salt}:${derivedKey.toString('hex')}`;
 }
 
+/** Readable temporary password for email reset (no ambiguous chars). */
+export function generateTemporaryPassword(length = 12): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+  const bytes = randomBytes(length);
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += chars[bytes[i]! % chars.length];
+  }
+  return result;
+}
+
 export async function verifyPassword(password: string, stored: string): Promise<boolean> {
   const [salt, key] = stored.split(':');
   if (!salt || !key) return false;

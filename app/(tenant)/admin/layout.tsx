@@ -7,8 +7,7 @@ import { SignOutButton } from './SignOutButton';
 import { AdminNav } from './AdminNav';
 import TrialBanner from './TrialBanner';
 import LogoFrame from '@/components/LogoFrame';
-import { getTenantFromHeaders } from '@/lib/tenant/context';
-import { TENANT_SLUG_HEADER } from '@/lib/tenant/context';
+import { getTenantFromHeaders, TENANT_HEADERS } from '@/lib/tenant/context';
 import { extractSubdomain } from '@/lib/tenant/host';
 import { trialDaysLeft, isTrialing, isMultiBarberPlan } from '@/lib/tenant/subscription';
 import { normalizePlanId } from '@/lib/plans';
@@ -21,9 +20,13 @@ export default async function AdminLayout({
   const user = session?.user;
   const tenant = await getTenantFromHeaders();
   const h = await headers();
-  const slug = h.get(TENANT_SLUG_HEADER);
+  const slug = h.get(TENANT_HEADERS.slug);
   const host = h.get('host') ?? '';
   const tq = extractSubdomain(host) ? '' : slug ? `?tenant=${slug}` : '';
+
+  if (user?.mustChangePassword) {
+    redirect(`/login/cambiar-contrasena${tq}`);
+  }
 
   const userCount = tenant
     ? await prisma.user.count({ where: { tenantId: tenant.id } })

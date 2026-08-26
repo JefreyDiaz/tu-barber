@@ -35,6 +35,7 @@ export type UserMinAggregateOutputType = {
   phone: string | null
   role: string | null
   isActive: boolean | null
+  mustChangePassword: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -50,6 +51,7 @@ export type UserMaxAggregateOutputType = {
   phone: string | null
   role: string | null
   isActive: boolean | null
+  mustChangePassword: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -65,6 +67,7 @@ export type UserCountAggregateOutputType = {
   phone: number
   role: number
   isActive: number
+  mustChangePassword: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -82,6 +85,7 @@ export type UserMinAggregateInputType = {
   phone?: true
   role?: true
   isActive?: true
+  mustChangePassword?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -97,6 +101,7 @@ export type UserMaxAggregateInputType = {
   phone?: true
   role?: true
   isActive?: true
+  mustChangePassword?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -112,6 +117,7 @@ export type UserCountAggregateInputType = {
   phone?: true
   role?: true
   isActive?: true
+  mustChangePassword?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -200,6 +206,7 @@ export type UserGroupByOutputType = {
   phone: string | null
   role: string
   isActive: boolean
+  mustChangePassword: boolean
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -236,6 +243,7 @@ export type UserWhereInput = {
   phone?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.StringFilter<"User"> | string
   isActive?: Prisma.BoolFilter<"User"> | boolean
+  mustChangePassword?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   tenant?: Prisma.XOR<Prisma.TenantNullableScalarRelationFilter, Prisma.TenantWhereInput> | null
@@ -254,6 +262,7 @@ export type UserOrderByWithRelationInput = {
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  mustChangePassword?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   tenant?: Prisma.TenantOrderByWithRelationInput
@@ -276,6 +285,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   phone?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.StringFilter<"User"> | string
   isActive?: Prisma.BoolFilter<"User"> | boolean
+  mustChangePassword?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   tenant?: Prisma.XOR<Prisma.TenantNullableScalarRelationFilter, Prisma.TenantWhereInput> | null
@@ -294,6 +304,7 @@ export type UserOrderByWithAggregationInput = {
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  mustChangePassword?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -315,6 +326,7 @@ export type UserScalarWhereWithAggregatesInput = {
   phone?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   role?: Prisma.StringWithAggregatesFilter<"User"> | string
   isActive?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  mustChangePassword?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -329,6 +341,7 @@ export type UserCreateInput = {
   phone?: string | null
   role?: string
   isActive?: boolean
+  mustChangePassword?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant?: Prisma.TenantCreateNestedOneWithoutUsersInput
@@ -347,6 +360,7 @@ export type UserUncheckedCreateInput = {
   phone?: string | null
   role?: string
   isActive?: boolean
+  mustChangePassword?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutBarberInput
@@ -363,6 +377,7 @@ export type UserUpdateInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneWithoutUsersNestedInput
@@ -381,6 +396,7 @@ export type UserUncheckedUpdateInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutBarberNestedInput
@@ -398,6 +414,7 @@ export type UserCreateManyInput = {
   phone?: string | null
   role?: string
   isActive?: boolean
+  mustChangePassword?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -412,6 +429,7 @@ export type UserUpdateManyMutationInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -427,6 +445,7 @@ export type UserUncheckedUpdateManyInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -457,6 +476,7 @@ export type UserCountOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   role?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  mustChangePassword?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -472,6 +492,7 @@ export type UserMaxOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   role?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  mustChangePassword?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -487,6 +508,7 @@ export type UserMinOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   role?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  mustChangePassword?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -580,6 +602,7 @@ export type UserCreateWithoutTenantInput = {
   phone?: string | null
   role?: string
   isActive?: boolean
+  mustChangePassword?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   bookings?: Prisma.BookingCreateNestedManyWithoutBarberInput
@@ -596,6 +619,7 @@ export type UserUncheckedCreateWithoutTenantInput = {
   phone?: string | null
   role?: string
   isActive?: boolean
+  mustChangePassword?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutBarberInput
@@ -642,6 +666,7 @@ export type UserScalarWhereInput = {
   phone?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.StringFilter<"User"> | string
   isActive?: Prisma.BoolFilter<"User"> | boolean
+  mustChangePassword?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
 }
@@ -656,6 +681,7 @@ export type UserCreateWithoutBookingsInput = {
   phone?: string | null
   role?: string
   isActive?: boolean
+  mustChangePassword?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant?: Prisma.TenantCreateNestedOneWithoutUsersInput
@@ -673,6 +699,7 @@ export type UserUncheckedCreateWithoutBookingsInput = {
   phone?: string | null
   role?: string
   isActive?: boolean
+  mustChangePassword?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   blockedSlots?: Prisma.BlockedSlotUncheckedCreateNestedManyWithoutBarberInput
@@ -704,6 +731,7 @@ export type UserUpdateWithoutBookingsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneWithoutUsersNestedInput
@@ -721,6 +749,7 @@ export type UserUncheckedUpdateWithoutBookingsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   blockedSlots?: Prisma.BlockedSlotUncheckedUpdateManyWithoutBarberNestedInput
@@ -736,6 +765,7 @@ export type UserCreateWithoutBlockedSlotsInput = {
   phone?: string | null
   role?: string
   isActive?: boolean
+  mustChangePassword?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant?: Prisma.TenantCreateNestedOneWithoutUsersInput
@@ -753,6 +783,7 @@ export type UserUncheckedCreateWithoutBlockedSlotsInput = {
   phone?: string | null
   role?: string
   isActive?: boolean
+  mustChangePassword?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutBarberInput
@@ -784,6 +815,7 @@ export type UserUpdateWithoutBlockedSlotsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneWithoutUsersNestedInput
@@ -801,6 +833,7 @@ export type UserUncheckedUpdateWithoutBlockedSlotsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutBarberNestedInput
@@ -816,6 +849,7 @@ export type UserCreateManyTenantInput = {
   phone?: string | null
   role?: string
   isActive?: boolean
+  mustChangePassword?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -830,6 +864,7 @@ export type UserUpdateWithoutTenantInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUpdateManyWithoutBarberNestedInput
@@ -846,6 +881,7 @@ export type UserUncheckedUpdateWithoutTenantInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutBarberNestedInput
@@ -862,6 +898,7 @@ export type UserUncheckedUpdateManyWithoutTenantInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -917,6 +954,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   phone?: boolean
   role?: boolean
   isActive?: boolean
+  mustChangePassword?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   tenant?: boolean | Prisma.User$tenantArgs<ExtArgs>
@@ -936,6 +974,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   phone?: boolean
   role?: boolean
   isActive?: boolean
+  mustChangePassword?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   tenant?: boolean | Prisma.User$tenantArgs<ExtArgs>
@@ -952,6 +991,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   phone?: boolean
   role?: boolean
   isActive?: boolean
+  mustChangePassword?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   tenant?: boolean | Prisma.User$tenantArgs<ExtArgs>
@@ -968,11 +1008,12 @@ export type UserSelectScalar = {
   phone?: boolean
   role?: boolean
   isActive?: boolean
+  mustChangePassword?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantId" | "name" | "username" | "password" | "photo" | "email" | "phone" | "role" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantId" | "name" | "username" | "password" | "photo" | "email" | "phone" | "role" | "isActive" | "mustChangePassword" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.User$tenantArgs<ExtArgs>
   bookings?: boolean | Prisma.User$bookingsArgs<ExtArgs>
@@ -1004,6 +1045,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     phone: string | null
     role: string
     isActive: boolean
+    mustChangePassword: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -1442,6 +1484,7 @@ export interface UserFieldRefs {
   readonly phone: Prisma.FieldRef<"User", 'String'>
   readonly role: Prisma.FieldRef<"User", 'String'>
   readonly isActive: Prisma.FieldRef<"User", 'Boolean'>
+  readonly mustChangePassword: Prisma.FieldRef<"User", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }

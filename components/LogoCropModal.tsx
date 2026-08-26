@@ -6,9 +6,9 @@ import {
   exportLogoPillCrop,
   getCoverScale,
   getLogoCropViewport,
+  getMinCropScale,
   getPillRect,
   LOGO_CROP_MAX_SCALE,
-  LOGO_CROP_MIN_SCALE,
   type LogoCropTransform,
 } from '@/lib/logo-crop';
 
@@ -24,7 +24,7 @@ export default function LogoCropModal({ file, onClose, onConfirm }: Readonly<Log
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [viewport, setViewport] = useState(() => getLogoCropViewport(360));
   const [transform, setTransform] = useState<LogoCropTransform>({
-    scale: LOGO_CROP_MIN_SCALE,
+    scale: 1,
     offsetX: 0,
     offsetY: 0,
   });
@@ -88,13 +88,21 @@ export default function LogoCropModal({ file, onClose, onConfirm }: Readonly<Log
   );
 
   useEffect(() => {
-    if (image) {
-      setTransform((current) =>
-        clampLogoCropTransform(current, image.naturalWidth, image.naturalHeight, viewport)
-      );
-    }
+    if (!image) return;
+    const minScale = getMinCropScale(image.naturalWidth, image.naturalHeight, viewport);
+    setTransform(
+      clampLogoCropTransform(
+        { scale: minScale, offsetX: 0, offsetY: 0 },
+        image.naturalWidth,
+        image.naturalHeight,
+        viewport
+      )
+    );
   }, [image, viewport]);
 
+  const minScale = image
+    ? getMinCropScale(image.naturalWidth, image.naturalHeight, viewport)
+    : 0.12;
   const coverScale = image
     ? getCoverScale(image.naturalWidth, image.naturalHeight, viewport.ovalWidth, viewport.ovalHeight)
     : 1;
@@ -255,10 +263,10 @@ export default function LogoCropModal({ file, onClose, onConfirm }: Readonly<Log
             <label className="mb-1 block text-xs text-white/45">Zoom</label>
             <input
               type="range"
-              min={LOGO_CROP_MIN_SCALE}
+              min={minScale}
               max={LOGO_CROP_MAX_SCALE}
               step={0.01}
-              value={transform.scale}
+              value={Math.max(minScale, Math.min(LOGO_CROP_MAX_SCALE, transform.scale))}
               disabled={!image || saving}
               onChange={(e) =>
                 applyTransform({ ...transform, scale: Number(e.target.value) })

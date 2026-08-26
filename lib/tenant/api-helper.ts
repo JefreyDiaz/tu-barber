@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { findTenantBySlug, type ResolvedTenant } from './resolve';
+import { findTenantBySlug, resolveTenantFromHost, type ResolvedTenant } from './resolve';
 
 export const TENANT_SLUG_HEADER = 'x-tenant-slug';
 
@@ -10,13 +10,20 @@ export class TenantApiError extends Error {
   }
 }
 
-export async function getTenantFromApiRequest(request: NextRequest): Promise<ResolvedTenant | null> {
-  const slug = request.headers.get(TENANT_SLUG_HEADER);
-  if (!slug) return null;
-  return findTenantBySlug(slug);
+export async function getTenantFromApiRequest(
+  request: NextRequest | Request
+): Promise<ResolvedTenant | null> {
+  const headerSlug = request.headers.get(TENANT_SLUG_HEADER);
+  if (headerSlug) {
+    return findTenantBySlug(headerSlug);
+  }
+
+  const host = request.headers.get('host') ?? '';
+  const tenantParam = new URL(request.url).searchParams.get('tenant');
+  return resolveTenantFromHost(host, tenantParam);
 }
 
-export async function requireApiTenant(request: NextRequest): Promise<ResolvedTenant> {
+export async function requireApiTenant(request: NextRequest | Request): Promise<ResolvedTenant> {
   const tenant = await getTenantFromApiRequest(request);
   if (!tenant) throw new TenantApiError('TENANT_NOT_FOUND');
   if (tenant.status !== 'active') throw new TenantApiError('TENANT_INACTIVE');

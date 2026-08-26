@@ -77,6 +77,7 @@ model User {
   phone     String?
   role      String   @default("barbero") // super_admin, admin, dueno, barbero
   isActive  Boolean  @default(true)
+  mustChangePassword Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

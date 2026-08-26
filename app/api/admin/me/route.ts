@@ -81,6 +81,7 @@ export async function PATCH(request: NextRequest) {
   if (photo !== undefined) updateData.photo = photo || null;
   if (password && password.length >= 8) {
     updateData.password = await hashPassword(password);
+    updateData.mustChangePassword = false;
   }
 
   await db.user.update({ where: { id: session.user.id }, data: updateData });

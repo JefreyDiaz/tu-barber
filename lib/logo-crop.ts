@@ -18,8 +18,25 @@ export type LogoCropViewport = {
   ovalHeight: number;
 };
 
-export const LOGO_CROP_MIN_SCALE = 1;
 export const LOGO_CROP_MAX_SCALE = 3;
+
+/** Minimum scale (relative to cover baseline) so the full image width fits in the pill. */
+export function getMinCropScale(
+  imageWidth: number,
+  imageHeight: number,
+  viewport: LogoCropViewport
+): number {
+  const coverScale = getCoverScale(
+    imageWidth,
+    imageHeight,
+    viewport.ovalWidth,
+    viewport.ovalHeight
+  );
+  const scaleForWidth = viewport.ovalWidth / (imageWidth * coverScale);
+  const scaleForHeight = viewport.ovalHeight / (imageHeight * coverScale);
+  const fitScale = Math.min(scaleForWidth, scaleForHeight);
+  return Math.min(1, Math.max(0.12, fitScale));
+}
 
 export function getLogoCropViewport(width: number): LogoCropViewport {
   const cropWidth = Math.min(Math.max(width - 32, 280), 360);
@@ -51,18 +68,17 @@ export function clampLogoCropTransform(
   imageHeight: number,
   viewport: LogoCropViewport
 ): LogoCropTransform {
-  const scale = Math.min(LOGO_CROP_MAX_SCALE, Math.max(LOGO_CROP_MIN_SCALE, transform.scale));
+  const minScale = getMinCropScale(imageWidth, imageHeight, viewport);
+  const scale = Math.min(LOGO_CROP_MAX_SCALE, Math.max(minScale, transform.scale));
   const coverScale = getCoverScale(imageWidth, imageHeight, viewport.ovalWidth, viewport.ovalHeight);
   const displayW = imageWidth * coverScale * scale;
   const displayH = imageHeight * coverScale * scale;
 
-  const cx = viewport.width / 2;
-  const cy = viewport.height / 2;
   const ovalHalfW = viewport.ovalWidth / 2;
   const ovalHalfH = viewport.ovalHeight / 2;
 
-  const maxOffsetX = Math.max(0, displayW / 2 - ovalHalfW);
-  const maxOffsetY = Math.max(0, displayH / 2 - ovalHalfH);
+  const maxOffsetX = Math.abs(displayW / 2 - ovalHalfW);
+  const maxOffsetY = Math.abs(displayH / 2 - ovalHalfH);
 
   return {
     scale,

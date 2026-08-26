@@ -5,6 +5,7 @@ declare module 'next-auth' {
     role?: string;
     tenantId?: string | null;
     tenantSlug?: string | null;
+    mustChangePassword?: boolean;
   }
 
   interface Session {
@@ -16,6 +17,7 @@ declare module 'next-auth' {
       role?: string;
       tenantId?: string | null;
       tenantSlug?: string | null;
+      mustChangePassword?: boolean;
     };
   }
 }
@@ -26,5 +28,6 @@ declare module 'next-auth/jwt' {
     role?: string;
     tenantId?: string | null;
     tenantSlug?: string | null;
+    mustChangePassword?: boolean;
   }
 }
