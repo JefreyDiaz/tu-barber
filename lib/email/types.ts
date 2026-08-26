@@ -43,3 +43,25 @@ export interface SubscriptionExpiringAdminPayload {
   timezone: string;
   subscriptionStatus: string;
 }
+
+export interface SubscriptionExpiringOwnerPayload {
+  shopName: string;
+  slug: string;
+  plan: string;
+  ownerName: string;
+  ownerEmail: string;
+  periodEnd: Date;
+  timezone: string;
+  subscriptionStatus: string;
+}
+
+export interface BarberNewBookingEmailPayload {
+  shopName: string;
+  slug: string;
+  toEmail: string;
+  barberName: string;
+  customerName: string;
+  customerPhone: string;
+  serviceName: string;
+  dateTime: Date;
+}

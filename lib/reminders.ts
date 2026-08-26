@@ -41,7 +41,6 @@ export async function processBookingReminders(now: Date = new Date()): Promise<{
               twilioAuthToken: true,
               twilioWhatsappFrom: true,
               twilioContentSidBooking: true,
-              twilioContentSidBarber: true,
               twilioContentSidReminder: true,
             },
           },
@@ -61,7 +60,6 @@ export async function processBookingReminders(now: Date = new Date()): Promise<{
           twilioAuthToken: settings.twilioAuthToken,
           twilioWhatsappFrom: settings.twilioWhatsappFrom,
           twilioContentSidBooking: settings.twilioContentSidBooking,
-          twilioContentSidBarber: settings.twilioContentSidBarber,
           twilioContentSidReminder: settings.twilioContentSidReminder,
         }
       : null;

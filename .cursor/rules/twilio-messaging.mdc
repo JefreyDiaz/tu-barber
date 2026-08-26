@@ -8,33 +8,28 @@ alwaysApply: false
 
 ## Provider
 
-All WhatsApp messaging goes through **Twilio Content API** (approved utility templates).
+Customer-facing WhatsApp goes through **Twilio Content API** (approved utility templates).
 
 ## Required env (platform / Basic plan)
 
 - `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_WHATSAPP_FROM`
-- `TWILIO_CONTENT_SID_BOOKING`, `TWILIO_CONTENT_SID_BARBER`, `TWILIO_CONTENT_SID_REMINDER`
-- `TWILIO_CONTENT_SID_WELCOME` (optional, on tenant approval)
-- `TWILIO_CONTENT_SID_RENEWAL` (optional, 1 day before subscription/trial ends)
+- `TWILIO_CONTENT_SID_BOOKING`, `TWILIO_CONTENT_SID_REMINDER`
+
+## Not WhatsApp (Resend email to tenant owner)
+
+- New booking alert to barbería → `lib/email/notify-barber-new-booking.ts`
+- Tenant approval welcome → `lib/email/notify-tenant-approved.ts`
+- Subscription/trial expiry reminder to owner → `lib/email/notify-subscription-expiring-owner.ts`
 
 ## Config resolution
 
-- Tenant Pro with `twilioAccountSid` + `twilioAuthToken` in `TenantSettings` → tenant override
+- Tenant Cadena with `twilioAccountSid` + `twilioAuthToken` in `TenantSettings` → tenant override
 - Otherwise → platform env vars
 
 ## Template variable order ({{1}}, {{2}}, … in Twilio Console)
 
 **Booking / Reminder** (`tubarber_booking_confirm_v1`, SID `HX808125…`):
 1=shopName, 2=customerName, 3=barberName, 4=bookingDate, 5=bookingTime, 6=barberPhone (10 dígitos), 7=cancelUrl
-
-**Barber** (`tubarber_barber_new_booking_v1`, SID `HX4db5ba…`):
-1=barberName, 2=customerName, 3=customerPhone, 4=bookingDate, 5=bookingTime
-
-Do not swap `TWILIO_CONTENT_SID_BOOKING` and `TWILIO_CONTENT_SID_BARBER` — if swapped, the client message shows the customer phone in `con {{3}}` instead of the barber name.
-
-**Welcome:** 1=ownerName, 2=shopName, 3=planSummary, 4=adminLoginUrl, 5=username, 6=bookingUrl
-
-**Renewal:** 1=ownerName, 2=shopName, 3=periodType, 4=expiresDate, 5=paymentPhones, 6=planPrice
 
 ## Fail-safe
 

@@ -7,7 +7,6 @@ import {
 } from './get-config';
 import { sendTwilioTemplateMessage } from './twilio';
 import type {
-  BarberMessageParams,
   BookingMessageParams,
   TenantTwilioSettings,
   TwilioConfig,
@@ -69,27 +68,6 @@ export async function sendBookingConfirmation(
     config.contentSidBooking,
     bookingVariables(params)
   );
-}
-
-/** Send new booking notification to barber via Twilio template */
-export async function sendBarberNotification(
-  params: BarberMessageParams,
-  tenantSettings?: TenantTwilioSettings | null,
-  tenant?: TenantSubscription | null
-): Promise<void> {
-  const config = getConfig(tenantSettings, tenant);
-  if (!config) {
-    warnTwilioNotConfigured();
-    return;
-  }
-
-  await sendTwilioTemplateMessage(config, params.barberPhone, config.contentSidBarber, [
-    params.barberName,
-    params.customerName,
-    params.customerPhone.replace(/\D/g, ''),
-    formatColombiaDate(params.dateTime),
-    formatColombiaTime(params.dateTime),
-  ]);
 }
 
 /**

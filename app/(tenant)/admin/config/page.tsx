@@ -12,7 +12,6 @@ const TWILIO_FIELDS = [
   { key: 'twilioAuthToken', label: 'Auth Token' },
   { key: 'twilioWhatsappFrom', label: 'WhatsApp From (ej. +14155238886)' },
   { key: 'twilioContentSidBooking', label: 'Content SID — confirmación cliente' },
-  { key: 'twilioContentSidBarber', label: 'Content SID — aviso barbero' },
   { key: 'twilioContentSidReminder', label: 'Content SID — recordatorio' },
 ] as const;
 
@@ -29,7 +28,6 @@ export default function AdminConfigPage() {
     twilioAuthToken: '',
     twilioWhatsappFrom: '',
     twilioContentSidBooking: '',
-    twilioContentSidBarber: '',
     twilioContentSidReminder: '',
     customDomain: '',
     plan: 'emprendedor',
@@ -53,7 +51,6 @@ export default function AdminConfigPage() {
             twilioAuthToken: json.data.twilioAuthToken ?? '',
             twilioWhatsappFrom: json.data.twilioWhatsappFrom ?? '',
             twilioContentSidBooking: json.data.twilioContentSidBooking ?? '',
-            twilioContentSidBarber: json.data.twilioContentSidBarber ?? '',
             twilioContentSidReminder: json.data.twilioContentSidReminder ?? '',
             customDomain: json.data.customDomain ?? '',
             plan: json.data.plan ?? 'emprendedor',
@@ -82,7 +79,6 @@ export default function AdminConfigPage() {
         twilioAuthToken: form.twilioAuthToken || undefined,
         twilioWhatsappFrom: form.twilioWhatsappFrom || undefined,
         twilioContentSidBooking: form.twilioContentSidBooking || undefined,
-        twilioContentSidBarber: form.twilioContentSidBarber || undefined,
         twilioContentSidReminder: form.twilioContentSidReminder || undefined,
       }),
     });

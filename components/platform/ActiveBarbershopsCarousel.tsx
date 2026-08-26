@@ -120,6 +120,18 @@ function buildMarqueeTrack(rowShops: readonly ShowcaseBarbershop[]): ShowcaseBar
   return [...segment, ...segment];
 }
 
+function resumeMarqueeAnimations(): void {
+  for (const el of document.querySelectorAll<HTMLElement>(
+    '.barbershops-marquee-left, .barbershops-marquee-right'
+  )) {
+    const animation = globalThis.getComputedStyle(el).animation;
+    el.style.animation = 'none';
+    void el.offsetWidth;
+    el.style.animation = animation;
+    el.style.animationPlayState = 'running';
+  }
+}
+
 function MarqueeRow({
   shops,
   direction,
@@ -180,6 +192,23 @@ export default function ActiveBarbershopsCarousel({ shops }: ActiveBarbershopsCa
     }, 100);
 
     return () => globalThis.window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    function onPageShow(event: PageTransitionEvent) {
+      if (event.persisted) resumeMarqueeAnimations();
+    }
+
+    function onVisibilityChange() {
+      if (document.visibilityState === 'visible') resumeMarqueeAnimations();
+    }
+
+    globalThis.window.addEventListener('pageshow', onPageShow);
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    return () => {
+      globalThis.window.removeEventListener('pageshow', onPageShow);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+    };
   }, []);
 
   useEffect(() => {

@@ -134,6 +134,12 @@ export function getPlanName(planId: string): string {
   return getPlanDefinition(planId).name;
 }
 
+/** Plan + trial + price line for onboarding / approval emails */
+export function formatWelcomePlanSummary(planId: string): string {
+  const plan = getPlanDefinition(planId);
+  return `Plan ${plan.name} · ${TRIAL_DAYS} días gratis · Luego ${plan.priceLabel}/mes`;
+}
+
 export function getEffectivePlan(
   plan: string,
   _subscriptionStatus?: string,

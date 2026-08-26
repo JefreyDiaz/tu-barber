@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { isPeriodEndingTomorrow } from '@/lib/dates/timezone';
 import { notifySubscriptionExpiringAdmin } from '@/lib/email/notify-subscription-expiring-admin';
-import { sendSubscriptionRenewalReminder } from '@/lib/messaging/subscription-renewal';
+import { notifySubscriptionExpiringOwner } from '@/lib/email/notify-subscription-expiring-owner';
 import { getSubscriptionPeriodEnd } from '@/lib/tenant/subscription';
 
 const REMINDABLE_STATUSES = ['trialing', 'active', 'past_due'] as const;
@@ -50,20 +50,21 @@ export async function processSubscriptionRenewalReminders(now: Date = new Date()
       subscriptionStatus: tenant.subscriptionStatus,
     };
 
-    const [adminOk, tenantOk] = await Promise.all([
+    const [adminOk, ownerOk] = await Promise.all([
       notifySubscriptionExpiringAdmin(payload),
-      sendSubscriptionRenewalReminder({
-        ownerPhone: tenant.onboarding.ownerPhone,
-        ownerName: tenant.onboarding.ownerName,
-        shopName: tenant.name,
-        planId: tenant.plan,
-        periodEnd,
-        timezone: tenant.timezone,
-        subscriptionStatus: tenant.subscriptionStatus,
+      notifySubscriptionExpiringOwner({
+        shopName: payload.shopName,
+        slug: payload.slug,
+        plan: payload.plan,
+        ownerName: payload.ownerName,
+        ownerEmail: payload.ownerEmail,
+        periodEnd: payload.periodEnd,
+        timezone: payload.timezone,
+        subscriptionStatus: payload.subscriptionStatus,
       }),
     ]);
 
-    if (adminOk && tenantOk) {
+    if (adminOk && ownerOk) {
       await prisma.tenant.update({
         where: { id: tenant.id },
         data: { renewalReminderSentFor: periodEnd },
@@ -71,7 +72,7 @@ export async function processSubscriptionRenewalReminders(now: Date = new Date()
       sent += 1;
     } else {
       console.error(
-        `[subscription-renewals] Partial failure for ${tenant.slug}: admin=${adminOk} tenant=${tenantOk}`
+        `[subscription-renewals] Partial failure for ${tenant.slug}: admin=${adminOk} owner=${ownerOk}`
       );
       failed += 1;
     }

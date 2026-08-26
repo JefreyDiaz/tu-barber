@@ -1,6 +1,6 @@
 import { Resend } from 'resend';
 import { PLATFORM_LOGO, PLATFORM_LOGO_ALT } from '@/lib/brand';
-import { formatWelcomePlanSummary } from '@/lib/messaging/welcome';
+import { formatWelcomePlanSummary } from '@/lib/plans';
 import { buildTenantUrl, formatTenantHost } from '@/lib/tenant/urls';
 import { getPlatformAppUrl, getResendSendConfig } from './get-config';
 import type { TenantApprovedPayload } from './types';

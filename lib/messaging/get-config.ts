@@ -19,18 +19,9 @@ export function getPlatformTwilioConfig(): TwilioConfig | null {
     contentSidBooking:
       process.env.TWILIO_CONTENT_SID_BOOKING ??
       process.env.TWILIO_WHATSAPP_BOOKING_TEMPLATE_SID,
-    contentSidBarber:
-      process.env.TWILIO_CONTENT_SID_BARBER ??
-      process.env.TWILIO_WHATSAPP_BARBER_TEMPLATE_SID,
     contentSidReminder:
       process.env.TWILIO_CONTENT_SID_REMINDER ??
       process.env.TWILIO_WHATSAPP_REMINDER_TEMPLATE_SID,
-    contentSidWelcome:
-      process.env.TWILIO_CONTENT_SID_WELCOME ??
-      process.env.TWILIO_WHATSAPP_WELCOME_TEMPLATE_SID,
-    contentSidRenewal:
-      process.env.TWILIO_CONTENT_SID_RENEWAL ??
-      process.env.TWILIO_WHATSAPP_RENEWAL_TEMPLATE_SID,
   };
 }
 
@@ -54,11 +45,8 @@ export function resolveTwilioConfig(
       whatsappFrom: normalizeWhatsappFrom(from),
       contentSidBooking:
         tenantSettings.twilioContentSidBooking ?? process.env.TWILIO_CONTENT_SID_BOOKING,
-      contentSidBarber:
-        tenantSettings.twilioContentSidBarber ?? process.env.TWILIO_CONTENT_SID_BARBER,
       contentSidReminder:
         tenantSettings.twilioContentSidReminder ?? process.env.TWILIO_CONTENT_SID_REMINDER,
-      contentSidWelcome: process.env.TWILIO_CONTENT_SID_WELCOME,
     };
   }
   return getPlatformTwilioConfig();

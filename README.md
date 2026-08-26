@@ -27,15 +27,15 @@
 
 Ver [`.env.example`](.env.example).
 
-### Twilio WhatsApp
+### Twilio WhatsApp (solo clientes)
 
 - `TWILIO_ACCOUNT_SID` — Account SID (Twilio Console)
 - `TWILIO_AUTH_TOKEN` — Auth Token
 - `TWILIO_WHATSAPP_FROM` — Número emisor (ej. `+14155238886`)
 - `TWILIO_CONTENT_SID_BOOKING` — confirmación cliente (`tubarber_booking_confirm_v1`, `HX808125…`)
-- `TWILIO_CONTENT_SID_BARBER` — aviso barbero (`tubarber_barber_new_booking_v1`, `HX4db5ba…`)
 - `TWILIO_CONTENT_SID_REMINDER` — Content Template SID recordatorio
-- `TWILIO_CONTENT_SID_WELCOME` — Content Template SID bienvenida dueño (opcional)
+
+Avisos al barbero, bienvenida y renovación van por **email (Resend)** al correo del dueño (`ownerEmail` del registro).
 
 Templates usan variables `{{1}}`, `{{2}}`, … Ver `.cursor/rules/twilio-messaging.mdc`.
 
@@ -49,13 +49,7 @@ Ambos con `Authorization: Bearer <CRON_SECRET>`.
 
 ### Suscripción manual (sin pasarela)
 
-- `SUBSCRIPTION_PAYMENT_PHONES` — números para transferencia, separados por coma (ej. `311 240 5194, 300 123 4567`)
-- `TWILIO_CONTENT_SID_RENEWAL` — template WhatsApp recordatorio de renovación (variables {{1}}–{{6}}, ver abajo)
-
-Template renovación sugerido:
-> Hola {{1}}, te escribimos de TuBarber. Tu {{3}} de *{{2}}* vence mañana ({{4}}). Para continuar sin interrupciones, realiza tu pago hoy a: {{5}}. Valor: {{6}}. Si ya pagaste, ignora este mensaje — con gusto confirmamos tu abono.
-
-Variables: 1=nombre dueño, 2=barbería, 3=tipo período, 4=fecha vencimiento, 5=teléfonos pago, 6=precio plan.
+- `SUBSCRIPTION_PAYMENT_PHONES` — números para transferencia, separados por coma (ej. `311 240 5194, 300 123 4567`). Se incluyen en el email de renovación al dueño.
 
 ## Desarrollo local
 

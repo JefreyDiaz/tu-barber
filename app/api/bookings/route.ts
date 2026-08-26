@@ -3,7 +3,9 @@ import { z } from 'zod';
 import { combineDateAndTime, isValidBookingDateTime, type ScheduleConfig } from '@/lib/schedule';
 import { bookingToInterval, getAvailableSlotsForDuration } from '@/lib/slot-availability';
 import { getColombiaDayRange } from '@/lib/date-utils';
-import { sendBookingConfirmation, sendBarberNotification } from '@/lib/messaging/booking-messages';
+import { sendBookingConfirmation } from '@/lib/messaging/booking-messages';
+import { notifyBarberNewBooking } from '@/lib/email/notify-barber-new-booking';
+import { getTenantOwnerEmail } from '@/lib/email/get-tenant-owner-email';
 import { auth } from '@/lib/auth';
 import { requireApiTenant, tenantApiErrorResponse } from '@/lib/tenant/api-helper';
 import { scopedPrisma, assertBarberInTenant } from '@/lib/tenant/prisma-scoped';
@@ -160,7 +162,6 @@ export async function POST(request: NextRequest) {
           twilioAuthToken: settings.twilioAuthToken,
           twilioWhatsappFrom: settings.twilioWhatsappFrom,
           twilioContentSidBooking: settings.twilioContentSidBooking,
-          twilioContentSidBarber: settings.twilioContentSidBarber,
           twilioContentSidReminder: settings.twilioContentSidReminder,
         }
       : null;
@@ -180,18 +181,18 @@ export async function POST(request: NextRequest) {
       tenant
     );
 
-    if (booking.barber.phone) {
-      await sendBarberNotification(
-        {
-          barberPhone: booking.barber.phone,
-          barberName: booking.barber.name,
-          customerName: booking.customerName,
-          customerPhone: booking.customerPhone,
-          dateTime: booking.dateTime,
-        },
-        tenantSettings,
-        tenant
-      );
+    const ownerEmail = await getTenantOwnerEmail(tenant.id);
+    if (ownerEmail) {
+      void notifyBarberNewBooking({
+        shopName: tenant.name,
+        slug: tenant.slug,
+        toEmail: ownerEmail,
+        barberName: booking.barber.name,
+        customerName: booking.customerName,
+        customerPhone: booking.customerPhone,
+        serviceName: service.name,
+        dateTime: booking.dateTime,
+      });
     }
 
     return NextResponse.json({ success: true, data: booking }, { status: 201 });

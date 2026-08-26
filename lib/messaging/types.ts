@@ -3,10 +3,7 @@ export interface TwilioConfig {
   authToken: string;
   whatsappFrom: string;
   contentSidBooking?: string;
-  contentSidBarber?: string;
   contentSidReminder?: string;
-  contentSidWelcome?: string;
-  contentSidRenewal?: string;
 }
 
 export interface TenantTwilioSettings {
@@ -14,7 +11,6 @@ export interface TenantTwilioSettings {
   twilioAuthToken?: string | null;
   twilioWhatsappFrom?: string | null;
   twilioContentSidBooking?: string | null;
-  twilioContentSidBarber?: string | null;
   twilioContentSidReminder?: string | null;
 }
 
@@ -28,12 +24,4 @@ export interface BookingMessageParams {
   dateTime: Date;
   bookingId: string;
   tenantSlug?: string;
-}
-
-export interface BarberMessageParams {
-  barberPhone: string;
-  barberName: string;
-  customerName: string;
-  customerPhone: string;
-  dateTime: Date;
 }

@@ -8,7 +8,6 @@ import {
   nextSubscriptionPeriodEndAfterPayment,
   startTrialEndDate,
 } from '@/lib/tenant/subscription';
-import { sendTenantWelcomeMessage } from '@/lib/messaging/welcome';
 import { notifyTenantApproved } from '@/lib/email/notify-tenant-approved';
 
 export const dynamic = 'force-dynamic';
@@ -66,15 +65,6 @@ export async function PATCH(
         where: { tenantId: id, role: 'dueno' },
         select: { username: true },
       });
-
-      await sendTenantWelcomeMessage({
-        ownerPhone: tenant.onboarding.ownerPhone,
-        ownerName: tenant.onboarding.ownerName,
-        shopName: tenant.name,
-        tenantSlug: tenant.slug,
-        planId: approvedPlan,
-        username: dueno?.username ?? '—',
-      }).catch((err) => console.error('[welcome]', err));
 
       void notifyTenantApproved({
         shopName: tenant.name,

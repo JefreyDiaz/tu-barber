@@ -242,14 +242,9 @@ body {
   will-change: transform;
 }
 
-.barbershops-row:hover .barbershops-marquee-left,
-.barbershops-row:hover .barbershops-marquee-right {
-  animation-play-state: paused;
-}
-
-@media (hover: none) and (pointer: coarse) {
-  .barbershops-row:active .barbershops-marquee-left,
-  .barbershops-row:active .barbershops-marquee-right {
+@media (hover: hover) and (pointer: fine) {
+  .barbershops-row:hover .barbershops-marquee-left,
+  .barbershops-row:hover .barbershops-marquee-right {
     animation-play-state: paused;
   }
 }
