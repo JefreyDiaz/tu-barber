@@ -3,6 +3,7 @@ import {
   PROFILE_PHOTO_COVER_BLEED,
   PROFILE_PHOTO_HEIGHT,
   PROFILE_PHOTO_WIDTH,
+  getProfilePhotoCornerRadius,
 } from '@/lib/profile-photo-frame';
 
 export type ProfileCropTransform = {
@@ -93,13 +94,28 @@ export function getProfileFrameRect(viewport: ProfileCropViewport): {
   y: number;
   width: number;
   height: number;
+  radius: number;
 } {
+  const width = viewport.frameWidth;
+  const height = viewport.frameHeight;
   return {
-    x: (viewport.width - viewport.frameWidth) / 2,
-    y: (viewport.height - viewport.frameHeight) / 2,
-    width: viewport.frameWidth,
-    height: viewport.frameHeight,
+    x: (viewport.width - width) / 2,
+    y: (viewport.height - height) / 2,
+    width,
+    height,
+    radius: getProfilePhotoCornerRadius(width, height),
   };
+}
+
+function clipProfilePhotoFrame(
+  ctx: CanvasRenderingContext2D,
+  width: number,
+  height: number
+): void {
+  const radius = getProfilePhotoCornerRadius(width, height);
+  ctx.beginPath();
+  ctx.roundRect(0, 0, width, height, radius);
+  ctx.clip();
 }
 
 export async function exportProfilePhotoCrop(
@@ -142,6 +158,8 @@ export async function exportProfilePhotoCrop(
   if (!ctx) throw new Error('No se pudo procesar la imagen');
 
   ctx.clearRect(0, 0, PROFILE_PHOTO_WIDTH, PROFILE_PHOTO_HEIGHT);
+  ctx.save();
+  clipProfilePhotoFrame(ctx, PROFILE_PHOTO_WIDTH, PROFILE_PHOTO_HEIGHT);
   ctx.drawImage(
     image,
     srcX,
@@ -153,6 +171,7 @@ export async function exportProfilePhotoCrop(
     PROFILE_PHOTO_WIDTH,
     PROFILE_PHOTO_HEIGHT
   );
+  ctx.restore();
 
   const blob = await new Promise<Blob | null>((resolve) =>
     canvas.toBlob(resolve, 'image/png', 0.92)

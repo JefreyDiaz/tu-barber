@@ -236,6 +236,8 @@ export default function ProfilePhotoCropModal({
                     y={frame.y}
                     width={frame.width}
                     height={frame.height}
+                    rx={frame.radius}
+                    ry={frame.radius}
                     fill="black"
                   />
                 </mask>
@@ -251,6 +253,8 @@ export default function ProfilePhotoCropModal({
                 y={frame.y}
                 width={frame.width}
                 height={frame.height}
+                rx={frame.radius}
+                ry={frame.radius}
                 fill="none"
                 stroke="rgba(255,255,255,0.85)"
                 strokeWidth="2"

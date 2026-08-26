@@ -42,7 +42,7 @@ export async function uploadBarberPhoto(
   }
 
   const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
-  return data.publicUrl;
+  return withCacheBuster(data.publicUrl);
 }
 
 export { BUCKET };

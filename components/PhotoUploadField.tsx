@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import ProfilePhotoCropModal from '@/components/ProfilePhotoCropModal';
+import { PROFILE_PHOTO_FRAME_CLASS } from '@/lib/profile-photo-frame';
 import { tenantApiUrl } from '@/lib/tenant/client-api';
 import { useToast } from '@/components/ToastProvider';
 
@@ -72,9 +73,12 @@ export default function PhotoUploadField({
     <div>
       <p className="mb-2 block text-sm font-medium text-white/75">{label}</p>
       <div className="flex items-center gap-4">
-        <div className="relative aspect-[7/10] h-32 shrink-0 overflow-hidden border border-white/15 bg-white/5">
+        <div
+          className={`relative aspect-[7/10] h-32 shrink-0 overflow-hidden border border-white/15 bg-white/5 ${PROFILE_PHOTO_FRAME_CLASS}`}
+        >
           {preview ? (
             <Image
+              key={preview}
               src={preview}
               alt=""
               fill

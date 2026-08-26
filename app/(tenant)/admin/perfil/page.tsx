@@ -103,7 +103,6 @@ export default function AdminPerfilPage() {
           currentPhoto={photoUrl}
           onUploaded={async (url) => {
             setPhotoUrl(url);
-            toast.success('Foto actualizada correctamente');
             await update({ image: url });
           }}
         />
