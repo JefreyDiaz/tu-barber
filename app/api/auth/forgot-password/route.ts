@@ -16,7 +16,6 @@ async function findUserByEmailForTenant(tenantId: string, email: string) {
       isActive: true,
       email: { equals: normalized, mode: 'insensitive' },
     },
-    include: { tenant: { select: { name: true, slug: true } } },
   });
   if (byUserEmail) return byUserEmail;
 
@@ -29,7 +28,6 @@ async function findUserByEmailForTenant(tenantId: string, email: string) {
         onboarding: { ownerEmail: { equals: normalized, mode: 'insensitive' } },
       },
     },
-    include: { tenant: { select: { name: true, slug: true } } },
   });
 }
 
@@ -57,8 +55,8 @@ export async function POST(request: Request) {
       });
 
       const sent = await sendPasswordResetEmail({
-        shopName: user.tenant.name,
-        slug: user.tenant.slug,
+        shopName: tenant.name,
+        slug: tenant.slug,
         ownerName: user.name,
         toEmail: email,
         username: user.username,
