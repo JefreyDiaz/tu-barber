@@ -30,8 +30,8 @@ export const PLANS: Record<PlanId, PlanDefinition> = {
     id: 'emprendedor',
     name: 'Emprendedor',
     tagline: 'Para el barbero que trabaja solo',
-    priceMonthly: 39900,
-    priceLabel: '$39.900',
+    priceMonthly: 59900,
+    priceLabel: '$59.900',
     features: [
       '1 barbero',
       'Reservas online 24/7',
@@ -54,8 +54,8 @@ export const PLANS: Record<PlanId, PlanDefinition> = {
     id: 'negocio',
     name: 'Negocio',
     tagline: 'Tu barbería con equipo pequeño',
-    priceMonthly: 89900,
-    priceLabel: '$89.900',
+    priceMonthly: 109900,
+    priceLabel: '$109.900',
     popular: true,
     features: [
       'Hasta 3 barberos',
@@ -79,8 +79,8 @@ export const PLANS: Record<PlanId, PlanDefinition> = {
     id: 'cadena',
     name: 'Cadena',
     tagline: 'Para equipos que crecen',
-    priceMonthly: 149900,
-    priceLabel: '$149.900',
+    priceMonthly: 199900,
+    priceLabel: '$199.900',
     features: [
       'Hasta 12 barberos',
       'Reservas online 24/7',

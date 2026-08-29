@@ -146,6 +146,7 @@ export async function POST(request: NextRequest) {
       toEmail: email.trim(),
       username,
       temporaryPassword: plainPassword,
+      kind: 'welcome',
     });
 
     if (!emailSent) {

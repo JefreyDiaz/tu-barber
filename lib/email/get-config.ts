@@ -28,6 +28,21 @@ export function getResendSendConfig(): { apiKey: string; from: string } | null {
   return { apiKey, from };
 }
 
+/** Reply-To for transactional mail — Outlook rejects no-reply without a valid reply address. */
+export function getResendReplyTo(): string | undefined {
+  const explicit = process.env.RESEND_REPLY_TO?.trim();
+  if (explicit && emailSchema.safeParse(explicit).success) return explicit;
+
+  const from = process.env.RESEND_FROM?.trim();
+  if (!from) return undefined;
+
+  const bracketMatch = from.match(/<([^>]+)>/);
+  const candidate = bracketMatch?.[1]?.trim() ?? from;
+  if (emailSchema.safeParse(candidate).success) return candidate;
+
+  return undefined;
+}
+
 export function getResendConfig(): ResendConfig | null {
   const sendConfig = getResendSendConfig();
   const notifyTo = parseRecipientList(process.env.RESEND_TENANT_NOTIFY_TO);
