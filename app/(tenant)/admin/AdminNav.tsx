@@ -9,15 +9,17 @@ type AdminNavProps = {
   isSetupMode: boolean;
   role?: string;
   multiBarberPlan: boolean;
+  cadenaPlan: boolean;
 };
 
 const CONFIG_PATHS = [
   '/admin/perfil',
+  '/admin/horarios',
+  '/admin/bloqueos',
   '/admin/users',
   '/admin/services',
-  '/admin/horarios',
-  '/admin/config',
   '/admin/apariencia',
+  '/admin/config',
 ];
 
 function navClass(isActive: boolean): string {
@@ -52,7 +54,7 @@ function ChevronIcon({ open }: { readonly open: boolean }) {
   );
 }
 
-export function AdminNav({ tq, isSetupMode, role, multiBarberPlan }: AdminNavProps) {
+export function AdminNav({ tq, isSetupMode, role, multiBarberPlan, cadenaPlan }: AdminNavProps) {
   const pathname = usePathname();
   const [configOpen, setConfigOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -70,9 +72,14 @@ export function AdminNav({ tq, isSetupMode, role, multiBarberPlan }: AdminNavPro
       show: !!role && !isSetupMode,
     },
     {
-      href: '/admin/horarios',
-      label: 'Horarios',
+      href: '/admin/bloqueos',
+      label: 'Mis horarios',
       show: !isSetupMode && isBarber,
+    },
+    {
+      href: '/admin/services',
+      label: 'Servicios',
+      show: !isSetupMode && isOwnerOrAdmin,
     },
     {
       href: '/admin/users',
@@ -80,8 +87,8 @@ export function AdminNav({ tq, isSetupMode, role, multiBarberPlan }: AdminNavPro
       show: multiBarberPlan && (isSetupMode || isOwnerOrAdmin),
     },
     {
-      href: '/admin/services',
-      label: 'Servicios',
+      href: '/admin/horarios',
+      label: 'Configurar Horarios',
       show: !isSetupMode && isOwnerOrAdmin,
     },
     {
@@ -92,7 +99,7 @@ export function AdminNav({ tq, isSetupMode, role, multiBarberPlan }: AdminNavPro
     {
       href: '/admin/config',
       label: 'Ajustes avanzados',
-      show: !isSetupMode && isOwnerOrAdmin,
+      show: !isSetupMode && isOwnerOrAdmin && cadenaPlan,
     },
   ].filter((item) => item.show);
 

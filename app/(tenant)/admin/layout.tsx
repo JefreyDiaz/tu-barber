@@ -10,7 +10,7 @@ import { ImpersonationBanner } from '@/components/admin/ImpersonationBanner';
 import LogoFrame from '@/components/LogoFrame';
 import { getTenantFromHeaders, TENANT_HEADERS } from '@/lib/tenant/context';
 import { extractSubdomain } from '@/lib/tenant/host';
-import { trialDaysLeft, isTrialing, isMultiBarberPlan } from '@/lib/tenant/subscription';
+import { trialDaysLeft, isTrialing, isMultiBarberPlan, resolveTenantPlan } from '@/lib/tenant/subscription';
 import { normalizePlanId } from '@/lib/plans';
 import { scopedPrisma } from '@/lib/tenant/prisma-scoped';
 
@@ -70,6 +70,14 @@ export default async function AdminLayout({
     ? isMultiBarberPlan(normalizePlanId(tenant.plan))
     : true;
 
+  const cadenaPlan = tenant
+    ? resolveTenantPlan({
+        plan: tenant.plan,
+        subscriptionStatus: tenant.subscriptionStatus,
+        trialEndsAt: tenant.trialEndsAt,
+      }) === 'cadena'
+    : false;
+
   return (
     <div className="admin-shell platform-bg min-h-screen min-h-[100dvh] text-white">
       {isSetupMode && (
@@ -108,6 +116,7 @@ export default async function AdminLayout({
             isSetupMode={isSetupMode}
             role={user?.role}
             multiBarberPlan={multiBarberPlan}
+            cadenaPlan={cadenaPlan}
           />
         </div>
       </header>
