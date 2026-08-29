@@ -3,6 +3,7 @@ import Credentials from 'next-auth/providers/credentials';
 import { prisma } from '@/lib/prisma';
 import { verifyPassword } from '@/lib/password';
 import { verifyImpersonationToken, verifyRestoreToken } from '@/lib/auth/impersonation';
+import { extractSubdomain, isBareLocalhost, isLocalhostSubdomain } from '@/lib/tenant/host';
 
 type AuthUser = {
   id: string;
@@ -16,6 +17,34 @@ type AuthUser = {
   impersonating?: boolean;
   impersonatorId?: string | null;
 };
+
+function isAllowedAuthRedirect(target: URL, base: URL): boolean {
+  if (target.origin === base.origin) return true;
+
+  const targetHost = target.hostname.toLowerCase();
+  const baseHost = base.hostname.toLowerCase();
+
+  if (isBareLocalhost(baseHost) || baseHost === '127.0.0.1') {
+    return isLocalhostSubdomain(targetHost) && target.port === base.port;
+  }
+
+  if (isLocalhostSubdomain(baseHost)) {
+    return targetHost.endsWith('.localhost') && target.port === base.port;
+  }
+
+  const root = process.env.NEXT_PUBLIC_ROOT_DOMAIN?.toLowerCase();
+  if (!root) return false;
+
+  if (targetHost === root || targetHost === `www.${root}`) return true;
+
+  const suffix = `.${root}`;
+  if (targetHost.endsWith(suffix)) {
+    const sub = targetHost.slice(0, -suffix.length);
+    return sub.length > 0 && !sub.includes('.') && !['app', 'www'].includes(sub);
+  }
+
+  return extractSubdomain(targetHost) !== null;
+}
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -160,6 +189,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
+    async redirect({ url, baseUrl }) {
+      if (url.startsWith('/')) {
+        return `${baseUrl}${url}`;
+      }
+
+      try {
+        const target = new URL(url);
+        const base = new URL(baseUrl);
+        if (isAllowedAuthRedirect(target, base)) {
+          return target.toString();
+        }
+      } catch {
+        // URL inválida — usar base
+      }
+
+      return baseUrl;
+    },
     async jwt({ token, user, trigger, session }) {
       if (user) {
         const authUser = user as AuthUser;

@@ -9,6 +9,7 @@ import LogoFrame from '@/components/LogoFrame';
 import { useToast } from '@/components/ToastProvider';
 import { LOGO_PILL_CLASS, logoFrameClassName } from '@/lib/logo-frame';
 import { buildTenantUrl, formatTenantHost } from '@/lib/tenant/urls';
+import TenantBookingStats from '@/components/platform/TenantBookingStats';
 
 interface TenantRow {
   id: string;
@@ -234,7 +235,7 @@ function PlanSelector({
   if (tenant.status === 'rejected') return null;
 
   return (
-    <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.03] p-4">
+    <div className="h-full rounded-xl border border-white/10 bg-white/[0.03] p-4">
       <p className="text-xs font-medium uppercase tracking-wider text-white/40">Plan y suscripción</p>
       <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end">
         <div className="min-w-0 flex-1">
@@ -386,7 +387,7 @@ function TenantCard({
               <div className="mt-3 flex flex-wrap gap-3 text-xs text-white/45">
                 <span>{tenant._count.users} usuarios</span>
                 <span>·</span>
-                <span>{tenant._count.bookings} reservas</span>
+                <span>{tenant._count.bookings} reservas totales</span>
                 <span>·</span>
                 <span>{tenant._count.services} servicios</span>
               </div>
@@ -448,14 +449,17 @@ function TenantCard({
             </div>
           </div>
 
-          <PlanSelector
-            tenant={tenant}
-            acting={isActing}
-            onAction={onAction}
-            {...(tenant.status === 'pending'
-              ? { value: approvePlan, onChange: setApprovePlan }
-              : {})}
-          />
+          <div className="mt-4 grid gap-4 lg:grid-cols-2 lg:items-stretch">
+            <TenantBookingStats tenantId={tenant.id} active={expanded} />
+            <PlanSelector
+              tenant={tenant}
+              acting={isActing}
+              onAction={onAction}
+              {...(tenant.status === 'pending'
+                ? { value: approvePlan, onChange: setApprovePlan }
+                : {})}
+            />
+          </div>
 
           {tenant.status === 'active' && (
             <div className="mt-5 border-t border-white/10 pt-4">
