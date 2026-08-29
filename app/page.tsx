@@ -1,6 +1,7 @@
 import BarberCarousel, { BarberSelectionText } from '@/components/BarberCarousel';
 import LogoFrame from '@/components/LogoFrame';
 import PlatformLanding from '@/components/PlatformLanding';
+import TuBarberCredit from '@/components/TuBarberCredit';
 import TenantPublicBackground from '@/components/TenantPublicBackground';
 import TenantSiteShell from '@/components/TenantSiteShell';
 import { assertTenantExists, getTenantFromHeaders } from '@/lib/tenant/context';
@@ -78,6 +79,7 @@ export default async function Home() {
           </div>
         )}
       </main>
+      <TuBarberCredit fixed />
     </TenantSiteShell>
   );
 }

@@ -242,6 +242,18 @@ body {
   will-change: transform;
 }
 
+/* Barber carousel — scroll without visible bar on desktop */
+@media (min-width: 768px) {
+  .barber-carousel-scroll {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .barber-carousel-scroll::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 @media (hover: hover) and (pointer: fine) {
   .barbershops-row:hover .barbershops-marquee-left,
   .barbershops-row:hover .barbershops-marquee-right {

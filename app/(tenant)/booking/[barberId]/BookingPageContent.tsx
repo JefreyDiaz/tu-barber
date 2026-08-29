@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import BookingForm from '@/components/BookingFormNew';
+import TuBarberCredit from '@/components/TuBarberCredit';
 
 interface BookingPageContentProps {
   readonly barberId: string;
@@ -29,6 +29,7 @@ export default function BookingPageContent({ barberId, barberName }: BookingPage
         barberName={barberName}
         onSuccess={() => setShowTitle(false)}
       />
+      <TuBarberCredit />
     </>
   );
 }

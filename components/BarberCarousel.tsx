@@ -78,7 +78,7 @@ export default function BarberCarousel({ barbers }: BarberCarouselProps) {
   }, [hasInteracted]);
 
   return (
-    <div className="flex-1 min-h-0 w-full overflow-x-auto overflow-y-hidden overscroll-x-contain snap-x snap-mandatory scroll-smooth md:flex-initial md:mt-4 md:min-h-0 lg:mt-5"
+    <div className="barber-carousel-scroll flex-1 min-h-0 w-full overflow-x-auto overflow-y-hidden overscroll-x-contain snap-x snap-mandatory scroll-smooth md:flex-initial md:mt-4 md:min-h-0 lg:mt-5"
       ref={scrollRef}
     >
       <div 
