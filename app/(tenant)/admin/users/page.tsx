@@ -38,13 +38,30 @@ const ROLE_COLORS: Record<string, string> = {
 const defaultForm = {
   name: '',
   username: '',
-  password: '',
   photo: '',
   email: '',
   phone: '',
   role: 'barbero' as RoleType,
   isActive: true,
 };
+
+function ChevronIcon({ open }: Readonly<{ open: boolean }>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+      className={`h-5 w-5 shrink-0 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+      aria-hidden
+    >
+      <path
+        fillRule="evenodd"
+        d="M5.22 8.22a.75.75 0 011.06 0L10 11.94l3.72-3.72a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.22 9.28a.75.75 0 010-1.06z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+}
 
 function StatusBadge({ active }: Readonly<{ active: boolean }>) {
   const className = active
@@ -394,6 +411,7 @@ export default function AdminUsersPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [form, setForm] = useState(defaultForm);
+  const [createOpen, setCreateOpen] = useState(false);
 
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [deletingUser, setDeletingUser] = useState<User | null>(null);
@@ -424,9 +442,8 @@ export default function AdminUsersPage() {
         body: JSON.stringify({
           name: form.name.trim(),
           username: form.username.trim(),
-          password: form.password,
           photo: form.photo.trim() || undefined,
-          email: form.email.trim() || undefined,
+          email: form.email.trim(),
           phone: form.phone.trim(),
           role: isOwner && !isAdmin ? 'barbero' : form.role,
           isActive: form.isActive,
@@ -438,8 +455,13 @@ export default function AdminUsersPage() {
         setError(data.error ?? 'Error al crear usuario');
         return;
       }
-      toast.success('Usuario creado correctamente');
+      if (data.warning) {
+        toast.error(data.warning);
+      } else {
+        toast.success('Usuario creado. Se enviaron las credenciales por correo.');
+      }
       setForm(defaultForm);
+      setCreateOpen(false);
       fetchUsers();
     } catch {
       setError('Error de conexión');
@@ -476,10 +498,20 @@ export default function AdminUsersPage() {
     <div className={ui.pageWide}>
       {/* Formulario de crear usuario: admin (todos) o dueño (solo barberos) */}
       {(isAdmin || isOwner) && (
-        <>
-          <h1 className={ui.title}>
-            {isOwner && !isAdmin ? 'Agregar barbero' : 'Crear usuario'}
-          </h1>
+        <section className="space-y-3">
+          <button
+            type="button"
+            onClick={() => setCreateOpen((open) => !open)}
+            className="flex w-full items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-left transition-colors hover:bg-white/[0.07]"
+            aria-expanded={createOpen}
+          >
+            <span className="text-lg font-semibold text-white/90">
+              {isOwner && !isAdmin ? 'Agregar barbero' : 'Crear usuario'}
+            </span>
+            <ChevronIcon open={createOpen} />
+          </button>
+
+          {createOpen && (
           <form onSubmit={handleSubmit} className={ui.card}>
             {error && (
               <div className={`mb-4 ${ui.alertError}`}>{error}</div>
@@ -501,13 +533,6 @@ export default function AdminUsersPage() {
                 <p className={`mt-1 ${ui.muted}`}>Solo letras, números y guión bajo</p>
               </div>
               <div>
-                <label htmlFor="password" className={ui.label}>Contraseña *</label>
-                <input id="password" type="password" required minLength={8}
-                  value={form.password} onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
-                  className={ui.input}
-                  placeholder="Mínimo 8 caracteres" />
-              </div>
-              <div>
                 <label htmlFor="phone" className={ui.label}>Teléfono (WhatsApp) *</label>
                 <input id="phone" type="tel" required minLength={10} maxLength={10}
                   value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value.replaceAll(/\D/g, '') }))}
@@ -516,13 +541,14 @@ export default function AdminUsersPage() {
                 <p className={`mt-1 ${ui.muted}`}>10 dígitos sin código de país</p>
               </div>
               <div>
-                <label htmlFor="email" className={ui.label}>Email</label>
-                <input id="email" type="email" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+                <label htmlFor="email" className={ui.label}>Email *</label>
+                <input id="email" type="email" required value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
                   className={ui.input}
-                  placeholder="opcional@ejemplo.com" />
+                  placeholder="usuario@ejemplo.com" />
+                <p className={`mt-1 ${ui.muted}`}>Se enviarán las credenciales iniciales a este correo</p>
               </div>
               <div className={`sm:col-span-2 rounded-xl border border-dashed border-white/15 bg-white/5 px-4 py-3 text-sm text-white/70`}>
-                Después de crear el usuario, edítalo para subir su foto de perfil.
+                La contraseña se genera automáticamente. Después de crear el usuario, edítalo para subir su foto de perfil.
               </div>
               {isAdmin ? (
                 <div>
@@ -545,14 +571,27 @@ export default function AdminUsersPage() {
                 <label htmlFor="isActive" className="text-sm text-white/75">Usuario activo</label>
               </div>
             </div>
-            <div className="mt-6">
+            <div className="mt-6 flex flex-wrap gap-3">
               <button type="submit" disabled={submitting}
                 className={ui.btnPrimary}>
                 {submitting ? 'Creando...' : 'Crear usuario'}
               </button>
+              <button
+                type="button"
+                disabled={submitting}
+                onClick={() => {
+                  setCreateOpen(false);
+                  setError(null);
+                  setForm(defaultForm);
+                }}
+                className={ui.btnSecondary}
+              >
+                Cancelar
+              </button>
             </div>
           </form>
-        </>
+          )}
+        </section>
       )}
 
       {/* Mensajes para dueño */}

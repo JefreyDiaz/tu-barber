@@ -11,9 +11,14 @@ export const createUserSchema = z.object({
   password: z
     .string()
     .min(8, 'La contraseña debe tener al menos 8 caracteres')
-    .max(100),
+    .max(100)
+    .optional()
+    .or(z.literal('')),
   photo: z.union([z.string().url('URL inválida').max(1000), z.literal('')]).optional(),
-  email: z.string().email('Email inválido').optional().or(z.literal('')),
+  email: z
+    .string()
+    .min(1, 'El email es obligatorio')
+    .email('Email inválido'),
   phone: z
     .string()
     .min(1, 'El teléfono es obligatorio')
