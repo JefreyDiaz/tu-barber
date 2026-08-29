@@ -1,11 +1,14 @@
 'use client';
 
-import { formatMinutesToAmPm, parseAmPmToMinutes } from '@/lib/schedule';
+import {
+  formatMinutesToAmPm,
+  minutesToTimeInputValue,
+  timeInputValueToMinutes,
+  type ScheduleConfig,
+} from '@/lib/schedule';
 import type { TimeBlock } from '@/lib/tenant/defaults';
 
 const DAY_LABELS = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-
-export type ScheduleConfig = Record<string, TimeBlock[] | null>;
 
 interface ScheduleEditorProps {
   value: ScheduleConfig;
@@ -16,14 +19,46 @@ function emptyBlock(): TimeBlock {
   return { start: 8 * 60, end: 12 * 60 };
 }
 
+function ScheduleTimeField({
+  label,
+  minutes,
+  onChange,
+}: {
+  label: string;
+  minutes: number;
+  onChange: (minutes: number) => void;
+}) {
+  return (
+    <div className="flex flex-col gap-0.5">
+      <input
+        type="time"
+        step={60}
+        value={minutesToTimeInputValue(minutes)}
+        onChange={(e) => {
+          const parsed = timeInputValueToMinutes(e.target.value);
+          if (parsed !== null) onChange(parsed);
+        }}
+        aria-label={label}
+        className="glass-input min-w-[8.5rem] px-2 py-1.5 text-sm"
+      />
+      <span className="text-[10px] text-white/35">{formatMinutesToAmPm(minutes)}</span>
+    </div>
+  );
+}
+
 export default function ScheduleEditor({ value, onChange }: ScheduleEditorProps) {
   function setDayClosed(day: string, closed: boolean) {
     onChange({ ...value, [day]: closed ? null : [emptyBlock()] });
   }
 
-  function updateBlock(day: string, index: number, field: 'start' | 'end', timeStr: string) {
+  function updateBlockMinutes(
+    day: string,
+    index: number,
+    field: 'start' | 'end',
+    minutes: number
+  ) {
     const blocks = [...(value[day] ?? [])];
-    blocks[index] = { ...blocks[index], [field]: parseAmPmToMinutes(timeStr) };
+    blocks[index] = { ...blocks[index], [field]: minutes };
     onChange({ ...value, [day]: blocks });
   }
 
@@ -60,28 +95,24 @@ export default function ScheduleEditor({ value, onChange }: ScheduleEditorProps)
             </div>
 
             {!closed && (
-              <div className="mt-3 space-y-2">
+              <div className="mt-3 space-y-3">
                 {blocks.map((block, i) => (
-                  <div key={i} className="flex flex-wrap items-center gap-2">
-                    <input
-                      type="text"
-                      value={formatMinutesToAmPm(block.start)}
-                      onChange={(e) => updateBlock(day, i, 'start', e.target.value)}
-                      placeholder="8:00 AM"
-                      className="glass-input w-28 px-2 py-1.5 text-sm"
+                  <div key={i} className="flex flex-wrap items-end gap-2">
+                    <ScheduleTimeField
+                      label={`${label} bloque ${i + 1} inicio`}
+                      minutes={block.start}
+                      onChange={(mins) => updateBlockMinutes(day, i, 'start', mins)}
                     />
-                    <span className="text-white/35">—</span>
-                    <input
-                      type="text"
-                      value={formatMinutesToAmPm(block.end)}
-                      onChange={(e) => updateBlock(day, i, 'end', e.target.value)}
-                      placeholder="12:00 PM"
-                      className="glass-input w-28 px-2 py-1.5 text-sm"
+                    <span className="pb-5 text-white/35">—</span>
+                    <ScheduleTimeField
+                      label={`${label} bloque ${i + 1} fin`}
+                      minutes={block.end}
+                      onChange={(mins) => updateBlockMinutes(day, i, 'end', mins)}
                     />
                     <button
                       type="button"
                       onClick={() => removeBlock(day, i)}
-                      className="text-xs text-red-300 hover:text-red-200"
+                      className="pb-5 text-xs text-red-300 hover:text-red-200"
                     >
                       Quitar
                     </button>
@@ -102,3 +133,5 @@ export default function ScheduleEditor({ value, onChange }: ScheduleEditorProps)
     </div>
   );
 }
+
+export type { ScheduleConfig };

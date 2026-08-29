@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import ScheduleEditor, { type ScheduleConfig } from '@/components/ScheduleEditor';
 import { ui } from '@/lib/admin-ui';
 import { DEFAULT_SCHEDULE } from '@/lib/tenant/defaults';
+import { normalizeScheduleConfig } from '@/lib/schedule';
 import { tenantApiUrl } from '@/lib/tenant/client-api';
 import { useToast } from '@/components/ToastProvider';
 
@@ -61,7 +62,7 @@ export default function AdminConfigPage() {
             canUseOwnTwilio: json.data.canUseOwnTwilio ?? false,
           }));
           if (json.data.scheduleJson) {
-            setSchedule(json.data.scheduleJson as ScheduleConfig);
+            setSchedule(normalizeScheduleConfig(json.data.scheduleJson as ScheduleConfig));
           }
         }
         setLoading(false);

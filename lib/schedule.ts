@@ -33,11 +33,48 @@ export function getScheduleForDayFromConfig(
  * Ejemplo: 480 → "8:00 AM", 520 → "8:40 AM", 840 → "2:00 PM"
  */
 export function formatMinutesToAmPm(totalMinutes: number): string {
-  const hours = Math.floor(totalMinutes / 60);
-  const minutes = totalMinutes % 60;
+  const safe = Number(totalMinutes);
+  if (!Number.isFinite(safe)) return '8:00 AM';
+  const hours = Math.floor(safe / 60);
+  const minutes = safe % 60;
   const period = hours >= 12 ? 'PM' : 'AM';
   const displayHour = hours % 12 || 12;
   return `${displayHour}:${String(minutes).padStart(2, '0')} ${period}`;
+}
+
+/** Valor para `<input type="time">` (HH:mm, 24h) */
+export function minutesToTimeInputValue(totalMinutes: number): string {
+  const safe = Number(totalMinutes);
+  if (!Number.isFinite(safe)) return '08:00';
+  const hours = Math.floor(safe / 60) % 24;
+  const minutes = safe % 60;
+  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+}
+
+/** Parsea `<input type="time">` a minutos desde medianoche */
+export function timeInputValueToMinutes(value: string): number | null {
+  const match = /^(\d{1,2}):(\d{2})$/.exec(value.trim());
+  if (!match) return null;
+  const hours = Number.parseInt(match[1], 10);
+  const minutes = Number.parseInt(match[2], 10);
+  if (hours > 23 || minutes > 59) return null;
+  return hours * 60 + minutes;
+}
+
+/** Normaliza scheduleJson de la API (números como string, etc.) */
+export function normalizeScheduleConfig(config: ScheduleConfig): ScheduleConfig {
+  const result: ScheduleConfig = {};
+  for (const [day, blocks] of Object.entries(config)) {
+    if (blocks === null) {
+      result[day] = null;
+      continue;
+    }
+    result[day] = blocks.map((block) => ({
+      start: Number(block.start),
+      end: Number(block.end),
+    }));
+  }
+  return result;
 }
 
 /**
