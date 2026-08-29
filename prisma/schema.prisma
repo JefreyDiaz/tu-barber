@@ -40,6 +40,7 @@ model TenantSettings {
   backgroundUrl       String?
   primaryColor        String?
   secondaryColor      String?
+  textColor           String?
   slotDurationMinutes Int     @default(40)
   minAdvanceHours     Int     @default(1)
   maxAdvanceDays      Int     @default(30)

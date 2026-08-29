@@ -6,6 +6,7 @@ import { prisma } from '@/lib/prisma';
 import { SignOutButton } from './SignOutButton';
 import { AdminNav } from './AdminNav';
 import TrialBanner from './TrialBanner';
+import { ImpersonationBanner } from '@/components/admin/ImpersonationBanner';
 import LogoFrame from '@/components/LogoFrame';
 import { getTenantFromHeaders, TENANT_HEADERS } from '@/lib/tenant/context';
 import { extractSubdomain } from '@/lib/tenant/host';
@@ -24,7 +25,7 @@ export default async function AdminLayout({
   const host = h.get('host') ?? '';
   const tq = extractSubdomain(host) ? '' : slug ? `?tenant=${slug}` : '';
 
-  if (user?.mustChangePassword) {
+  if (user?.mustChangePassword && !user.impersonating) {
     redirect(`/login/cambiar-contrasena${tq}`);
   }
 
@@ -76,6 +77,8 @@ export default async function AdminLayout({
           Modo configuración inicial — Crea tu primer usuario administrador
         </div>
       )}
+
+      {user?.impersonating && <ImpersonationBanner />}
 
       {trialInfo && <TrialBanner daysLeft={trialInfo.daysLeft} selectedPlan={trialInfo.plan} />}
 

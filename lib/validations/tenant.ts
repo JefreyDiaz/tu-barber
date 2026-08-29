@@ -59,6 +59,7 @@ export const tenantBrandingSchema = z.object({
   backgroundUrl: z.string().url().optional().or(z.literal('')),
   primaryColor: hexColorSchema.optional(),
   secondaryColor: hexColorSchema.optional(),
+  textColor: hexColorSchema.optional(),
 });
 
 export const tenantSettingsSchema = z.object({
@@ -66,6 +67,7 @@ export const tenantSettingsSchema = z.object({
   backgroundUrl: z.string().url().optional().or(z.literal('')),
   primaryColor: hexColorSchema.optional(),
   secondaryColor: hexColorSchema.optional(),
+  textColor: hexColorSchema.optional(),
   slotDurationMinutes: z.number().int().min(15).max(120).optional(),
   minAdvanceHours: z.number().int().min(0).max(48).optional(),
   maxAdvanceDays: z.number().int().min(1).max(90).optional(),

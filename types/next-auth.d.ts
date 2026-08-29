@@ -6,6 +6,8 @@ declare module 'next-auth' {
     tenantId?: string | null;
     tenantSlug?: string | null;
     mustChangePassword?: boolean;
+    impersonating?: boolean;
+    impersonatorId?: string | null;
   }
 
   interface Session {
@@ -18,6 +20,8 @@ declare module 'next-auth' {
       tenantId?: string | null;
       tenantSlug?: string | null;
       mustChangePassword?: boolean;
+      impersonating?: boolean;
+      impersonatorId?: string | null;
     };
   }
 }
@@ -29,5 +33,7 @@ declare module 'next-auth/jwt' {
     tenantId?: string | null;
     tenantSlug?: string | null;
     mustChangePassword?: boolean;
+    impersonating?: boolean;
+    impersonatorId?: string | null;
   }
 }

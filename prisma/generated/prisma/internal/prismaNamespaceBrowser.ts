@@ -101,6 +101,7 @@ export const TenantSettingsScalarFieldEnum = {
   backgroundUrl: 'backgroundUrl',
   primaryColor: 'primaryColor',
   secondaryColor: 'secondaryColor',
+  textColor: 'textColor',
   slotDurationMinutes: 'slotDurationMinutes',
   minAdvanceHours: 'minAdvanceHours',
   maxAdvanceDays: 'maxAdvanceDays',

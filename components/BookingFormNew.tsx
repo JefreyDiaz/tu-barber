@@ -344,7 +344,7 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
             {selectedDate && (
               <>
                 {(loading || availableSlots.length > 0) && (
-                  <p className="mb-4 text-sm brand-accent">{formatSelectedDate}</p>
+                  <p className="mb-4 text-sm font-medium brand-text">{formatSelectedDate}</p>
                 )}
                 {loading && <div className="py-8 text-center text-white/45">Cargando horarios...</div>}
                 {!loading && availableSlots.length === 0 && (

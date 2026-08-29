@@ -400,6 +400,7 @@ body {
 .tenant-site {
   --tenant-primary: #e5b869;
   --tenant-secondary: #c8944a;
+  --tenant-text: #1c1917;
 }
 
 .tenant-site .btn-accent {
@@ -409,6 +410,7 @@ body {
     var(--tenant-primary) 45%,
     var(--tenant-secondary) 100%
   );
+  color: var(--tenant-text, #1c1917);
   box-shadow: 0 4px 24px color-mix(in srgb, var(--tenant-primary) 35%, transparent);
 }
 
@@ -430,6 +432,10 @@ body {
 
 .tenant-site .brand-accent {
   color: var(--tenant-primary);
+}
+
+.tenant-site .brand-text {
+  color: var(--tenant-text, #1c1917);
 }
 
 .tenant-site .brand-accent-soft {

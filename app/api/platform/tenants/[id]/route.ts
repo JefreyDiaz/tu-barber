@@ -9,6 +9,7 @@ import {
   startTrialEndDate,
 } from '@/lib/tenant/subscription';
 import { notifyTenantApproved } from '@/lib/email/notify-tenant-approved';
+import { isValidPlanId, normalizePlanId } from '@/lib/plans';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,7 +25,7 @@ export async function PATCH(
   const { id } = await params;
   const body = await request.json();
   const { action, rejectionNote, plan } = body as {
-    action: 'approve' | 'reject' | 'suspend' | 'reactivate' | 'renew';
+    action: 'approve' | 'reject' | 'suspend' | 'reactivate' | 'renew' | 'changePlan';
     rejectionNote?: string;
     plan?: string;
   };
@@ -38,7 +39,7 @@ export async function PATCH(
   }
 
   if (action === 'approve') {
-    const approvedPlan = plan ?? tenant.plan;
+    const approvedPlan = plan && isValidPlanId(plan) ? plan : normalizePlanId(tenant.plan);
     const trialEndsAt = startTrialEndDate();
     await prisma.$transaction([
       prisma.tenant.update({
@@ -102,6 +103,20 @@ export async function PATCH(
         subscriptionEndsAt,
         renewalReminderSentFor: null,
       },
+    });
+  } else if (action === 'changePlan') {
+    if (!plan || !isValidPlanId(plan)) {
+      return NextResponse.json({ success: false, error: 'Plan inválido' }, { status: 400 });
+    }
+    if (tenant.status === 'rejected') {
+      return NextResponse.json(
+        { success: false, error: 'No se puede cambiar el plan de una barbería rechazada' },
+        { status: 400 }
+      );
+    }
+    await prisma.tenant.update({
+      where: { id },
+      data: { plan },
     });
   } else {
     return NextResponse.json({ success: false, error: 'Acción inválida' }, { status: 400 });
