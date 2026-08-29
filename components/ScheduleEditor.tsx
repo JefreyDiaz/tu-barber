@@ -28,6 +28,16 @@ function ScheduleTimeField({
   minutes: number;
   onChange: (minutes: number) => void;
 }) {
+  function openPicker(input: HTMLInputElement) {
+    if (typeof input.showPicker === 'function') {
+      try {
+        input.showPicker();
+      } catch {
+        // Ignorar si el navegador bloquea showPicker fuera de un gesto del usuario
+      }
+    }
+  }
+
   return (
     <div className="flex flex-col gap-0.5">
       <input
@@ -38,8 +48,9 @@ function ScheduleTimeField({
           const parsed = timeInputValueToMinutes(e.target.value);
           if (parsed !== null) onChange(parsed);
         }}
+        onClick={(e) => openPicker(e.currentTarget)}
         aria-label={label}
-        className="glass-input min-w-[8.5rem] px-2 py-1.5 text-sm"
+        className="schedule-time-input glass-input min-w-[8.5rem] cursor-pointer px-2 py-1.5 text-sm"
       />
       <span className="text-[10px] text-white/35">{formatMinutesToAmPm(minutes)}</span>
     </div>

@@ -2,7 +2,28 @@ import type { TenantSettings } from '../../prisma/generated/prisma/client';
 
 export const DEFAULT_PRIMARY_COLOR = '#e5b869';
 export const DEFAULT_SECONDARY_COLOR = '#c8944a';
-export const DEFAULT_TEXT_COLOR = '#1c1917';
+/** Texto sobre fondo oscuro (formulario, fechas, etc.) */
+export const DEFAULT_TEXT_COLOR = '#ffffff';
+/** Texto sobre botones con gradiente primario/secundario */
+export const DEFAULT_BUTTON_TEXT_COLOR = '#1c1917';
+/** Valor legacy: antes se usaba como único "textColor" — tratar como sin personalizar */
+const LEGACY_TEXT_COLOR = '#1c1917';
+
+export function resolveStoredTextColor(stored: string | null | undefined): string {
+  const trimmed = stored?.trim();
+  if (!trimmed || trimmed.toLowerCase() === LEGACY_TEXT_COLOR) {
+    return DEFAULT_TEXT_COLOR;
+  }
+  return trimmed;
+}
+
+export function normalizeTextColorForStorage(value: string | undefined): string | null {
+  const trimmed = value?.trim();
+  if (!trimmed || trimmed.toLowerCase() === DEFAULT_TEXT_COLOR.toLowerCase()) {
+    return null;
+  }
+  return trimmed;
+}
 export const DEFAULT_BACKGROUND_URL = '/video/fondos/fondo-1.mp4';
 
 export interface TenantBranding {
@@ -11,17 +32,22 @@ export interface TenantBranding {
   primaryColor: string;
   secondaryColor: string;
   textColor: string;
+  buttonTextColor: string;
 }
 
-export function resolveTenantBranding(
-  settings: Pick<TenantSettings, 'logoUrl' | 'backgroundUrl' | 'primaryColor' | 'secondaryColor' | 'textColor'> | null | undefined
-): TenantBranding {
+type BrandingSettings = Pick<
+  TenantSettings,
+  'logoUrl' | 'backgroundUrl' | 'primaryColor' | 'secondaryColor' | 'textColor' | 'buttonTextColor'
+>;
+
+export function resolveTenantBranding(settings: BrandingSettings | null | undefined): TenantBranding {
   return {
     logoUrl: settings?.logoUrl ?? null,
     backgroundUrl: settings?.backgroundUrl?.trim() || DEFAULT_BACKGROUND_URL,
     primaryColor: settings?.primaryColor?.trim() || DEFAULT_PRIMARY_COLOR,
     secondaryColor: settings?.secondaryColor?.trim() || DEFAULT_SECONDARY_COLOR,
-    textColor: settings?.textColor?.trim() || DEFAULT_TEXT_COLOR,
+    textColor: resolveStoredTextColor(settings?.textColor),
+    buttonTextColor: settings?.buttonTextColor?.trim() || DEFAULT_BUTTON_TEXT_COLOR,
   };
 }
 
@@ -43,6 +69,7 @@ export function brandingCssVars(branding: TenantBranding): Record<string, string
     '--tenant-primary': branding.primaryColor,
     '--tenant-secondary': branding.secondaryColor,
     '--tenant-text': branding.textColor,
+    '--tenant-button-text': branding.buttonTextColor,
   };
 }
 
@@ -52,12 +79,14 @@ export function sanitizeBrandingPayload(data: {
   primaryColor?: string;
   secondaryColor?: string;
   textColor?: string;
+  buttonTextColor?: string;
 }) {
   return {
     logoUrl: data.logoUrl?.trim() ? data.logoUrl.trim() : null,
     backgroundUrl: data.backgroundUrl?.trim() ? data.backgroundUrl.trim() : null,
     primaryColor: data.primaryColor?.trim() || null,
     secondaryColor: data.secondaryColor?.trim() || null,
-    textColor: data.textColor?.trim() || null,
+    textColor: normalizeTextColorForStorage(data.textColor),
+    buttonTextColor: data.buttonTextColor?.trim() || null,
   };
 }

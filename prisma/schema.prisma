@@ -41,6 +41,7 @@ model TenantSettings {
   primaryColor        String?
   secondaryColor      String?
   textColor           String?
+  buttonTextColor     String?
   slotDurationMinutes Int     @default(40)
   minAdvanceHours     Int     @default(1)
   maxAdvanceDays      Int     @default(30)

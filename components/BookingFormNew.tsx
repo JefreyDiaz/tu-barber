@@ -202,11 +202,11 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/20 text-2xl text-emerald-300">
             ✓
           </div>
-          <h2 className="mb-2 text-xl font-bold text-white sm:text-2xl">¡Reserva confirmada!</h2>
-          <p className="mb-4 text-sm text-white/60 sm:text-base">
+          <h2 className="mb-2 text-xl font-bold brand-text sm:text-2xl">¡Reserva confirmada!</h2>
+          <p className="mb-4 text-sm brand-text-muted sm:text-base">
             Tu cita con {barberName} ha sido creada exitosamente.
           </p>
-          <p className="mb-6 text-xs text-white/40 sm:text-sm">
+          <p className="mb-6 text-xs brand-text-faint sm:text-sm">
             Redirigiendo al inicio en {countdown} segundos...
           </p>
           <a href={homeHref} className="btn-accent inline-block min-h-[48px] rounded-2xl px-6 py-3 touch-manipulation">
@@ -226,8 +226,8 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
   return (
     <form onSubmit={handleSubmit} className="glass-card-strong w-full min-w-0 rounded-2xl p-4 sm:p-6 md:p-8">
       <div className="mb-6 sm:mb-8">
-        <h2 className="mb-3 text-lg font-semibold text-white sm:text-xl">Tipo de servicio</h2>
-        {servicesLoading && <p className="text-sm text-white/45">Cargando servicios...</p>}
+        <h2 className="mb-3 text-lg font-semibold brand-text sm:text-xl">Tipo de servicio</h2>
+        {servicesLoading && <p className="text-sm brand-text-subtle">Cargando servicios...</p>}
         {!servicesLoading && services.length === 0 && (
           <p className="rounded-xl border brand-border brand-bg-soft px-4 py-3 text-sm brand-accent-soft">
             Esta barbería aún no tiene servicios configurados.
@@ -249,8 +249,8 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
                     : 'glass-card border-white/10 hover:border-white/20'
                 }`}
               >
-                <p className="font-semibold text-white">{svc.name}</p>
-                <p className="mt-1 text-sm text-white/45">{svc.durationMinutes} min</p>
+                <p className="font-semibold brand-text">{svc.name}</p>
+                <p className="mt-1 text-sm brand-text-subtle">{svc.durationMinutes} min</p>
               </button>
             ))}
           </div>
@@ -259,7 +259,7 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
 
       <div className="mb-6 flex flex-col gap-6 sm:mb-8 md:flex-row md:items-start md:gap-8">
         <div className="w-full min-w-0 flex-shrink-0 md:w-auto">
-          <h2 className="mb-3 text-lg font-semibold text-white sm:mb-4 sm:text-xl">Selecciona una fecha</h2>
+          <h2 className="mb-3 text-lg font-semibold brand-text sm:mb-4 sm:text-xl">Selecciona una fecha</h2>
           <div className="glass-card mx-auto inline-block w-full max-w-sm overflow-hidden rounded-2xl md:mx-0">
             <div className="flex items-center justify-between border-b border-white/10 bg-white/5 px-3 py-3 sm:px-5 sm:py-4">
               <button
@@ -271,7 +271,7 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
               >
                 ‹
               </button>
-              <span className="truncate px-1 text-sm font-semibold text-white sm:text-base md:text-lg">
+              <span className="truncate px-1 text-sm font-semibold brand-text sm:text-base md:text-lg">
                 {MESES_ES[displayMonth.getMonth()]} {displayMonth.getFullYear()}
               </span>
               <button
@@ -286,7 +286,7 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
             </div>
             <div className="grid grid-cols-7 gap-0 border-b border-white/10 bg-white/[0.03] px-1 py-2 sm:px-2">
               {DIAS_SEMANA.map((d) => (
-                <span key={d} className="truncate text-center text-[10px] font-semibold uppercase tracking-wider text-white/40 sm:text-xs">
+                <span key={d} className="truncate text-center text-[10px] font-semibold uppercase tracking-wider brand-text-faint sm:text-xs">
                   {d}
                 </span>
               ))}
@@ -305,10 +305,10 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
                 const isToday = sameDate(date, new Date());
                 const isSelected = selectedDate ? sameDate(date, selectedDate) : false;
 
-                let dayClass = 'text-white/80 hover:bg-white/10';
-                if (disabled) dayClass = 'cursor-not-allowed text-white/20';
+                let dayClass = 'brand-text-soft hover:bg-white/10';
+                if (disabled) dayClass = 'cursor-not-allowed brand-text-disabled';
                 else if (isSelected) dayClass = 'btn-accent font-semibold shadow-md';
-                else if (isToday) dayClass = 'bg-white/15 font-bold text-white brand-ring';
+                else if (isToday) dayClass = 'brand-bg-soft font-bold brand-text brand-ring';
 
                 return (
                   <button
@@ -327,17 +327,17 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
         </div>
 
         <div className="flex w-full min-w-0 flex-1 flex-col md:w-auto">
-          <h2 className="mb-3 text-lg font-semibold text-white sm:mb-4 sm:text-xl">
+          <h2 className="mb-3 text-lg font-semibold brand-text sm:mb-4 sm:text-xl">
             Horarios disponibles
             {selectedService && (
-              <span className="mt-1 block text-sm font-normal text-white/45">
+              <span className="mt-1 block text-sm font-normal brand-text-subtle">
                 {selectedService.name} · {selectedService.durationMinutes} min
               </span>
             )}
           </h2>
           <div className="glass-card min-h-0 flex-1 rounded-2xl p-4 sm:p-5 md:min-h-[340px] md:p-6">
             {!selectedDate && (
-              <p className="text-sm text-white/45">
+              <p className="text-sm brand-text-subtle">
                 Selecciona una fecha en el calendario para ver los horarios disponibles.
               </p>
             )}
@@ -346,9 +346,9 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
                 {(loading || availableSlots.length > 0) && (
                   <p className="mb-4 text-sm font-medium brand-text">{formatSelectedDate}</p>
                 )}
-                {loading && <div className="py-8 text-center text-white/45">Cargando horarios...</div>}
+                {loading && <div className="py-8 text-center brand-text-subtle">Cargando horarios...</div>}
                 {!loading && availableSlots.length === 0 && (
-                  <p className="text-white/45">No hay horarios disponibles para esta fecha.</p>
+                  <p className="brand-text-subtle">No hay horarios disponibles para esta fecha.</p>
                 )}
                 {!loading && availableSlots.length > 0 && (
                   <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 sm:gap-3">
@@ -378,10 +378,10 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
       </div>
 
       <div className="space-y-4 border-t border-white/10 pt-6 sm:space-y-6">
-        <h2 className="text-lg font-semibold text-white sm:text-xl">Datos de contacto</h2>
+        <h2 className="text-lg font-semibold brand-text sm:text-xl">Datos de contacto</h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="min-w-0">
-            <label htmlFor="customerName" className="mb-2 block text-sm font-medium text-white/75">
+            <label htmlFor="customerName" className="mb-2 block text-sm font-medium brand-text-muted">
               Nombre completo *
             </label>
             <input
@@ -395,7 +395,7 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
             {errors.customerName && <p className="mt-1 text-sm text-red-300">{errors.customerName}</p>}
           </div>
           <div className="min-w-0">
-            <label htmlFor="customerPhone" className="mb-2 block text-sm font-medium text-white/75">
+            <label htmlFor="customerPhone" className="mb-2 block text-sm font-medium brand-text-muted">
               Teléfono (WhatsApp) *
             </label>
             <input
@@ -412,7 +412,7 @@ export default function BookingForm({ barberId, barberName, onSuccess }: Booking
               className="glass-input w-full min-w-0 px-4 py-3 text-base"
               placeholder="3001234567"
             />
-            <p className="mt-1 text-xs text-white/40">10 dígitos, sin espacios ni guiones.</p>
+            <p className="mt-1 text-xs brand-text-faint">10 dígitos, sin espacios ni guiones.</p>
             {errors.customerPhone && <p className="mt-1 text-sm text-red-300">{errors.customerPhone}</p>}
           </div>
         </div>

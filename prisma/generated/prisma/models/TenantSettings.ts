@@ -47,6 +47,7 @@ export type TenantSettingsMinAggregateOutputType = {
   primaryColor: string | null
   secondaryColor: string | null
   textColor: string | null
+  buttonTextColor: string | null
   slotDurationMinutes: number | null
   minAdvanceHours: number | null
   maxAdvanceDays: number | null
@@ -66,6 +67,7 @@ export type TenantSettingsMaxAggregateOutputType = {
   primaryColor: string | null
   secondaryColor: string | null
   textColor: string | null
+  buttonTextColor: string | null
   slotDurationMinutes: number | null
   minAdvanceHours: number | null
   maxAdvanceDays: number | null
@@ -85,6 +87,7 @@ export type TenantSettingsCountAggregateOutputType = {
   primaryColor: number
   secondaryColor: number
   textColor: number
+  buttonTextColor: number
   slotDurationMinutes: number
   minAdvanceHours: number
   maxAdvanceDays: number
@@ -121,6 +124,7 @@ export type TenantSettingsMinAggregateInputType = {
   primaryColor?: true
   secondaryColor?: true
   textColor?: true
+  buttonTextColor?: true
   slotDurationMinutes?: true
   minAdvanceHours?: true
   maxAdvanceDays?: true
@@ -140,6 +144,7 @@ export type TenantSettingsMaxAggregateInputType = {
   primaryColor?: true
   secondaryColor?: true
   textColor?: true
+  buttonTextColor?: true
   slotDurationMinutes?: true
   minAdvanceHours?: true
   maxAdvanceDays?: true
@@ -159,6 +164,7 @@ export type TenantSettingsCountAggregateInputType = {
   primaryColor?: true
   secondaryColor?: true
   textColor?: true
+  buttonTextColor?: true
   slotDurationMinutes?: true
   minAdvanceHours?: true
   maxAdvanceDays?: true
@@ -266,6 +272,7 @@ export type TenantSettingsGroupByOutputType = {
   primaryColor: string | null
   secondaryColor: string | null
   textColor: string | null
+  buttonTextColor: string | null
   slotDurationMinutes: number
   minAdvanceHours: number
   maxAdvanceDays: number
@@ -309,6 +316,7 @@ export type TenantSettingsWhereInput = {
   primaryColor?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
   secondaryColor?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
   textColor?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
+  buttonTextColor?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
   slotDurationMinutes?: Prisma.IntFilter<"TenantSettings"> | number
   minAdvanceHours?: Prisma.IntFilter<"TenantSettings"> | number
   maxAdvanceDays?: Prisma.IntFilter<"TenantSettings"> | number
@@ -330,6 +338,7 @@ export type TenantSettingsOrderByWithRelationInput = {
   primaryColor?: Prisma.SortOrderInput | Prisma.SortOrder
   secondaryColor?: Prisma.SortOrderInput | Prisma.SortOrder
   textColor?: Prisma.SortOrderInput | Prisma.SortOrder
+  buttonTextColor?: Prisma.SortOrderInput | Prisma.SortOrder
   slotDurationMinutes?: Prisma.SortOrder
   minAdvanceHours?: Prisma.SortOrder
   maxAdvanceDays?: Prisma.SortOrder
@@ -354,6 +363,7 @@ export type TenantSettingsWhereUniqueInput = Prisma.AtLeast<{
   primaryColor?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
   secondaryColor?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
   textColor?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
+  buttonTextColor?: Prisma.StringNullableFilter<"TenantSettings"> | string | null
   slotDurationMinutes?: Prisma.IntFilter<"TenantSettings"> | number
   minAdvanceHours?: Prisma.IntFilter<"TenantSettings"> | number
   maxAdvanceDays?: Prisma.IntFilter<"TenantSettings"> | number
@@ -375,6 +385,7 @@ export type TenantSettingsOrderByWithAggregationInput = {
   primaryColor?: Prisma.SortOrderInput | Prisma.SortOrder
   secondaryColor?: Prisma.SortOrderInput | Prisma.SortOrder
   textColor?: Prisma.SortOrderInput | Prisma.SortOrder
+  buttonTextColor?: Prisma.SortOrderInput | Prisma.SortOrder
   slotDurationMinutes?: Prisma.SortOrder
   minAdvanceHours?: Prisma.SortOrder
   maxAdvanceDays?: Prisma.SortOrder
@@ -403,6 +414,7 @@ export type TenantSettingsScalarWhereWithAggregatesInput = {
   primaryColor?: Prisma.StringNullableWithAggregatesFilter<"TenantSettings"> | string | null
   secondaryColor?: Prisma.StringNullableWithAggregatesFilter<"TenantSettings"> | string | null
   textColor?: Prisma.StringNullableWithAggregatesFilter<"TenantSettings"> | string | null
+  buttonTextColor?: Prisma.StringNullableWithAggregatesFilter<"TenantSettings"> | string | null
   slotDurationMinutes?: Prisma.IntWithAggregatesFilter<"TenantSettings"> | number
   minAdvanceHours?: Prisma.IntWithAggregatesFilter<"TenantSettings"> | number
   maxAdvanceDays?: Prisma.IntWithAggregatesFilter<"TenantSettings"> | number
@@ -422,6 +434,7 @@ export type TenantSettingsCreateInput = {
   primaryColor?: string | null
   secondaryColor?: string | null
   textColor?: string | null
+  buttonTextColor?: string | null
   slotDurationMinutes?: number
   minAdvanceHours?: number
   maxAdvanceDays?: number
@@ -443,6 +456,7 @@ export type TenantSettingsUncheckedCreateInput = {
   primaryColor?: string | null
   secondaryColor?: string | null
   textColor?: string | null
+  buttonTextColor?: string | null
   slotDurationMinutes?: number
   minAdvanceHours?: number
   maxAdvanceDays?: number
@@ -462,6 +476,7 @@ export type TenantSettingsUpdateInput = {
   primaryColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   secondaryColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   textColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  buttonTextColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slotDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   minAdvanceHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxAdvanceDays?: Prisma.IntFieldUpdateOperationsInput | number
@@ -483,6 +498,7 @@ export type TenantSettingsUncheckedUpdateInput = {
   primaryColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   secondaryColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   textColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  buttonTextColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slotDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   minAdvanceHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxAdvanceDays?: Prisma.IntFieldUpdateOperationsInput | number
@@ -503,6 +519,7 @@ export type TenantSettingsCreateManyInput = {
   primaryColor?: string | null
   secondaryColor?: string | null
   textColor?: string | null
+  buttonTextColor?: string | null
   slotDurationMinutes?: number
   minAdvanceHours?: number
   maxAdvanceDays?: number
@@ -522,6 +539,7 @@ export type TenantSettingsUpdateManyMutationInput = {
   primaryColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   secondaryColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   textColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  buttonTextColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slotDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   minAdvanceHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxAdvanceDays?: Prisma.IntFieldUpdateOperationsInput | number
@@ -542,6 +560,7 @@ export type TenantSettingsUncheckedUpdateManyInput = {
   primaryColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   secondaryColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   textColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  buttonTextColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slotDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   minAdvanceHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxAdvanceDays?: Prisma.IntFieldUpdateOperationsInput | number
@@ -567,6 +586,7 @@ export type TenantSettingsCountOrderByAggregateInput = {
   primaryColor?: Prisma.SortOrder
   secondaryColor?: Prisma.SortOrder
   textColor?: Prisma.SortOrder
+  buttonTextColor?: Prisma.SortOrder
   slotDurationMinutes?: Prisma.SortOrder
   minAdvanceHours?: Prisma.SortOrder
   maxAdvanceDays?: Prisma.SortOrder
@@ -594,6 +614,7 @@ export type TenantSettingsMaxOrderByAggregateInput = {
   primaryColor?: Prisma.SortOrder
   secondaryColor?: Prisma.SortOrder
   textColor?: Prisma.SortOrder
+  buttonTextColor?: Prisma.SortOrder
   slotDurationMinutes?: Prisma.SortOrder
   minAdvanceHours?: Prisma.SortOrder
   maxAdvanceDays?: Prisma.SortOrder
@@ -613,6 +634,7 @@ export type TenantSettingsMinOrderByAggregateInput = {
   primaryColor?: Prisma.SortOrder
   secondaryColor?: Prisma.SortOrder
   textColor?: Prisma.SortOrder
+  buttonTextColor?: Prisma.SortOrder
   slotDurationMinutes?: Prisma.SortOrder
   minAdvanceHours?: Prisma.SortOrder
   maxAdvanceDays?: Prisma.SortOrder
@@ -678,6 +700,7 @@ export type TenantSettingsCreateWithoutTenantInput = {
   primaryColor?: string | null
   secondaryColor?: string | null
   textColor?: string | null
+  buttonTextColor?: string | null
   slotDurationMinutes?: number
   minAdvanceHours?: number
   maxAdvanceDays?: number
@@ -697,6 +720,7 @@ export type TenantSettingsUncheckedCreateWithoutTenantInput = {
   primaryColor?: string | null
   secondaryColor?: string | null
   textColor?: string | null
+  buttonTextColor?: string | null
   slotDurationMinutes?: number
   minAdvanceHours?: number
   maxAdvanceDays?: number
@@ -732,6 +756,7 @@ export type TenantSettingsUpdateWithoutTenantInput = {
   primaryColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   secondaryColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   textColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  buttonTextColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slotDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   minAdvanceHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxAdvanceDays?: Prisma.IntFieldUpdateOperationsInput | number
@@ -751,6 +776,7 @@ export type TenantSettingsUncheckedUpdateWithoutTenantInput = {
   primaryColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   secondaryColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   textColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  buttonTextColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slotDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   minAdvanceHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxAdvanceDays?: Prisma.IntFieldUpdateOperationsInput | number
@@ -773,6 +799,7 @@ export type TenantSettingsSelect<ExtArgs extends runtime.Types.Extensions.Intern
   primaryColor?: boolean
   secondaryColor?: boolean
   textColor?: boolean
+  buttonTextColor?: boolean
   slotDurationMinutes?: boolean
   minAdvanceHours?: boolean
   maxAdvanceDays?: boolean
@@ -794,6 +821,7 @@ export type TenantSettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   primaryColor?: boolean
   secondaryColor?: boolean
   textColor?: boolean
+  buttonTextColor?: boolean
   slotDurationMinutes?: boolean
   minAdvanceHours?: boolean
   maxAdvanceDays?: boolean
@@ -815,6 +843,7 @@ export type TenantSettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   primaryColor?: boolean
   secondaryColor?: boolean
   textColor?: boolean
+  buttonTextColor?: boolean
   slotDurationMinutes?: boolean
   minAdvanceHours?: boolean
   maxAdvanceDays?: boolean
@@ -836,6 +865,7 @@ export type TenantSettingsSelectScalar = {
   primaryColor?: boolean
   secondaryColor?: boolean
   textColor?: boolean
+  buttonTextColor?: boolean
   slotDurationMinutes?: boolean
   minAdvanceHours?: boolean
   maxAdvanceDays?: boolean
@@ -849,7 +879,7 @@ export type TenantSettingsSelectScalar = {
   twilioContentSidReminder?: boolean
 }
 
-export type TenantSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"tenantId" | "logoUrl" | "backgroundUrl" | "primaryColor" | "secondaryColor" | "textColor" | "slotDurationMinutes" | "minAdvanceHours" | "maxAdvanceDays" | "cancelNoticeHours" | "scheduleJson" | "twilioAccountSid" | "twilioAuthToken" | "twilioWhatsappFrom" | "twilioContentSidBooking" | "twilioContentSidBarber" | "twilioContentSidReminder", ExtArgs["result"]["tenantSettings"]>
+export type TenantSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"tenantId" | "logoUrl" | "backgroundUrl" | "primaryColor" | "secondaryColor" | "textColor" | "buttonTextColor" | "slotDurationMinutes" | "minAdvanceHours" | "maxAdvanceDays" | "cancelNoticeHours" | "scheduleJson" | "twilioAccountSid" | "twilioAuthToken" | "twilioWhatsappFrom" | "twilioContentSidBooking" | "twilioContentSidBarber" | "twilioContentSidReminder", ExtArgs["result"]["tenantSettings"]>
 export type TenantSettingsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
 }
@@ -872,6 +902,7 @@ export type $TenantSettingsPayload<ExtArgs extends runtime.Types.Extensions.Inte
     primaryColor: string | null
     secondaryColor: string | null
     textColor: string | null
+    buttonTextColor: string | null
     slotDurationMinutes: number
     minAdvanceHours: number
     maxAdvanceDays: number
@@ -1313,6 +1344,7 @@ export interface TenantSettingsFieldRefs {
   readonly primaryColor: Prisma.FieldRef<"TenantSettings", 'String'>
   readonly secondaryColor: Prisma.FieldRef<"TenantSettings", 'String'>
   readonly textColor: Prisma.FieldRef<"TenantSettings", 'String'>
+  readonly buttonTextColor: Prisma.FieldRef<"TenantSettings", 'String'>
   readonly slotDurationMinutes: Prisma.FieldRef<"TenantSettings", 'Int'>
   readonly minAdvanceHours: Prisma.FieldRef<"TenantSettings", 'Int'>
   readonly maxAdvanceDays: Prisma.FieldRef<"TenantSettings", 'Int'>

@@ -5,9 +5,11 @@ import BrandingUploadField from '@/components/BrandingUploadField';
 import { ui } from '@/lib/admin-ui';
 import {
   DEFAULT_BACKGROUND_URL,
+  DEFAULT_BUTTON_TEXT_COLOR,
   DEFAULT_PRIMARY_COLOR,
   DEFAULT_SECONDARY_COLOR,
   DEFAULT_TEXT_COLOR,
+  resolveStoredTextColor,
 } from '@/lib/tenant/branding';
 import { tenantApiUrl } from '@/lib/tenant/client-api';
 import { useToast } from '@/components/ToastProvider';
@@ -22,6 +24,7 @@ export default function AdminAparienciaPage() {
     primaryColor: DEFAULT_PRIMARY_COLOR,
     secondaryColor: DEFAULT_SECONDARY_COLOR,
     textColor: DEFAULT_TEXT_COLOR,
+    buttonTextColor: DEFAULT_BUTTON_TEXT_COLOR,
   });
 
   useEffect(() => {
@@ -34,7 +37,8 @@ export default function AdminAparienciaPage() {
             backgroundUrl: json.data.backgroundUrl ?? '',
             primaryColor: json.data.primaryColor ?? DEFAULT_PRIMARY_COLOR,
             secondaryColor: json.data.secondaryColor ?? DEFAULT_SECONDARY_COLOR,
-            textColor: json.data.textColor ?? DEFAULT_TEXT_COLOR,
+            textColor: resolveStoredTextColor(json.data.textColor),
+            buttonTextColor: json.data.buttonTextColor ?? DEFAULT_BUTTON_TEXT_COLOR,
           });
         }
         setLoading(false);
@@ -53,6 +57,7 @@ export default function AdminAparienciaPage() {
         primaryColor: payload.primaryColor,
         secondaryColor: payload.secondaryColor,
         textColor: payload.textColor,
+        buttonTextColor: payload.buttonTextColor,
       }),
     });
 
@@ -102,13 +107,15 @@ export default function AdminAparienciaPage() {
       primaryColor: DEFAULT_PRIMARY_COLOR,
       secondaryColor: DEFAULT_SECONDARY_COLOR,
       textColor: DEFAULT_TEXT_COLOR,
+      buttonTextColor: DEFAULT_BUTTON_TEXT_COLOR,
     }));
   }
 
   const hasCustomColors =
     form.primaryColor.toLowerCase() !== DEFAULT_PRIMARY_COLOR.toLowerCase() ||
     form.secondaryColor.toLowerCase() !== DEFAULT_SECONDARY_COLOR.toLowerCase() ||
-    form.textColor.toLowerCase() !== DEFAULT_TEXT_COLOR.toLowerCase();
+    form.textColor.toLowerCase() !== DEFAULT_TEXT_COLOR.toLowerCase() ||
+    form.buttonTextColor.toLowerCase() !== DEFAULT_BUTTON_TEXT_COLOR.toLowerCase();
 
   if (loading) {
     return (
@@ -170,23 +177,39 @@ export default function AdminAparienciaPage() {
 
         <section className={ui.card}>
           <h2 className={ui.sectionTitle}>Colores de marca</h2>
-          <p className={`mt-1 ${ui.muted}`}>Botones, acentos y detalles en reservas</p>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <ColorField
-              label="Color primario"
-              value={form.primaryColor}
-              onChange={(v) => setForm((f) => ({ ...f, primaryColor: v }))}
-            />
-            <ColorField
-              label="Color secundario"
-              value={form.secondaryColor}
-              onChange={(v) => setForm((f) => ({ ...f, secondaryColor: v }))}
-            />
-            <ColorField
-              label="Color de texto"
-              value={form.textColor}
-              onChange={(v) => setForm((f) => ({ ...f, textColor: v }))}
-            />
+          <p className={`mt-1 ${ui.muted}`}>
+            Colores de botones y textos en el flujo de reservas
+          </p>
+          <div className="mt-4 space-y-6">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <ColorField
+                label="Color primario"
+                value={form.primaryColor}
+                onChange={(v) => setForm((f) => ({ ...f, primaryColor: v }))}
+              />
+              <ColorField
+                label="Color secundario"
+                value={form.secondaryColor}
+                onChange={(v) => setForm((f) => ({ ...f, secondaryColor: v }))}
+              />
+            </div>
+            <div>
+              <p className="mb-3 text-xs font-medium uppercase tracking-wider text-white/40">
+                Colores de texto
+              </p>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <ColorField
+                  label="Texto del formulario"
+                  value={form.textColor}
+                  onChange={(v) => setForm((f) => ({ ...f, textColor: v }))}
+                />
+                <ColorField
+                  label="Texto en botones"
+                  value={form.buttonTextColor}
+                  onChange={(v) => setForm((f) => ({ ...f, buttonTextColor: v }))}
+                />
+              </div>
+            </div>
           </div>
           {hasCustomColors && (
             <button type="button" onClick={resetColors} className={`mt-4 ${ui.btnGhost}`}>
@@ -196,7 +219,8 @@ export default function AdminAparienciaPage() {
           <BrandPreview
             primary={form.primaryColor}
             secondary={form.secondaryColor}
-            text={form.textColor}
+            formText={form.textColor}
+            buttonText={form.buttonTextColor}
           />
         </section>
 
@@ -211,11 +235,13 @@ export default function AdminAparienciaPage() {
 function BrandPreview({
   primary,
   secondary,
-  text,
+  formText,
+  buttonText,
 }: {
   primary: string;
   secondary: string;
-  text: string;
+  formText: string;
+  buttonText: string;
 }) {
   const accentSoft = `${primary}33`;
   const accentBorder = `${primary}80`;
@@ -223,13 +249,16 @@ function BrandPreview({
   return (
     <div className="mt-6 rounded-2xl border border-white/10 bg-black/20 p-4">
       <p className="mb-3 text-xs uppercase tracking-wider text-white/40">Vista previa</p>
+      <p className="mb-3 text-sm font-medium" style={{ color: formText }}>
+        31 de agosto · Horarios disponibles
+      </p>
       <div className="flex flex-wrap items-center gap-3">
         <button
           type="button"
           className="rounded-xl px-4 py-2 text-sm font-semibold shadow-md"
           style={{
             background: `linear-gradient(135deg, ${primary}, ${secondary})`,
-            color: text,
+            color: buttonText,
           }}
         >
           Confirmar reserva

@@ -19,7 +19,7 @@ export default function BookingPageContent({ barberId, barberName }: BookingPage
           <p className="text-xs font-medium uppercase tracking-widest brand-accent-soft">
             Reservar con {barberName}
           </p>
-          <h1 className="mt-2 text-2xl font-bold text-white sm:text-3xl">
+          <h1 className="mt-2 text-2xl font-bold brand-text sm:text-3xl">
             Elige fecha y hora
           </h1>
         </div>
