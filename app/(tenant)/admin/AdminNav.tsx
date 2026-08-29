@@ -72,11 +72,6 @@ export function AdminNav({ tq, isSetupMode, role, multiBarberPlan, cadenaPlan }:
       show: !!role && !isSetupMode,
     },
     {
-      href: '/admin/bloqueos',
-      label: 'Mis horarios',
-      show: !isSetupMode && isBarber,
-    },
-    {
       href: '/admin/services',
       label: 'Servicios',
       show: !isSetupMode && isOwnerOrAdmin,
@@ -85,6 +80,11 @@ export function AdminNav({ tq, isSetupMode, role, multiBarberPlan, cadenaPlan }:
       href: '/admin/users',
       label: 'Usuarios',
       show: multiBarberPlan && (isSetupMode || isOwnerOrAdmin),
+    },
+    {
+      href: '/admin/bloqueos',
+      label: 'Bloquear horarios',
+      show: !isSetupMode && isBarber,
     },
     {
       href: '/admin/horarios',
