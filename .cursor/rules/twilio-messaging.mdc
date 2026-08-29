@@ -15,11 +15,20 @@ Customer-facing WhatsApp goes through **Twilio Content API** (approved utility t
 - `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_WHATSAPP_FROM`
 - `TWILIO_CONTENT_SID_BOOKING`, `TWILIO_CONTENT_SID_REMINDER`
 
-## Not WhatsApp (Resend email to tenant owner)
+## Not WhatsApp (Resend email instead)
 
-- New booking alert to barbería → `lib/email/notify-barber-new-booking.ts`
-- Tenant approval welcome → `lib/email/notify-tenant-approved.ts`
+- New booking alert to barbería → `lib/email/notify-barber-new-booking.ts` (do **not** use `tubarber_barber_new_booking_v1`)
+- Tenant approval welcome → `lib/email/notify-tenant-approved.ts` (do **not** use `tubarber_tenant_welcome_v1`)
 - Subscription/trial expiry reminder to owner → `lib/email/notify-subscription-expiring-owner.ts`
+
+## Templates in Twilio Console
+
+| Template | SID (prod) | Usar |
+|----------|------------|------|
+| `tubarber_booking_confirm_v1` | `TWILIO_CONTENT_SID_BOOKING` | ✅ Confirmación al cliente |
+| `tubarber_booking_reminder_v1` | `TWILIO_CONTENT_SID_REMINDER` | ✅ Recordatorio ~3h antes |
+| `tubarber_barber_new_booking_v1` | — | ❌ Puede borrarse (alerta va por email) |
+| `tubarber_tenant_welcome_v1` | — | ❌ Puede borrarse (bienvenida va por email) |
 
 ## Config resolution
 

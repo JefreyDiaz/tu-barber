@@ -55,19 +55,32 @@ export async function sendBookingConfirmation(
   params: BookingMessageParams,
   tenantSettings?: TenantTwilioSettings | null,
   tenant?: TenantSubscription | null
-): Promise<void> {
+): Promise<boolean> {
   const config = getConfig(tenantSettings, tenant);
   if (!config) {
     warnTwilioNotConfigured();
-    return;
+    return false;
   }
 
-  await sendTwilioTemplateMessage(
+  if (!config.contentSidBooking) {
+    console.warn('[Twilio] TWILIO_CONTENT_SID_BOOKING not configured');
+    return false;
+  }
+
+  const ok = await sendTwilioTemplateMessage(
     config,
     params.to,
     config.contentSidBooking,
     bookingVariables(params)
   );
+
+  if (!ok) {
+    console.error(
+      `[Twilio] Booking confirmation failed bookingId=${params.bookingId} customer=${params.customerName}`
+    );
+  }
+
+  return ok;
 }
 
 /**
@@ -82,6 +95,11 @@ export async function sendBookingReminder(
   const config = getConfig(tenantSettings, tenant);
   if (!config) {
     warnTwilioNotConfigured();
+    return false;
+  }
+
+  if (!config.contentSidReminder) {
+    console.warn('[Twilio] TWILIO_CONTENT_SID_REMINDER not configured');
     return false;
   }
 

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import PhotoUploadField from '@/components/PhotoUploadField';
+import PasswordInput from '@/components/PasswordInput';
 import { ui } from '@/lib/admin-ui';
 import { tenantApiUrl } from '@/lib/tenant/client-api';
 import { useToast } from '@/components/ToastProvider';
@@ -140,14 +141,14 @@ export default function AdminPerfilPage() {
           <label htmlFor="profile-password" className={ui.label}>
             Nueva contraseña
           </label>
-          <input
+          <PasswordInput
             id="profile-password"
-            type="password"
             minLength={8}
             value={form.password}
             onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
-            className={ui.input}
+            className={`${ui.input} pr-11`}
             placeholder="Opcional"
+            autoComplete="new-password"
           />
         </div>
 

@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import PlanCard from '@/components/platform/PlanCard';
 import PlatformLogo from '@/components/PlatformLogo';
 import PasswordInput from '@/components/PasswordInput';
+import { useVisualViewportInset } from '@/lib/hooks/use-visual-viewport-inset';
 import { PLAN_LIST, TRIAL_DAYS, type PlanId, isValidPlanId } from '@/lib/plans';
 import { isUsernameValid, sanitizeUsernameInput } from '@/lib/validations/username';
 
@@ -34,6 +35,7 @@ function isAccountStepValid(form: {
 
 function RegistroWizardInner() {
   const searchParams = useSearchParams();
+  const keyboardInset = useVisualViewportInset();
   const initialPlan = searchParams.get('plan');
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -126,7 +128,10 @@ function RegistroWizardInner() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-lg px-4 py-6 pb-24">
+      <main
+        className="mx-auto max-w-lg px-4 py-6"
+        style={{ paddingBottom: `${96 + keyboardInset}px` }}
+      >
         {/* Progress */}
         <div className="mb-8 flex gap-2">
           {STEPS.map((label, i) => (
@@ -284,8 +289,14 @@ function RegistroWizardInner() {
         )}
       </main>
 
-      {/* Bottom nav */}
-      <div className="fixed inset-x-0 bottom-0 border-t border-white/5 bg-stone-950/80 p-4 backdrop-blur-xl">
+      {/* Bottom nav — lifts above mobile keyboard */}
+      <div
+        className="fixed inset-x-0 z-40 border-t border-white/5 bg-stone-950/80 p-4 backdrop-blur-xl transition-[bottom] duration-150"
+        style={{
+          bottom: keyboardInset,
+          paddingBottom: keyboardInset > 0 ? '1rem' : 'max(1rem, env(safe-area-inset-bottom))',
+        }}
+      >
         <div className="mx-auto flex max-w-lg gap-3">
           {step > 0 && (
             <button
@@ -338,6 +349,12 @@ function WizardField({
   placeholder?: string;
   hint?: string;
 }) {
+  const scrollOnFocus = (target: HTMLElement) => {
+    requestAnimationFrame(() => {
+      target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    });
+  };
+
   return (
     <div>
       <label className="mb-1.5 block text-sm font-medium text-white/80">{label}</label>
@@ -349,6 +366,7 @@ function WizardField({
           minLength={8}
           autoComplete="new-password"
           onChange={(e) => onChange(e.target.value)}
+          onFocus={(e) => scrollOnFocus(e.currentTarget)}
         />
       ) : (
         <input
@@ -357,6 +375,7 @@ function WizardField({
           value={value}
           placeholder={placeholder}
           onChange={(e) => onChange(e.target.value)}
+          onFocus={(e) => scrollOnFocus(e.currentTarget)}
           className="glass-input w-full px-4 py-3 text-sm"
         />
       )}

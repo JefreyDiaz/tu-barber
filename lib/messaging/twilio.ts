@@ -26,21 +26,33 @@ export async function sendTwilioTemplateMessage(
 
   const client = Twilio(config.accountSid, config.authToken);
 
+  const toAddress = toWhatsAppAddress(to);
+
   try {
     const message = await client.messages.create({
       from: config.whatsappFrom,
-      to: toWhatsAppAddress(to),
+      to: toAddress,
       contentSid,
       contentVariables: buildContentVariables(variableValues),
     });
 
     const ok = message.status !== 'failed' && message.status !== 'undelivered';
-    if (!ok) {
-      console.error(`[Twilio] Message ${message.sid} status: ${message.status}`);
+    if (ok) {
+      console.info(
+        `[Twilio] Message queued sid=${message.sid} status=${message.status} to=${toAddress} template=${contentSid}`
+      );
+    } else {
+      console.error(
+        `[Twilio] Message rejected sid=${message.sid} status=${message.status} error=${message.errorCode ?? 'none'} to=${toAddress}`
+      );
     }
     return ok;
   } catch (err) {
-    console.error('[Twilio] send failed:', err);
+    const detail =
+      err && typeof err === 'object' && 'code' in err
+        ? ` code=${String((err as { code?: unknown }).code)} message=${String((err as { message?: unknown }).message ?? err)}`
+        : ` ${String(err)}`;
+    console.error(`[Twilio] send failed to=${toAddress} template=${contentSid}${detail}`);
     return false;
   }
 }
