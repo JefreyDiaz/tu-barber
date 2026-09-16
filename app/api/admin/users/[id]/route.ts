@@ -6,6 +6,7 @@ import { requireApiTenant, tenantErrorStatus } from '@/lib/tenant/api-helper';
 import { assertSameTenant } from '@/lib/tenant/permissions';
 import { scopedPrisma } from '@/lib/tenant/prisma-scoped';
 import { validateBarberSlotCapacity } from '@/lib/tenant/barber-capacity';
+import { getPlanUpgradeOffer } from '@/lib/plans/upgrade';
 import { prisma } from '@/lib/prisma';
 type RouteParams = { params: Promise<{ id: string }> };
 
@@ -109,7 +110,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     const tenantData = await prisma.tenant.findUnique({
       where: { id: authResult.tenantId },
-      select: { plan: true, subscriptionStatus: true, trialEndsAt: true },
+      select: { name: true, plan: true, subscriptionStatus: true, trialEndsAt: true },
     });
     if (tenantData) {
       const capacity = await validateBarberSlotCapacity(db, tenantData, {
@@ -117,7 +118,15 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         existingRole: existingUser.role,
       });
       if (!capacity.ok) {
-        return NextResponse.json({ success: false, error: capacity.error }, { status: 403 });
+        return NextResponse.json(
+          {
+            success: false,
+            error: capacity.error,
+            code: 'BARBER_LIMIT',
+            upgrade: getPlanUpgradeOffer(tenantData.plan, tenantData.name),
+          },
+          { status: 403 }
+        );
       }
     }
 

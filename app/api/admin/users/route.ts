@@ -7,7 +7,9 @@ import { requireApiTenant, tenantApiErrorResponse } from '@/lib/tenant/api-helpe
 import { assertSameTenant } from '@/lib/tenant/permissions';
 import { scopedPrisma } from '@/lib/tenant/prisma-scoped';
 import { prisma } from '@/lib/prisma';
-import { validateBarberSlotCapacity } from '@/lib/tenant/barber-capacity';
+import { countBarberSlots, validateBarberSlotCapacity } from '@/lib/tenant/barber-capacity';
+import { maxBarbersForPlan } from '@/lib/tenant/subscription';
+import { getPlanUpgradeOffer } from '@/lib/plans/upgrade';
 
 export const dynamic = 'force-dynamic';
 
@@ -37,6 +39,11 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    const tenantData = await prisma.tenant.findUnique({
+      where: { id: tenant.id },
+      select: { name: true, plan: true, subscriptionStatus: true, trialEndsAt: true },
+    });
+
     const users = await db.user.findMany({
       orderBy: { createdAt: 'desc' },
       select: {
@@ -44,7 +51,26 @@ export async function GET(request: NextRequest) {
         phone: true, role: true, isActive: true, createdAt: true, updatedAt: true,
       },
     });
-    return NextResponse.json({ success: true, data: users });
+
+    let barberCapacity: {
+      used: number;
+      max: number;
+      atLimit: boolean;
+      upgrade: ReturnType<typeof getPlanUpgradeOffer>;
+    } | undefined;
+
+    if (tenantData) {
+      const used = await countBarberSlots(db);
+      const max = maxBarbersForPlan(tenantData);
+      barberCapacity = {
+        used,
+        max,
+        atLimit: used >= max,
+        upgrade: getPlanUpgradeOffer(tenantData.plan, tenant.name),
+      };
+    }
+
+    return NextResponse.json({ success: true, data: users, barberCapacity });
   } catch (error) {
     console.error('Error fetching users:', error);
     return NextResponse.json({ success: false, error: 'Error al obtener usuarios' }, { status: 500 });
@@ -103,7 +129,15 @@ export async function POST(request: NextRequest) {
       if (tenantData) {
         const capacity = await validateBarberSlotCapacity(db, tenantData, { role });
         if (!capacity.ok) {
-          return NextResponse.json({ success: false, error: capacity.error }, { status: 403 });
+          return NextResponse.json(
+            {
+              success: false,
+              error: capacity.error,
+              code: 'BARBER_LIMIT',
+              upgrade: getPlanUpgradeOffer(tenantData.plan, tenant.name),
+            },
+            { status: 403 }
+          );
         }
       }
     }

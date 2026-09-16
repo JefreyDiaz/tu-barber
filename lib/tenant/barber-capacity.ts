@@ -19,7 +19,7 @@ export function barberLimitExceededMessage(maxBarbers: number): string {
 
 /**
  * Validates barber/dueno slot capacity when creating a user or changing role.
- * Reuses plan limits from lib/plans.ts (1 / 3 / 8).
+ * Reuses plan limits from lib/plans.ts (1 / 2 / 5 barberos).
  */
 export async function validateBarberSlotCapacity(
   db: ScopedDb,

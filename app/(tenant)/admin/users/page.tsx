@@ -5,7 +5,9 @@ import { useSession } from 'next-auth/react';
 import PhotoUploadField from '@/components/PhotoUploadField';
 import { ui } from '@/lib/admin-ui';
 import { tenantApiUrl } from '@/lib/tenant/client-api';
+import BarberLimitAlert from '@/components/admin/BarberLimitAlert';
 import { sanitizeUsernameInput } from '@/lib/validations/username';
+import type { PlanUpgradeOffer } from '@/lib/plans/upgrade';
 import { useToast } from '@/components/ToastProvider';
 
 type User = {
@@ -412,6 +414,13 @@ export default function AdminUsersPage() {
   const [error, setError] = useState<string | null>(null);
   const [form, setForm] = useState(defaultForm);
   const [createOpen, setCreateOpen] = useState(false);
+  const [barberCapacity, setBarberCapacity] = useState<{
+    used: number;
+    max: number;
+    atLimit: boolean;
+    upgrade: PlanUpgradeOffer | null;
+  } | null>(null);
+  const [upgradeOffer, setUpgradeOffer] = useState<PlanUpgradeOffer | null>(null);
 
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [deletingUser, setDeletingUser] = useState<User | null>(null);
@@ -421,7 +430,10 @@ export default function AdminUsersPage() {
     fetch(tenantApiUrl('/api/admin/users'))
       .then((res) => res.json())
       .then((data) => {
-        if (data.success) setUsers(data.data ?? []);
+        if (data.success) {
+          setUsers(data.data ?? []);
+          setBarberCapacity(data.barberCapacity ?? null);
+        }
       })
       .finally(() => setLoading(false));
   };
@@ -433,6 +445,7 @@ export default function AdminUsersPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setUpgradeOffer(null);
     setSubmitting(true);
 
     try {
@@ -453,6 +466,9 @@ export default function AdminUsersPage() {
 
       if (!res.ok) {
         setError(data.error ?? 'Error al crear usuario');
+        if (data.code === 'BARBER_LIMIT' && data.upgrade) {
+          setUpgradeOffer(data.upgrade);
+        }
         return;
       }
       if (data.warning) {
@@ -513,8 +529,22 @@ export default function AdminUsersPage() {
 
           {createOpen && (
           <form onSubmit={handleSubmit} className={ui.card}>
+            {barberCapacity?.atLimit && barberCapacity.upgrade && !error && (
+              <div className="mb-4">
+                <BarberLimitAlert
+                  message={`Tu plan permite máximo ${barberCapacity.max} barbero(s). Actualiza tu plan para agregar más.`}
+                  upgrade={barberCapacity.upgrade}
+                />
+              </div>
+            )}
             {error && (
-              <div className={`mb-4 ${ui.alertError}`}>{error}</div>
+              <div className="mb-4">
+                {upgradeOffer ? (
+                  <BarberLimitAlert message={error} upgrade={upgradeOffer} />
+                ) : (
+                  <div className={ui.alertError}>{error}</div>
+                )}
+              </div>
             )}
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
@@ -572,8 +602,11 @@ export default function AdminUsersPage() {
               </div>
             </div>
             <div className="mt-6 flex flex-wrap gap-3">
-              <button type="submit" disabled={submitting}
-                className={ui.btnPrimary}>
+              <button
+                type="submit"
+                disabled={submitting || barberCapacity?.atLimit === true}
+                className={ui.btnPrimary}
+              >
                 {submitting ? 'Creando...' : 'Crear usuario'}
               </button>
               <button
@@ -582,6 +615,7 @@ export default function AdminUsersPage() {
                 onClick={() => {
                   setCreateOpen(false);
                   setError(null);
+                  setUpgradeOffer(null);
                   setForm(defaultForm);
                 }}
                 className={ui.btnSecondary}
@@ -592,11 +626,6 @@ export default function AdminUsersPage() {
           </form>
           )}
         </section>
-      )}
-
-      {/* Mensajes para dueño */}
-      {isOwner && error && (
-        <div className={ui.alertError}>{error}</div>
       )}
 
       {/* Lista de usuarios */}
