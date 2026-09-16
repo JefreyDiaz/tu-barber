@@ -79,3 +79,8 @@ export type Service = Prisma.ServiceModel
  * 
  */
 export type BlockedSlot = Prisma.BlockedSlotModel
+/**
+ * Model PlatformTutorial
+ * Global tutorials managed from platform admin, shown to all tenants.
+ */
+export type PlatformTutorial = Prisma.PlatformTutorialModel

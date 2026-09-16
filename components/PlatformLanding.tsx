@@ -5,6 +5,7 @@ import PlanCard from '@/components/platform/PlanCard';
 import FaqAccordion from '@/components/platform/FaqAccordion';
 import PlatformLogo from '@/components/PlatformLogo';
 import ActiveBarbershopsCarousel from '@/components/platform/ActiveBarbershopsCarousel';
+import LandingWhatsAppFab from '@/components/platform/LandingWhatsAppFab';
 import type { ShowcaseBarbershop } from '@/lib/tenant/showcase';
 
 function FeatureIconBox({ children }: { readonly children: ReactNode }) {
@@ -110,9 +111,15 @@ export default function PlatformLanding({
         {/* Hero */}
         <section className="relative pt-10 pb-8 text-center sm:pt-16">
           <div className="glass-card-strong mx-auto max-w-md p-6 sm:p-8 animate-scale-in">
-            <p className="text-xs font-semibold uppercase tracking-widest text-amber-400/80">
-              Plataforma para barberías
-            </p>
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <p className="text-xs font-semibold uppercase tracking-widest text-amber-400/80">
+                Plataforma para barberías
+              </p>
+              <span className="inline-flex items-center gap-1 rounded-full border border-amber-400/25 bg-amber-400/10 px-2.5 py-0.5 text-[11px] font-medium text-amber-200/90">
+                <span aria-hidden>🇨🇴</span>
+                Operamos en Colombia
+              </span>
+            </div>
             <h1 className="mt-3 text-3xl font-bold leading-tight sm:text-4xl">
               Reservas online
               <br />
@@ -120,7 +127,7 @@ export default function PlatformLanding({
             </h1>
             <p className="mt-4 text-sm leading-relaxed text-white/60 sm:text-base">
               Sitio moderno para tu barbería, panel de administración y notificaciones WhatsApp.
-              Diseñado para que tus clientes reserven desde el celular.
+              Diseñado para barberías en Colombia — precios en pesos y soporte local.
             </p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
               <Link
@@ -197,8 +204,10 @@ export default function PlatformLanding({
         </section>
       </main>
 
+      <LandingWhatsAppFab />
+
       <footer className="border-t border-white/5 py-6 text-center text-xs text-white/35">
-        <p>© {new Date().getFullYear()} TuBarber</p>
+        <p>© {new Date().getFullYear()} TuBarber · Colombia</p>
         <Link href="/platform/login" className="mt-2 inline-block hover:text-white/60">
           Admin plataforma
         </Link>

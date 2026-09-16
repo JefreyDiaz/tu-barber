@@ -391,7 +391,8 @@ export const ModelName = {
   Booking: 'Booking',
   CustomerOutreach: 'CustomerOutreach',
   Service: 'Service',
-  BlockedSlot: 'BlockedSlot'
+  BlockedSlot: 'BlockedSlot',
+  PlatformTutorial: 'PlatformTutorial'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -407,7 +408,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "tenant" | "tenantSettings" | "tenantOnboarding" | "user" | "booking" | "customerOutreach" | "service" | "blockedSlot"
+    modelProps: "tenant" | "tenantSettings" | "tenantOnboarding" | "user" | "booking" | "customerOutreach" | "service" | "blockedSlot" | "platformTutorial"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1003,6 +1004,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PlatformTutorial: {
+      payload: Prisma.$PlatformTutorialPayload<ExtArgs>
+      fields: Prisma.PlatformTutorialFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PlatformTutorialFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformTutorialPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PlatformTutorialFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformTutorialPayload>
+        }
+        findFirst: {
+          args: Prisma.PlatformTutorialFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformTutorialPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PlatformTutorialFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformTutorialPayload>
+        }
+        findMany: {
+          args: Prisma.PlatformTutorialFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformTutorialPayload>[]
+        }
+        create: {
+          args: Prisma.PlatformTutorialCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformTutorialPayload>
+        }
+        createMany: {
+          args: Prisma.PlatformTutorialCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PlatformTutorialCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformTutorialPayload>[]
+        }
+        delete: {
+          args: Prisma.PlatformTutorialDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformTutorialPayload>
+        }
+        update: {
+          args: Prisma.PlatformTutorialUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformTutorialPayload>
+        }
+        deleteMany: {
+          args: Prisma.PlatformTutorialDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PlatformTutorialUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PlatformTutorialUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformTutorialPayload>[]
+        }
+        upsert: {
+          args: Prisma.PlatformTutorialUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformTutorialPayload>
+        }
+        aggregate: {
+          args: Prisma.PlatformTutorialAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePlatformTutorial>
+        }
+        groupBy: {
+          args: Prisma.PlatformTutorialGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlatformTutorialGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PlatformTutorialCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlatformTutorialCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1175,6 +1250,21 @@ export const BlockedSlotScalarFieldEnum = {
 } as const
 
 export type BlockedSlotScalarFieldEnum = (typeof BlockedSlotScalarFieldEnum)[keyof typeof BlockedSlotScalarFieldEnum]
+
+
+export const PlatformTutorialScalarFieldEnum = {
+  id: 'id',
+  sortOrder: 'sortOrder',
+  title: 'title',
+  description: 'description',
+  imageUrl: 'imageUrl',
+  linkUrl: 'linkUrl',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PlatformTutorialScalarFieldEnum = (typeof PlatformTutorialScalarFieldEnum)[keyof typeof PlatformTutorialScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1403,6 +1493,7 @@ export type GlobalOmitConfig = {
   customerOutreach?: Prisma.CustomerOutreachOmit
   service?: Prisma.ServiceOmit
   blockedSlot?: Prisma.BlockedSlotOmit
+  platformTutorial?: Prisma.PlatformTutorialOmit
 }
 
 /* Types for Logging */

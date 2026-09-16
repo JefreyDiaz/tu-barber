@@ -163,3 +163,18 @@ model BlockedSlot {
   @@index([barberId, date])
   @@unique([barberId, date, time])
 }
+
+/// Global tutorials managed from platform admin, shown to all tenants.
+model PlatformTutorial {
+  id          String   @id @default(uuid())
+  sortOrder   Int      @default(0)
+  title       String
+  description String
+  imageUrl    String
+  linkUrl     String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isActive, sortOrder])
+}

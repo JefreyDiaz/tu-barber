@@ -15,8 +15,21 @@ interface ScheduleEditorProps {
   onChange: (value: ScheduleConfig) => void;
 }
 
+const DEFAULT_BLOCK_DURATION_MINUTES = 4 * 60;
+
 function emptyBlock(): TimeBlock {
-  return { start: 8 * 60, end: 12 * 60 };
+  return { start: 8 * 60, end: 8 * 60 + DEFAULT_BLOCK_DURATION_MINUTES };
+}
+
+/** Nuevo bloque continúa donde termina el anterior. */
+function blockAfterPrevious(previousEnd: number): TimeBlock {
+  const start = previousEnd;
+  const endOfDay = 24 * 60 - 1;
+  let end = Math.min(start + DEFAULT_BLOCK_DURATION_MINUTES, endOfDay);
+  if (end <= start) {
+    end = Math.min(start + 60, endOfDay);
+  }
+  return { start, end };
 }
 
 function ScheduleTimeField({
@@ -74,8 +87,12 @@ export default function ScheduleEditor({ value, onChange }: ScheduleEditorProps)
   }
 
   function addBlock(day: string) {
-    const blocks = [...(value[day] ?? []), emptyBlock()];
-    onChange({ ...value, [day]: blocks });
+    const existing = value[day] ?? [];
+    const newBlock =
+      existing.length > 0
+        ? blockAfterPrevious(existing.at(-1)!.end)
+        : emptyBlock();
+    onChange({ ...value, [day]: [...existing, newBlock] });
   }
 
   function removeBlock(day: string, index: number) {

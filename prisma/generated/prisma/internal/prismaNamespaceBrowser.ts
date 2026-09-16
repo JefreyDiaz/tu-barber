@@ -58,7 +58,8 @@ export const ModelName = {
   Booking: 'Booking',
   CustomerOutreach: 'CustomerOutreach',
   Service: 'Service',
-  BlockedSlot: 'BlockedSlot'
+  BlockedSlot: 'BlockedSlot',
+  PlatformTutorial: 'PlatformTutorial'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -210,6 +211,21 @@ export const BlockedSlotScalarFieldEnum = {
 } as const
 
 export type BlockedSlotScalarFieldEnum = (typeof BlockedSlotScalarFieldEnum)[keyof typeof BlockedSlotScalarFieldEnum]
+
+
+export const PlatformTutorialScalarFieldEnum = {
+  id: 'id',
+  sortOrder: 'sortOrder',
+  title: 'title',
+  description: 'description',
+  imageUrl: 'imageUrl',
+  linkUrl: 'linkUrl',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PlatformTutorialScalarFieldEnum = (typeof PlatformTutorialScalarFieldEnum)[keyof typeof PlatformTutorialScalarFieldEnum]
 
 
 export const SortOrder = {

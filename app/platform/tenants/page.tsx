@@ -2,9 +2,8 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { signOut } from 'next-auth/react';
 import { PLANS, PLAN_LIST, getTrialDaysRemaining, normalizePlanId, getPaymentOverdueDays, type PlanId } from '@/lib/plans';
-import PlatformLogo from '@/components/PlatformLogo';
+import PlatformAdminHeader from '@/components/platform/PlatformAdminHeader';
 import LogoFrame from '@/components/LogoFrame';
 import { useToast } from '@/components/ToastProvider';
 import { LOGO_PILL_CLASS, logoFrameClassName } from '@/lib/logo-frame';
@@ -639,21 +638,7 @@ export default function PlatformTenantsPage() {
 
   return (
     <div className="platform-bg min-h-screen min-h-[100dvh] text-white">
-      <header className="sticky top-0 z-50 border-b border-white/5 bg-stone-950/70 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3 lg:max-w-4xl">
-          <div>
-            <PlatformLogo size="sm" href="/" />
-            <p className="mt-1 text-xs text-white/45">Panel de plataforma</p>
-          </div>
-          <button
-            type="button"
-            onClick={() => signOut({ callbackUrl: '/platform/login' })}
-            className="btn-glass rounded-full px-4 py-2 text-xs font-medium"
-          >
-            Cerrar sesión
-          </button>
-        </div>
-      </header>
+      <PlatformAdminHeader />
 
       <main className="mx-auto max-w-3xl px-4 py-6 pb-12 lg:max-w-4xl">
         <div className="mb-6">

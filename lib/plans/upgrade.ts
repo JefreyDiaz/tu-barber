@@ -19,7 +19,7 @@ export function getNextPlanId(planId: PlanId): PlanId | null {
 /** Prakto / TuBarber — contacto upgrade de plan (Colombia +57). */
 const DEFAULT_UPGRADE_WHATSAPP = '573116522507';
 
-function getUpgradeWhatsAppDigits(): string {
+export function getPlatformWhatsAppDigits(): string {
   const fromEnv = process.env.PLAN_UPGRADE_WHATSAPP?.trim().replace(/\D/g, '');
   if (fromEnv) {
     return fromEnv.startsWith('57') && fromEnv.length >= 12 ? fromEnv : `57${fromEnv}`;
@@ -57,7 +57,7 @@ export function getPlanUpgradeOffer(
 
   const currentDef = PLANS[current];
   const nextDef = PLANS[next];
-  const digits = getUpgradeWhatsAppDigits();
+  const digits = getPlatformWhatsAppDigits();
   const message = `Hola, la barbería ${shopName} quiere hacer upgrade al plan ${nextDef.name} (${nextDef.priceLabel}/mes). Actualmente tiene plan ${currentDef.name}.`;
 
   return {

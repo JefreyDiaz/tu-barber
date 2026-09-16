@@ -20,6 +20,7 @@ const CONFIG_PATHS = [
   '/admin/services',
   '/admin/apariencia',
   '/admin/config',
+  '/admin/tutoriales',
 ];
 
 function navClass(isActive: boolean): string {
@@ -100,6 +101,11 @@ export function AdminNav({ tq, isSetupMode, role, multiBarberPlan, cadenaPlan }:
       href: '/admin/config',
       label: 'Ajustes avanzados',
       show: !isSetupMode && isOwnerOrAdmin && cadenaPlan,
+    },
+    {
+      href: '/admin/tutoriales',
+      label: 'Tutoriales',
+      show: !isSetupMode && !!role,
     },
   ].filter((item) => item.show);
 

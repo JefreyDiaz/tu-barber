@@ -126,3 +126,30 @@ export async function uploadTenantBrandingAsset(
   const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
   return withCacheBuster(data.publicUrl);
 }
+
+export async function uploadPlatformTutorialImage(tutorialId: string, file: File): Promise<string> {
+  if (!ALLOWED_TYPES.has(file.type)) {
+    throw new Error('Formato no permitido. Usa JPG, PNG o WebP.');
+  }
+  if (file.size > MAX_BYTES) {
+    throw new Error('La imagen no puede superar 2 MB.');
+  }
+
+  const ext = file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg';
+  const path = `platform/tutorials/${tutorialId}.${ext}`;
+
+  const supabase = getSupabaseAdmin();
+  const buffer = Buffer.from(await file.arrayBuffer());
+
+  const { error } = await supabase.storage.from(BUCKET).upload(path, buffer, {
+    contentType: file.type,
+    upsert: true,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
+  return withCacheBuster(data.publicUrl);
+}
