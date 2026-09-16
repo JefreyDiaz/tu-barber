@@ -13,7 +13,19 @@ type Service = {
   isActive: boolean;
 };
 
-const emptyForm = { name: '', durationMinutes: 30 };
+const emptyForm = { name: '', durationMinutes: '30' };
+
+function sanitizeDurationInput(value: string): string {
+  return value.replace(/\D/g, '').slice(0, 3);
+}
+
+function parseDurationMinutes(value: string): number | null {
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  const n = Number.parseInt(trimmed, 10);
+  if (Number.isNaN(n) || n < 5 || n > 240) return null;
+  return n;
+}
 
 export default function AdminServicesPage() {
   const toast = useToast();
@@ -21,6 +33,7 @@ export default function AdminServicesPage() {
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState(emptyForm);
   const [editing, setEditing] = useState<Service | null>(null);
+  const [editDuration, setEditDuration] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -61,12 +74,17 @@ export default function AdminServicesPage() {
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    const durationMinutes = parseDurationMinutes(form.durationMinutes);
+    if (durationMinutes === null) {
+      toast.error('Duración inválida: usa entre 5 y 240 minutos');
+      return;
+    }
     setSubmitting(true);
     try {
       const res = await fetch(tenantApiUrl('/api/admin/services'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ name: form.name, durationMinutes }),
       });
       const json = await res.json();
       if (!res.ok) {
@@ -86,6 +104,11 @@ export default function AdminServicesPage() {
   async function handleUpdate(e: React.FormEvent) {
     e.preventDefault();
     if (!editing) return;
+    const durationMinutes = parseDurationMinutes(editDuration);
+    if (durationMinutes === null) {
+      toast.error('Duración inválida: usa entre 5 y 240 minutos');
+      return;
+    }
     setSubmitting(true);
     try {
       const res = await fetch(tenantApiUrl(`/api/admin/services/${editing.id}`), {
@@ -93,7 +116,7 @@ export default function AdminServicesPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: editing.name,
-          durationMinutes: editing.durationMinutes,
+          durationMinutes,
           isActive: editing.isActive,
         }),
       });
@@ -104,6 +127,7 @@ export default function AdminServicesPage() {
       }
       toast.success('Servicio actualizado correctamente');
       setEditing(null);
+      setEditDuration('');
       load();
     } catch {
       toast.error('Error de conexión');
@@ -160,12 +184,14 @@ export default function AdminServicesPage() {
             </label>
             <input
               id="svc-duration"
-              type="number"
+              type="text"
+              inputMode="numeric"
               required
-              min={5}
-              max={240}
               value={form.durationMinutes}
-              onChange={(e) => setForm((f) => ({ ...f, durationMinutes: Number(e.target.value) }))}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, durationMinutes: sanitizeDurationInput(e.target.value) }))
+              }
+              placeholder="30"
               className={ui.input}
             />
           </div>
@@ -203,14 +229,12 @@ export default function AdminServicesPage() {
                       required
                     />
                     <input
-                      type="number"
-                      min={5}
-                      max={240}
-                      value={editing.durationMinutes}
-                      onChange={(e) =>
-                        setEditing({ ...editing, durationMinutes: Number(e.target.value) })
-                      }
+                      type="text"
+                      inputMode="numeric"
+                      value={editDuration}
+                      onChange={(e) => setEditDuration(sanitizeDurationInput(e.target.value))}
                       className={`w-24 ${ui.input}`}
+                      aria-label="Duración en minutos"
                     />
                     <label className="flex items-center gap-2 text-sm text-white/75">
                       <input
@@ -225,7 +249,10 @@ export default function AdminServicesPage() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setEditing(null)}
+                      onClick={() => {
+                        setEditing(null);
+                        setEditDuration('');
+                      }}
                       className={ui.btnSecondary}
                     >
                       Cancelar
@@ -242,7 +269,10 @@ export default function AdminServicesPage() {
                     <div className="flex gap-2">
                       <button
                         type="button"
-                        onClick={() => setEditing(s)}
+                        onClick={() => {
+                          setEditing(s);
+                          setEditDuration(String(s.durationMinutes));
+                        }}
                         className={ui.btnGhost}
                       >
                         Editar

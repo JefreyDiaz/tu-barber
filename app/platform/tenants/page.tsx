@@ -8,6 +8,7 @@ import PlatformLogo from '@/components/PlatformLogo';
 import LogoFrame from '@/components/LogoFrame';
 import { useToast } from '@/components/ToastProvider';
 import { LOGO_PILL_CLASS, logoFrameClassName } from '@/lib/logo-frame';
+import { whatsAppChatUrl } from '@/lib/messaging/phone';
 import { buildTenantUrl, formatTenantHost } from '@/lib/tenant/urls';
 import TenantBookingStats from '@/components/platform/TenantBookingStats';
 
@@ -362,7 +363,15 @@ function TenantCard({
                   )}
                   {tenant.onboarding?.ownerPhone && (
                     <p>
-                      <span className="text-white/40">Tel:</span> {tenant.onboarding.ownerPhone}
+                      <span className="text-white/40">Tel:</span>{' '}
+                      <a
+                        href={whatsAppChatUrl(tenant.onboarding.ownerPhone)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-emerald-400/90 underline decoration-emerald-400/30 underline-offset-2 transition-colors hover:text-emerald-300"
+                      >
+                        {tenant.onboarding.ownerPhone}
+                      </a>
                     </p>
                   )}
                 </div>

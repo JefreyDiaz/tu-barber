@@ -22,6 +22,12 @@ export function normalizeWhatsappFrom(from: string): string {
   return `whatsapp:+${trimmed.replace(/\D/g, '')}`;
 }
 
+/** Opens WhatsApp chat in browser/app (wa.me). */
+export function whatsAppChatUrl(phone: string): string {
+  const digits = toE164(phone).replace(/\D/g, '');
+  return `https://wa.me/${digits}`;
+}
+
 /** 10-digit local number for WhatsApp templates (e.g. {{6}} barber phone). */
 export function formatLocalPhoneDigits(phone: string, countryCode = DEFAULT_COUNTRY_CODE): string {
   const digits = phone.replace(/\D/g, '');
