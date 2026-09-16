@@ -392,6 +392,7 @@ export const ModelName = {
   CustomerOutreach: 'CustomerOutreach',
   Service: 'Service',
   BlockedSlot: 'BlockedSlot',
+  SubscriptionPayment: 'SubscriptionPayment',
   PlatformTutorial: 'PlatformTutorial'
 } as const
 
@@ -408,7 +409,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "tenant" | "tenantSettings" | "tenantOnboarding" | "user" | "booking" | "customerOutreach" | "service" | "blockedSlot" | "platformTutorial"
+    modelProps: "tenant" | "tenantSettings" | "tenantOnboarding" | "user" | "booking" | "customerOutreach" | "service" | "blockedSlot" | "subscriptionPayment" | "platformTutorial"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1004,6 +1005,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    SubscriptionPayment: {
+      payload: Prisma.$SubscriptionPaymentPayload<ExtArgs>
+      fields: Prisma.SubscriptionPaymentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SubscriptionPaymentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPaymentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SubscriptionPaymentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPaymentPayload>
+        }
+        findFirst: {
+          args: Prisma.SubscriptionPaymentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPaymentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SubscriptionPaymentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPaymentPayload>
+        }
+        findMany: {
+          args: Prisma.SubscriptionPaymentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPaymentPayload>[]
+        }
+        create: {
+          args: Prisma.SubscriptionPaymentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPaymentPayload>
+        }
+        createMany: {
+          args: Prisma.SubscriptionPaymentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SubscriptionPaymentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPaymentPayload>[]
+        }
+        delete: {
+          args: Prisma.SubscriptionPaymentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPaymentPayload>
+        }
+        update: {
+          args: Prisma.SubscriptionPaymentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPaymentPayload>
+        }
+        deleteMany: {
+          args: Prisma.SubscriptionPaymentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SubscriptionPaymentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SubscriptionPaymentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPaymentPayload>[]
+        }
+        upsert: {
+          args: Prisma.SubscriptionPaymentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPaymentPayload>
+        }
+        aggregate: {
+          args: Prisma.SubscriptionPaymentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSubscriptionPayment>
+        }
+        groupBy: {
+          args: Prisma.SubscriptionPaymentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SubscriptionPaymentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SubscriptionPaymentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SubscriptionPaymentCountAggregateOutputType> | number
+        }
+      }
+    }
     PlatformTutorial: {
       payload: Prisma.$PlatformTutorialPayload<ExtArgs>
       fields: Prisma.PlatformTutorialFieldRefs
@@ -1252,6 +1327,20 @@ export const BlockedSlotScalarFieldEnum = {
 export type BlockedSlotScalarFieldEnum = (typeof BlockedSlotScalarFieldEnum)[keyof typeof BlockedSlotScalarFieldEnum]
 
 
+export const SubscriptionPaymentScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  amount: 'amount',
+  plan: 'plan',
+  paidAt: 'paidAt',
+  periodEnd: 'periodEnd',
+  registeredById: 'registeredById',
+  createdAt: 'createdAt'
+} as const
+
+export type SubscriptionPaymentScalarFieldEnum = (typeof SubscriptionPaymentScalarFieldEnum)[keyof typeof SubscriptionPaymentScalarFieldEnum]
+
+
 export const PlatformTutorialScalarFieldEnum = {
   id: 'id',
   sortOrder: 'sortOrder',
@@ -1493,6 +1582,7 @@ export type GlobalOmitConfig = {
   customerOutreach?: Prisma.CustomerOutreachOmit
   service?: Prisma.ServiceOmit
   blockedSlot?: Prisma.BlockedSlotOmit
+  subscriptionPayment?: Prisma.SubscriptionPaymentOmit
   platformTutorial?: Prisma.PlatformTutorialOmit
 }
 

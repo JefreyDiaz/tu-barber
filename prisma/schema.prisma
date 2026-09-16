@@ -30,8 +30,9 @@ model Tenant {
   users        User[]
   bookings         Booking[]
   blockedSlots     BlockedSlot[]
-  services         Service[]
-  customerOutreach CustomerOutreach[]
+  services              Service[]
+  customerOutreach      CustomerOutreach[]
+  subscriptionPayments  SubscriptionPayment[]
 }
 
 model TenantSettings {
@@ -162,6 +163,22 @@ model BlockedSlot {
   @@index([tenantId, barberId, date])
   @@index([barberId, date])
   @@unique([barberId, date, time])
+}
+
+/// Manual subscription payment registered from platform admin (for Prakto finance sync).
+model SubscriptionPayment {
+  id             String   @id @default(uuid())
+  tenantId       String
+  tenant         Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  amount         Int
+  plan           String
+  paidAt         DateTime @default(now())
+  periodEnd      DateTime?
+  registeredById String?
+  createdAt      DateTime @default(now())
+
+  @@index([tenantId, paidAt])
+  @@index([paidAt])
 }
 
 /// Global tutorials managed from platform admin, shown to all tenants.

@@ -80,6 +80,11 @@ export type Service = Prisma.ServiceModel
  */
 export type BlockedSlot = Prisma.BlockedSlotModel
 /**
+ * Model SubscriptionPayment
+ * Manual subscription payment registered from platform admin (for Prakto finance sync).
+ */
+export type SubscriptionPayment = Prisma.SubscriptionPaymentModel
+/**
  * Model PlatformTutorial
  * Global tutorials managed from platform admin, shown to all tenants.
  */

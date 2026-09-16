@@ -9,7 +9,7 @@ import {
   startTrialEndDate,
 } from '@/lib/tenant/subscription';
 import { notifyTenantApproved } from '@/lib/email/notify-tenant-approved';
-import { isValidPlanId, normalizePlanId } from '@/lib/plans';
+import { getPlanDefinition, isValidPlanId, normalizePlanId } from '@/lib/plans';
 
 export const dynamic = 'force-dynamic';
 
@@ -95,15 +95,26 @@ export async function PATCH(
   } else if (action === 'renew') {
     const subscriptionEndsAt = nextSubscriptionPeriodEndAfterPayment(tenant);
 
-    await prisma.tenant.update({
-      where: { id },
-      data: {
-        status: 'active',
-        subscriptionStatus: 'active',
-        subscriptionEndsAt,
-        renewalReminderSentFor: null,
-      },
-    });
+    await prisma.$transaction([
+      prisma.tenant.update({
+        where: { id },
+        data: {
+          status: 'active',
+          subscriptionStatus: 'active',
+          subscriptionEndsAt,
+          renewalReminderSentFor: null,
+        },
+      }),
+      prisma.subscriptionPayment.create({
+        data: {
+          tenantId: id,
+          amount: getPlanDefinition(tenant.plan).priceMonthly,
+          plan: normalizePlanId(tenant.plan),
+          periodEnd: subscriptionEndsAt,
+          registeredById: session.user.id,
+        },
+      }),
+    ]);
   } else if (action === 'changePlan') {
     if (!plan || !isValidPlanId(plan)) {
       return NextResponse.json({ success: false, error: 'Plan inválido' }, { status: 400 });

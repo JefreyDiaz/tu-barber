@@ -130,7 +130,7 @@ export function LoginForm({
           <>
             <h2 className="mb-1 text-center text-xl font-bold text-white">Iniciar sesión</h2>
             <p className="mb-6 text-center text-sm text-white/45">
-              {platformLogin ? 'Acceso super-admin' : 'Dueño, admin o barbero'}
+              {platformLogin ? 'Acceso al panel de plataforma' : 'Dueño, admin o barbero'}
             </p>
 
             {error && (
@@ -151,7 +151,7 @@ export function LoginForm({
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className="glass-input w-full px-4 py-3 text-sm"
-                  placeholder={platformLogin ? 'superadmin' : 'Tu usuario'}
+                  placeholder="Tu usuario"
                   autoComplete="username"
                 />
               </div>

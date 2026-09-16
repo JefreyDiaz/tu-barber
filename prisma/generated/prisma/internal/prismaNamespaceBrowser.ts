@@ -59,6 +59,7 @@ export const ModelName = {
   CustomerOutreach: 'CustomerOutreach',
   Service: 'Service',
   BlockedSlot: 'BlockedSlot',
+  SubscriptionPayment: 'SubscriptionPayment',
   PlatformTutorial: 'PlatformTutorial'
 } as const
 
@@ -211,6 +212,20 @@ export const BlockedSlotScalarFieldEnum = {
 } as const
 
 export type BlockedSlotScalarFieldEnum = (typeof BlockedSlotScalarFieldEnum)[keyof typeof BlockedSlotScalarFieldEnum]
+
+
+export const SubscriptionPaymentScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  amount: 'amount',
+  plan: 'plan',
+  paidAt: 'paidAt',
+  periodEnd: 'periodEnd',
+  registeredById: 'registeredById',
+  createdAt: 'createdAt'
+} as const
+
+export type SubscriptionPaymentScalarFieldEnum = (typeof SubscriptionPaymentScalarFieldEnum)[keyof typeof SubscriptionPaymentScalarFieldEnum]
 
 
 export const PlatformTutorialScalarFieldEnum = {

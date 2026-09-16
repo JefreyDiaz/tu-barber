@@ -8,6 +8,7 @@ import PlatformLogo from '@/components/PlatformLogo';
 const NAV_ITEMS = [
   { href: '/platform/tenants', label: 'Barberías' },
   { href: '/platform/tutorials', label: 'Tutoriales' },
+  { href: '/platform/finanzas', label: 'Finanzas' },
 ] as const;
 
 function navLinkClass(isActive: boolean): string {

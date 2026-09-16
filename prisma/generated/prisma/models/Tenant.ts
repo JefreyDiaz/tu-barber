@@ -253,6 +253,7 @@ export type TenantWhereInput = {
   blockedSlots?: Prisma.BlockedSlotListRelationFilter
   services?: Prisma.ServiceListRelationFilter
   customerOutreach?: Prisma.CustomerOutreachListRelationFilter
+  subscriptionPayments?: Prisma.SubscriptionPaymentListRelationFilter
 }
 
 export type TenantOrderByWithRelationInput = {
@@ -276,6 +277,7 @@ export type TenantOrderByWithRelationInput = {
   blockedSlots?: Prisma.BlockedSlotOrderByRelationAggregateInput
   services?: Prisma.ServiceOrderByRelationAggregateInput
   customerOutreach?: Prisma.CustomerOutreachOrderByRelationAggregateInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentOrderByRelationAggregateInput
 }
 
 export type TenantWhereUniqueInput = Prisma.AtLeast<{
@@ -302,6 +304,7 @@ export type TenantWhereUniqueInput = Prisma.AtLeast<{
   blockedSlots?: Prisma.BlockedSlotListRelationFilter
   services?: Prisma.ServiceListRelationFilter
   customerOutreach?: Prisma.CustomerOutreachListRelationFilter
+  subscriptionPayments?: Prisma.SubscriptionPaymentListRelationFilter
 }, "id" | "slug" | "customDomain">
 
 export type TenantOrderByWithAggregationInput = {
@@ -363,6 +366,7 @@ export type TenantCreateInput = {
   blockedSlots?: Prisma.BlockedSlotCreateNestedManyWithoutTenantInput
   services?: Prisma.ServiceCreateNestedManyWithoutTenantInput
   customerOutreach?: Prisma.CustomerOutreachCreateNestedManyWithoutTenantInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateInput = {
@@ -386,6 +390,7 @@ export type TenantUncheckedCreateInput = {
   blockedSlots?: Prisma.BlockedSlotUncheckedCreateNestedManyWithoutTenantInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutTenantInput
   customerOutreach?: Prisma.CustomerOutreachUncheckedCreateNestedManyWithoutTenantInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUpdateInput = {
@@ -409,6 +414,7 @@ export type TenantUpdateInput = {
   blockedSlots?: Prisma.BlockedSlotUpdateManyWithoutTenantNestedInput
   services?: Prisma.ServiceUpdateManyWithoutTenantNestedInput
   customerOutreach?: Prisma.CustomerOutreachUpdateManyWithoutTenantNestedInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateInput = {
@@ -432,6 +438,7 @@ export type TenantUncheckedUpdateInput = {
   blockedSlots?: Prisma.BlockedSlotUncheckedUpdateManyWithoutTenantNestedInput
   services?: Prisma.ServiceUncheckedUpdateManyWithoutTenantNestedInput
   customerOutreach?: Prisma.CustomerOutreachUncheckedUpdateManyWithoutTenantNestedInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateManyInput = {
@@ -656,6 +663,20 @@ export type TenantUpdateOneRequiredWithoutBlockedSlotsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutBlockedSlotsInput, Prisma.TenantUpdateWithoutBlockedSlotsInput>, Prisma.TenantUncheckedUpdateWithoutBlockedSlotsInput>
 }
 
+export type TenantCreateNestedOneWithoutSubscriptionPaymentsInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutSubscriptionPaymentsInput, Prisma.TenantUncheckedCreateWithoutSubscriptionPaymentsInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutSubscriptionPaymentsInput
+  connect?: Prisma.TenantWhereUniqueInput
+}
+
+export type TenantUpdateOneRequiredWithoutSubscriptionPaymentsNestedInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutSubscriptionPaymentsInput, Prisma.TenantUncheckedCreateWithoutSubscriptionPaymentsInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutSubscriptionPaymentsInput
+  upsert?: Prisma.TenantUpsertWithoutSubscriptionPaymentsInput
+  connect?: Prisma.TenantWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutSubscriptionPaymentsInput, Prisma.TenantUpdateWithoutSubscriptionPaymentsInput>, Prisma.TenantUncheckedUpdateWithoutSubscriptionPaymentsInput>
+}
+
 export type TenantCreateWithoutSettingsInput = {
   id?: string
   slug: string
@@ -676,6 +697,7 @@ export type TenantCreateWithoutSettingsInput = {
   blockedSlots?: Prisma.BlockedSlotCreateNestedManyWithoutTenantInput
   services?: Prisma.ServiceCreateNestedManyWithoutTenantInput
   customerOutreach?: Prisma.CustomerOutreachCreateNestedManyWithoutTenantInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutSettingsInput = {
@@ -698,6 +720,7 @@ export type TenantUncheckedCreateWithoutSettingsInput = {
   blockedSlots?: Prisma.BlockedSlotUncheckedCreateNestedManyWithoutTenantInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutTenantInput
   customerOutreach?: Prisma.CustomerOutreachUncheckedCreateNestedManyWithoutTenantInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutSettingsInput = {
@@ -736,6 +759,7 @@ export type TenantUpdateWithoutSettingsInput = {
   blockedSlots?: Prisma.BlockedSlotUpdateManyWithoutTenantNestedInput
   services?: Prisma.ServiceUpdateManyWithoutTenantNestedInput
   customerOutreach?: Prisma.CustomerOutreachUpdateManyWithoutTenantNestedInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutSettingsInput = {
@@ -758,6 +782,7 @@ export type TenantUncheckedUpdateWithoutSettingsInput = {
   blockedSlots?: Prisma.BlockedSlotUncheckedUpdateManyWithoutTenantNestedInput
   services?: Prisma.ServiceUncheckedUpdateManyWithoutTenantNestedInput
   customerOutreach?: Prisma.CustomerOutreachUncheckedUpdateManyWithoutTenantNestedInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutOnboardingInput = {
@@ -780,6 +805,7 @@ export type TenantCreateWithoutOnboardingInput = {
   blockedSlots?: Prisma.BlockedSlotCreateNestedManyWithoutTenantInput
   services?: Prisma.ServiceCreateNestedManyWithoutTenantInput
   customerOutreach?: Prisma.CustomerOutreachCreateNestedManyWithoutTenantInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutOnboardingInput = {
@@ -802,6 +828,7 @@ export type TenantUncheckedCreateWithoutOnboardingInput = {
   blockedSlots?: Prisma.BlockedSlotUncheckedCreateNestedManyWithoutTenantInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutTenantInput
   customerOutreach?: Prisma.CustomerOutreachUncheckedCreateNestedManyWithoutTenantInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutOnboardingInput = {
@@ -840,6 +867,7 @@ export type TenantUpdateWithoutOnboardingInput = {
   blockedSlots?: Prisma.BlockedSlotUpdateManyWithoutTenantNestedInput
   services?: Prisma.ServiceUpdateManyWithoutTenantNestedInput
   customerOutreach?: Prisma.CustomerOutreachUpdateManyWithoutTenantNestedInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutOnboardingInput = {
@@ -862,6 +890,7 @@ export type TenantUncheckedUpdateWithoutOnboardingInput = {
   blockedSlots?: Prisma.BlockedSlotUncheckedUpdateManyWithoutTenantNestedInput
   services?: Prisma.ServiceUncheckedUpdateManyWithoutTenantNestedInput
   customerOutreach?: Prisma.CustomerOutreachUncheckedUpdateManyWithoutTenantNestedInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutUsersInput = {
@@ -884,6 +913,7 @@ export type TenantCreateWithoutUsersInput = {
   blockedSlots?: Prisma.BlockedSlotCreateNestedManyWithoutTenantInput
   services?: Prisma.ServiceCreateNestedManyWithoutTenantInput
   customerOutreach?: Prisma.CustomerOutreachCreateNestedManyWithoutTenantInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutUsersInput = {
@@ -906,6 +936,7 @@ export type TenantUncheckedCreateWithoutUsersInput = {
   blockedSlots?: Prisma.BlockedSlotUncheckedCreateNestedManyWithoutTenantInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutTenantInput
   customerOutreach?: Prisma.CustomerOutreachUncheckedCreateNestedManyWithoutTenantInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutUsersInput = {
@@ -944,6 +975,7 @@ export type TenantUpdateWithoutUsersInput = {
   blockedSlots?: Prisma.BlockedSlotUpdateManyWithoutTenantNestedInput
   services?: Prisma.ServiceUpdateManyWithoutTenantNestedInput
   customerOutreach?: Prisma.CustomerOutreachUpdateManyWithoutTenantNestedInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutUsersInput = {
@@ -966,6 +998,7 @@ export type TenantUncheckedUpdateWithoutUsersInput = {
   blockedSlots?: Prisma.BlockedSlotUncheckedUpdateManyWithoutTenantNestedInput
   services?: Prisma.ServiceUncheckedUpdateManyWithoutTenantNestedInput
   customerOutreach?: Prisma.CustomerOutreachUncheckedUpdateManyWithoutTenantNestedInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutBookingsInput = {
@@ -988,6 +1021,7 @@ export type TenantCreateWithoutBookingsInput = {
   blockedSlots?: Prisma.BlockedSlotCreateNestedManyWithoutTenantInput
   services?: Prisma.ServiceCreateNestedManyWithoutTenantInput
   customerOutreach?: Prisma.CustomerOutreachCreateNestedManyWithoutTenantInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutBookingsInput = {
@@ -1010,6 +1044,7 @@ export type TenantUncheckedCreateWithoutBookingsInput = {
   blockedSlots?: Prisma.BlockedSlotUncheckedCreateNestedManyWithoutTenantInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutTenantInput
   customerOutreach?: Prisma.CustomerOutreachUncheckedCreateNestedManyWithoutTenantInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutBookingsInput = {
@@ -1048,6 +1083,7 @@ export type TenantUpdateWithoutBookingsInput = {
   blockedSlots?: Prisma.BlockedSlotUpdateManyWithoutTenantNestedInput
   services?: Prisma.ServiceUpdateManyWithoutTenantNestedInput
   customerOutreach?: Prisma.CustomerOutreachUpdateManyWithoutTenantNestedInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutBookingsInput = {
@@ -1070,6 +1106,7 @@ export type TenantUncheckedUpdateWithoutBookingsInput = {
   blockedSlots?: Prisma.BlockedSlotUncheckedUpdateManyWithoutTenantNestedInput
   services?: Prisma.ServiceUncheckedUpdateManyWithoutTenantNestedInput
   customerOutreach?: Prisma.CustomerOutreachUncheckedUpdateManyWithoutTenantNestedInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutCustomerOutreachInput = {
@@ -1092,6 +1129,7 @@ export type TenantCreateWithoutCustomerOutreachInput = {
   bookings?: Prisma.BookingCreateNestedManyWithoutTenantInput
   blockedSlots?: Prisma.BlockedSlotCreateNestedManyWithoutTenantInput
   services?: Prisma.ServiceCreateNestedManyWithoutTenantInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutCustomerOutreachInput = {
@@ -1114,6 +1152,7 @@ export type TenantUncheckedCreateWithoutCustomerOutreachInput = {
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutTenantInput
   blockedSlots?: Prisma.BlockedSlotUncheckedCreateNestedManyWithoutTenantInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutTenantInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutCustomerOutreachInput = {
@@ -1152,6 +1191,7 @@ export type TenantUpdateWithoutCustomerOutreachInput = {
   bookings?: Prisma.BookingUpdateManyWithoutTenantNestedInput
   blockedSlots?: Prisma.BlockedSlotUpdateManyWithoutTenantNestedInput
   services?: Prisma.ServiceUpdateManyWithoutTenantNestedInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutCustomerOutreachInput = {
@@ -1174,6 +1214,7 @@ export type TenantUncheckedUpdateWithoutCustomerOutreachInput = {
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutTenantNestedInput
   blockedSlots?: Prisma.BlockedSlotUncheckedUpdateManyWithoutTenantNestedInput
   services?: Prisma.ServiceUncheckedUpdateManyWithoutTenantNestedInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutServicesInput = {
@@ -1196,6 +1237,7 @@ export type TenantCreateWithoutServicesInput = {
   bookings?: Prisma.BookingCreateNestedManyWithoutTenantInput
   blockedSlots?: Prisma.BlockedSlotCreateNestedManyWithoutTenantInput
   customerOutreach?: Prisma.CustomerOutreachCreateNestedManyWithoutTenantInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutServicesInput = {
@@ -1218,6 +1260,7 @@ export type TenantUncheckedCreateWithoutServicesInput = {
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutTenantInput
   blockedSlots?: Prisma.BlockedSlotUncheckedCreateNestedManyWithoutTenantInput
   customerOutreach?: Prisma.CustomerOutreachUncheckedCreateNestedManyWithoutTenantInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutServicesInput = {
@@ -1256,6 +1299,7 @@ export type TenantUpdateWithoutServicesInput = {
   bookings?: Prisma.BookingUpdateManyWithoutTenantNestedInput
   blockedSlots?: Prisma.BlockedSlotUpdateManyWithoutTenantNestedInput
   customerOutreach?: Prisma.CustomerOutreachUpdateManyWithoutTenantNestedInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutServicesInput = {
@@ -1278,6 +1322,7 @@ export type TenantUncheckedUpdateWithoutServicesInput = {
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutTenantNestedInput
   blockedSlots?: Prisma.BlockedSlotUncheckedUpdateManyWithoutTenantNestedInput
   customerOutreach?: Prisma.CustomerOutreachUncheckedUpdateManyWithoutTenantNestedInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutBlockedSlotsInput = {
@@ -1300,6 +1345,7 @@ export type TenantCreateWithoutBlockedSlotsInput = {
   bookings?: Prisma.BookingCreateNestedManyWithoutTenantInput
   services?: Prisma.ServiceCreateNestedManyWithoutTenantInput
   customerOutreach?: Prisma.CustomerOutreachCreateNestedManyWithoutTenantInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutBlockedSlotsInput = {
@@ -1322,6 +1368,7 @@ export type TenantUncheckedCreateWithoutBlockedSlotsInput = {
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutTenantInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutTenantInput
   customerOutreach?: Prisma.CustomerOutreachUncheckedCreateNestedManyWithoutTenantInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutBlockedSlotsInput = {
@@ -1360,6 +1407,7 @@ export type TenantUpdateWithoutBlockedSlotsInput = {
   bookings?: Prisma.BookingUpdateManyWithoutTenantNestedInput
   services?: Prisma.ServiceUpdateManyWithoutTenantNestedInput
   customerOutreach?: Prisma.CustomerOutreachUpdateManyWithoutTenantNestedInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutBlockedSlotsInput = {
@@ -1382,6 +1430,115 @@ export type TenantUncheckedUpdateWithoutBlockedSlotsInput = {
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutTenantNestedInput
   services?: Prisma.ServiceUncheckedUpdateManyWithoutTenantNestedInput
   customerOutreach?: Prisma.CustomerOutreachUncheckedUpdateManyWithoutTenantNestedInput
+  subscriptionPayments?: Prisma.SubscriptionPaymentUncheckedUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantCreateWithoutSubscriptionPaymentsInput = {
+  id?: string
+  slug: string
+  name: string
+  customDomain?: string | null
+  status?: string
+  plan?: string
+  subscriptionStatus?: string
+  trialEndsAt?: Date | string | null
+  subscriptionEndsAt?: Date | string | null
+  renewalReminderSentFor?: Date | string | null
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  settings?: Prisma.TenantSettingsCreateNestedOneWithoutTenantInput
+  onboarding?: Prisma.TenantOnboardingCreateNestedOneWithoutTenantInput
+  users?: Prisma.UserCreateNestedManyWithoutTenantInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutTenantInput
+  blockedSlots?: Prisma.BlockedSlotCreateNestedManyWithoutTenantInput
+  services?: Prisma.ServiceCreateNestedManyWithoutTenantInput
+  customerOutreach?: Prisma.CustomerOutreachCreateNestedManyWithoutTenantInput
+}
+
+export type TenantUncheckedCreateWithoutSubscriptionPaymentsInput = {
+  id?: string
+  slug: string
+  name: string
+  customDomain?: string | null
+  status?: string
+  plan?: string
+  subscriptionStatus?: string
+  trialEndsAt?: Date | string | null
+  subscriptionEndsAt?: Date | string | null
+  renewalReminderSentFor?: Date | string | null
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  settings?: Prisma.TenantSettingsUncheckedCreateNestedOneWithoutTenantInput
+  onboarding?: Prisma.TenantOnboardingUncheckedCreateNestedOneWithoutTenantInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutTenantInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutTenantInput
+  blockedSlots?: Prisma.BlockedSlotUncheckedCreateNestedManyWithoutTenantInput
+  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutTenantInput
+  customerOutreach?: Prisma.CustomerOutreachUncheckedCreateNestedManyWithoutTenantInput
+}
+
+export type TenantCreateOrConnectWithoutSubscriptionPaymentsInput = {
+  where: Prisma.TenantWhereUniqueInput
+  create: Prisma.XOR<Prisma.TenantCreateWithoutSubscriptionPaymentsInput, Prisma.TenantUncheckedCreateWithoutSubscriptionPaymentsInput>
+}
+
+export type TenantUpsertWithoutSubscriptionPaymentsInput = {
+  update: Prisma.XOR<Prisma.TenantUpdateWithoutSubscriptionPaymentsInput, Prisma.TenantUncheckedUpdateWithoutSubscriptionPaymentsInput>
+  create: Prisma.XOR<Prisma.TenantCreateWithoutSubscriptionPaymentsInput, Prisma.TenantUncheckedCreateWithoutSubscriptionPaymentsInput>
+  where?: Prisma.TenantWhereInput
+}
+
+export type TenantUpdateToOneWithWhereWithoutSubscriptionPaymentsInput = {
+  where?: Prisma.TenantWhereInput
+  data: Prisma.XOR<Prisma.TenantUpdateWithoutSubscriptionPaymentsInput, Prisma.TenantUncheckedUpdateWithoutSubscriptionPaymentsInput>
+}
+
+export type TenantUpdateWithoutSubscriptionPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  customDomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  subscriptionStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  subscriptionEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  renewalReminderSentFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  settings?: Prisma.TenantSettingsUpdateOneWithoutTenantNestedInput
+  onboarding?: Prisma.TenantOnboardingUpdateOneWithoutTenantNestedInput
+  users?: Prisma.UserUpdateManyWithoutTenantNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutTenantNestedInput
+  blockedSlots?: Prisma.BlockedSlotUpdateManyWithoutTenantNestedInput
+  services?: Prisma.ServiceUpdateManyWithoutTenantNestedInput
+  customerOutreach?: Prisma.CustomerOutreachUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantUncheckedUpdateWithoutSubscriptionPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  customDomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  subscriptionStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  subscriptionEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  renewalReminderSentFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  settings?: Prisma.TenantSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  onboarding?: Prisma.TenantOnboardingUncheckedUpdateOneWithoutTenantNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutTenantNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutTenantNestedInput
+  blockedSlots?: Prisma.BlockedSlotUncheckedUpdateManyWithoutTenantNestedInput
+  services?: Prisma.ServiceUncheckedUpdateManyWithoutTenantNestedInput
+  customerOutreach?: Prisma.CustomerOutreachUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 
@@ -1395,6 +1552,7 @@ export type TenantCountOutputType = {
   blockedSlots: number
   services: number
   customerOutreach: number
+  subscriptionPayments: number
 }
 
 export type TenantCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1403,6 +1561,7 @@ export type TenantCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions
   blockedSlots?: boolean | TenantCountOutputTypeCountBlockedSlotsArgs
   services?: boolean | TenantCountOutputTypeCountServicesArgs
   customerOutreach?: boolean | TenantCountOutputTypeCountCustomerOutreachArgs
+  subscriptionPayments?: boolean | TenantCountOutputTypeCountSubscriptionPaymentsArgs
 }
 
 /**
@@ -1450,6 +1609,13 @@ export type TenantCountOutputTypeCountCustomerOutreachArgs<ExtArgs extends runti
   where?: Prisma.CustomerOutreachWhereInput
 }
 
+/**
+ * TenantCountOutputType without action
+ */
+export type TenantCountOutputTypeCountSubscriptionPaymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SubscriptionPaymentWhereInput
+}
+
 
 export type TenantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1472,6 +1638,7 @@ export type TenantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   blockedSlots?: boolean | Prisma.Tenant$blockedSlotsArgs<ExtArgs>
   services?: boolean | Prisma.Tenant$servicesArgs<ExtArgs>
   customerOutreach?: boolean | Prisma.Tenant$customerOutreachArgs<ExtArgs>
+  subscriptionPayments?: boolean | Prisma.Tenant$subscriptionPaymentsArgs<ExtArgs>
   _count?: boolean | Prisma.TenantCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tenant"]>
 
@@ -1532,6 +1699,7 @@ export type TenantInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   blockedSlots?: boolean | Prisma.Tenant$blockedSlotsArgs<ExtArgs>
   services?: boolean | Prisma.Tenant$servicesArgs<ExtArgs>
   customerOutreach?: boolean | Prisma.Tenant$customerOutreachArgs<ExtArgs>
+  subscriptionPayments?: boolean | Prisma.Tenant$subscriptionPaymentsArgs<ExtArgs>
   _count?: boolean | Prisma.TenantCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TenantIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1547,6 +1715,7 @@ export type $TenantPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     blockedSlots: Prisma.$BlockedSlotPayload<ExtArgs>[]
     services: Prisma.$ServicePayload<ExtArgs>[]
     customerOutreach: Prisma.$CustomerOutreachPayload<ExtArgs>[]
+    subscriptionPayments: Prisma.$SubscriptionPaymentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1963,6 +2132,7 @@ export interface Prisma__TenantClient<T, Null = never, ExtArgs extends runtime.T
   blockedSlots<T extends Prisma.Tenant$blockedSlotsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$blockedSlotsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BlockedSlotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   services<T extends Prisma.Tenant$servicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$servicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   customerOutreach<T extends Prisma.Tenant$customerOutreachArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$customerOutreachArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CustomerOutreachPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  subscriptionPayments<T extends Prisma.Tenant$subscriptionPaymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$subscriptionPaymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SubscriptionPaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2548,6 +2718,30 @@ export type Tenant$customerOutreachArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.CustomerOutreachScalarFieldEnum | Prisma.CustomerOutreachScalarFieldEnum[]
+}
+
+/**
+ * Tenant.subscriptionPayments
+ */
+export type Tenant$subscriptionPaymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SubscriptionPayment
+   */
+  select?: Prisma.SubscriptionPaymentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SubscriptionPayment
+   */
+  omit?: Prisma.SubscriptionPaymentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SubscriptionPaymentInclude<ExtArgs> | null
+  where?: Prisma.SubscriptionPaymentWhereInput
+  orderBy?: Prisma.SubscriptionPaymentOrderByWithRelationInput | Prisma.SubscriptionPaymentOrderByWithRelationInput[]
+  cursor?: Prisma.SubscriptionPaymentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SubscriptionPaymentScalarFieldEnum | Prisma.SubscriptionPaymentScalarFieldEnum[]
 }
 
 /**
