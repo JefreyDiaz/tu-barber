@@ -34,18 +34,71 @@ Ver [`.env.example`](.env.example).
 - `TWILIO_WHATSAPP_FROM` — Número emisor (ej. `+14155238886`)
 - `TWILIO_CONTENT_SID_BOOKING` — confirmación cliente (`tubarber_booking_confirm_v1`, `HX808125…`)
 - `TWILIO_CONTENT_SID_REMINDER` — Content Template SID recordatorio
+- `TWILIO_CONTENT_SID_REENGAGEMENT` — mensaje mensual “vuelve a la barbería” (`tubarber_customer_reengagement_v1`)
 
 Avisos al barbero, bienvenida y renovación van por **email (Resend)** al correo del dueño (`ownerEmail` del registro).
 
 Templates usan variables `{{1}}`, `{{2}}`, … Ver `.cursor/rules/twilio-messaging.mdc`.
 
-### Cron recordatorios
+### Cron jobs (externo — plan Hobby de Vercel no incluye crons)
 
-- `CRON_SECRET` — protege los endpoints cron
-- `GET /api/cron/reminders` — recordatorios de reservas (cada 15 min)
-- `GET /api/cron/subscription-reminders` — vencimientos de suscripción (1 vez al día, ej. 9:00 AM Bogotá)
+Genera un secreto (`CRON_SECRET`) y configúralo en Vercel **y** en cron-job.org.
 
-Ambos con `Authorization: Bearer <CRON_SECRET>`.
+**Windows / sin OpenSSL (Node.js):**
+
+```powershell
+node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+```
+
+**PowerShell alternativo:**
+
+```powershell
+[Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Maximum 256 }))
+```
+
+Todos los endpoints son `GET` con header:
+
+```
+Authorization: Bearer <CRON_SECRET>
+```
+
+#### Crear los jobs en [cron-job.org](https://cron-job.org) (gratis)
+
+1. Regístrate en [console.cron-job.org/signup](https://console.cron-job.org/signup).
+2. Menú **Cronjobs** → **Create cronjob**.
+3. Repite para **cada** job de la tabla (son 3 jobs separados).
+
+**Campos comunes en cada job:**
+
+| Campo | Valor |
+|-------|--------|
+| **Title** | Nombre descriptivo (ej. `TuBarber — recordatorios citas`) |
+| **URL** | `https://app.tubarber.com/api/cron/...` (tu dominio de producción) |
+| **Schedule** | Ver tabla abajo |
+| **Request method** | `GET` (pestaña *Advanced*) |
+| **Request headers** | `Authorization` = `Bearer TU_CRON_SECRET` (pestaña *Advanced*) |
+| **Timezone** | `America/Bogota` cuando aplique |
+
+4. Guarda y activa el job (**Enabled**).
+
+**Los 3 jobs:**
+
+| # | Title sugerido | URL completa | Schedule en cron-job.org |
+|---|----------------|--------------|--------------------------|
+| 1 | TuBarber — recordatorios citas | `https://app.tubarber.com/api/cron/reminders` | **Every 15 minutes** |
+| 2 | TuBarber — suscripción por vencer | `https://app.tubarber.com/api/cron/subscription-reminders` | **Every day at 09:00** · timezone **America/Bogota** |
+| 3 | TuBarber — mensaje mensual clientes | `https://app.tubarber.com/api/cron/customer-reengagement` | **Every month on day 15 at 09:00** · timezone **America/Bogota** |
+
+El job **3** solo se ejecuta **12 veces al año** (día 15 de cada mes a las 9 AM). Si alguien llama la URL otro día, el servidor responde al instante `{ skippedReason: "not_day_15" }` sin consultar la base de datos.
+
+**Probar manualmente (PowerShell):**
+
+```powershell
+$secret = "TU_CRON_SECRET"
+Invoke-WebRequest -Uri "https://app.tubarber.com/api/cron/customer-reengagement" -Headers @{ Authorization = "Bearer $secret" }
+```
+
+Fuera del día 15 deberías ver `"skippedReason":"not_day_15"`. El día 15 a las 9 AM verás `"sent": N` con los WhatsApp enviados.
 
 ### Suscripción manual (sin pasarela)
 
@@ -67,7 +120,7 @@ npm run dev
 1. Agregar dominio raíz: `tubarber.com`
 2. Agregar wildcard: `*.tubarber.com`
 3. Variables de entorno en Vercel (DATABASE_URL, DIRECT_URL, TWILIO_*, CRON_SECRET, NEXT_PUBLIC_ROOT_DOMAIN=tubarber.com)
-4. Cron externo (cron-job.org) → `/api/cron/reminders`
+4. Configurar los 3 cron jobs en [cron-job.org](https://cron-job.org) (ver sección **Cron jobs** arriba)
 
 ## Arquitectura
 

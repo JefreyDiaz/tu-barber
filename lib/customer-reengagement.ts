@@ -1,11 +1,26 @@
 import { prisma } from '@/lib/prisma';
-import { isLocalDayAndHour, monthPeriodKey } from '@/lib/dates/timezone';
+import {
+  DEFAULT_TIMEZONE,
+  isLocalDayAndHour,
+  isLocalDayOfMonth,
+  monthPeriodKey,
+} from '@/lib/dates/timezone';
 import { sendCustomerReengagementMessage } from '@/lib/messaging/reengagement-message';
 import { toE164 } from '@/lib/messaging/phone';
 
 export const MONTHLY_REENGAGEMENT_TYPE = 'monthly_reengagement';
+/** External cron (cron-job.org): monthly on day 15 at 09:00 America/Bogota. */
 export const REENGAGEMENT_DAY_OF_MONTH = 15;
 export const REENGAGEMENT_HOUR = 9;
+export const REENGAGEMENT_TIMEZONE = DEFAULT_TIMEZONE;
+
+const EMPTY_RESULT = {
+  tenantsScanned: 0,
+  customersScanned: 0,
+  sent: 0,
+  skipped: 0,
+  failed: 0,
+} as const;
 
 const ACTIVE_SUBSCRIPTION_STATUSES = ['trialing', 'active', 'past_due'] as const;
 
@@ -51,7 +66,16 @@ export async function processMonthlyCustomerReengagement(now: Date = new Date())
   sent: number;
   skipped: number;
   failed: number;
+  skippedReason?: string;
 }> {
+  if (!isLocalDayOfMonth(now, REENGAGEMENT_TIMEZONE, REENGAGEMENT_DAY_OF_MONTH)) {
+    return { ...EMPTY_RESULT, skippedReason: 'not_day_15' };
+  }
+
+  if (!isLocalDayAndHour(now, REENGAGEMENT_TIMEZONE, REENGAGEMENT_DAY_OF_MONTH, REENGAGEMENT_HOUR)) {
+    return { ...EMPTY_RESULT, skippedReason: 'not_send_hour' };
+  }
+
   const tenants = await prisma.tenant.findMany({
     where: {
       status: 'active',

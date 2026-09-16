@@ -45,6 +45,19 @@ export function monthPeriodKey(date: Date, timeZone: string = DEFAULT_TIMEZONE):
   return calendarDateKey(date, timeZone).slice(0, 7);
 }
 
+/** Day of month (1–31) in the given IANA timezone. */
+export function localDayOfMonth(date: Date, timeZone: string = DEFAULT_TIMEZONE): number {
+  return Number(calendarDateKey(date, timeZone).split('-')[2]);
+}
+
+export function isLocalDayOfMonth(
+  date: Date,
+  timeZone: string,
+  day: number
+): boolean {
+  return localDayOfMonth(date, timeZone) === day;
+}
+
 /** True when local calendar day and hour match (24h clock). */
 export function isLocalDayAndHour(
   now: Date,

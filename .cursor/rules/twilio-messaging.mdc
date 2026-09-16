@@ -13,7 +13,7 @@ Customer-facing WhatsApp goes through **Twilio Content API** (approved utility t
 ## Required env (platform / Basic plan)
 
 - `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_WHATSAPP_FROM`
-- `TWILIO_CONTENT_SID_BOOKING`, `TWILIO_CONTENT_SID_REMINDER`
+- `TWILIO_CONTENT_SID_BOOKING`, `TWILIO_CONTENT_SID_REMINDER`, `TWILIO_CONTENT_SID_REENGAGEMENT`
 
 ## Not WhatsApp (Resend email instead)
 
@@ -27,6 +27,7 @@ Customer-facing WhatsApp goes through **Twilio Content API** (approved utility t
 |----------|------------|------|
 | `tubarber_booking_confirm_v1` | `TWILIO_CONTENT_SID_BOOKING` | ✅ Confirmación al cliente |
 | `tubarber_booking_reminder_v1` | `TWILIO_CONTENT_SID_REMINDER` | ✅ Recordatorio ~3h antes |
+| `tubarber_customer_reengagement_v1` | `TWILIO_CONTENT_SID_REENGAGEMENT` | ✅ Mensaje mensual clientes (día 15, cron externo) |
 | `tubarber_barber_new_booking_v1` | — | ❌ Puede borrarse (alerta va por email) |
 | `tubarber_tenant_welcome_v1` | — | ❌ Puede borrarse (bienvenida va por email) |
 
