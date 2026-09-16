@@ -39,6 +39,7 @@ export function getPlatformTwilioConfig(): TwilioConfig | null {
       process.env.TWILIO_CONTENT_SID_REMINDER,
       process.env.TWILIO_WHATSAPP_REMINDER_TEMPLATE_SID
     ),
+    contentSidReengagement: pickNonEmpty(process.env.TWILIO_CONTENT_SID_REENGAGEMENT),
   };
 }
 
@@ -71,6 +72,7 @@ function buildTenantTwilioConfig(
       process.env.TWILIO_CONTENT_SID_REMINDER,
       process.env.TWILIO_WHATSAPP_REMINDER_TEMPLATE_SID
     ),
+    contentSidReengagement: pickNonEmpty(process.env.TWILIO_CONTENT_SID_REENGAGEMENT),
   };
 }
 

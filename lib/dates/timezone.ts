@@ -40,4 +40,30 @@ export function addMonths(from: Date, months: number): Date {
   return end;
 }
 
+/** YYYY-MM in the given IANA timezone. */
+export function monthPeriodKey(date: Date, timeZone: string = DEFAULT_TIMEZONE): string {
+  return calendarDateKey(date, timeZone).slice(0, 7);
+}
+
+/** True when local calendar day and hour match (24h clock). */
+export function isLocalDayAndHour(
+  now: Date,
+  timeZone: string,
+  day: number,
+  hour: number
+): boolean {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone,
+    day: 'numeric',
+    hour: 'numeric',
+    hour12: false,
+  }).formatToParts(now);
+
+  const localDay = Number(parts.find((part) => part.type === 'day')?.value);
+  let localHour = Number(parts.find((part) => part.type === 'hour')?.value);
+  if (localHour === 24) localHour = 0;
+
+  return localDay === day && localHour === hour;
+}
+
 export { DEFAULT_TIMEZONE };

@@ -7,7 +7,7 @@ import { requireApiTenant, tenantApiErrorResponse } from '@/lib/tenant/api-helpe
 import { assertSameTenant } from '@/lib/tenant/permissions';
 import { scopedPrisma } from '@/lib/tenant/prisma-scoped';
 import { prisma } from '@/lib/prisma';
-import { maxBarbersForPlan } from '@/lib/tenant/subscription';
+import { validateBarberSlotCapacity } from '@/lib/tenant/barber-capacity';
 
 export const dynamic = 'force-dynamic';
 
@@ -101,18 +101,9 @@ export async function POST(request: NextRequest) {
         select: { plan: true, subscriptionStatus: true, trialEndsAt: true },
       });
       if (tenantData) {
-        const maxBarbers = maxBarbersForPlan(tenantData);
-        const barberCount = await db.user.count({
-          where: { role: { in: ['barbero', 'dueno'] } },
-        });
-        if (barberCount >= maxBarbers) {
-          return NextResponse.json(
-            {
-              success: false,
-              error: `Tu plan permite máximo ${maxBarbers} barbero(s). Actualiza tu plan para agregar más.`,
-            },
-            { status: 403 }
-          );
+        const capacity = await validateBarberSlotCapacity(db, tenantData, { role });
+        if (!capacity.ok) {
+          return NextResponse.json({ success: false, error: capacity.error }, { status: 403 });
         }
       }
     }

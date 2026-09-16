@@ -43,6 +43,11 @@ export type User = Prisma.UserModel
  */
 export type Booking = Prisma.BookingModel
 /**
+ * Model CustomerOutreach
+ * Tracks outbound customer messages (e.g. monthly re-engagement) to avoid duplicates.
+ */
+export type CustomerOutreach = Prisma.CustomerOutreachModel
+/**
  * Model Service
  * 
  */

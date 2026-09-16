@@ -28,9 +28,10 @@ model Tenant {
   settings     TenantSettings?
   onboarding   TenantOnboarding?
   users        User[]
-  bookings     Booking[]
-  blockedSlots BlockedSlot[]
-  services     Service[]
+  bookings         Booking[]
+  blockedSlots     BlockedSlot[]
+  services         Service[]
+  customerOutreach CustomerOutreach[]
 }
 
 model TenantSettings {
@@ -112,6 +113,21 @@ model Booking {
   @@index([dateTime])
   @@index([reminderSentAt, dateTime])
   @@index([tenantId])
+}
+
+/// Tracks outbound customer messages (e.g. monthly re-engagement) to avoid duplicates.
+model CustomerOutreach {
+  id            String   @id @default(uuid())
+  tenantId      String
+  tenant        Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  customerPhone String
+  outreachType  String
+  periodKey     String
+  customerName  String?
+  sentAt        DateTime @default(now())
+
+  @@unique([tenantId, customerPhone, outreachType, periodKey])
+  @@index([tenantId, outreachType, periodKey])
 }
 
 model Service {

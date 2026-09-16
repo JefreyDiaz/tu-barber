@@ -252,6 +252,7 @@ export type TenantWhereInput = {
   bookings?: Prisma.BookingListRelationFilter
   blockedSlots?: Prisma.BlockedSlotListRelationFilter
   services?: Prisma.ServiceListRelationFilter
+  customerOutreach?: Prisma.CustomerOutreachListRelationFilter
 }
 
 export type TenantOrderByWithRelationInput = {
@@ -274,6 +275,7 @@ export type TenantOrderByWithRelationInput = {
   bookings?: Prisma.BookingOrderByRelationAggregateInput
   blockedSlots?: Prisma.BlockedSlotOrderByRelationAggregateInput
   services?: Prisma.ServiceOrderByRelationAggregateInput
+  customerOutreach?: Prisma.CustomerOutreachOrderByRelationAggregateInput
 }
 
 export type TenantWhereUniqueInput = Prisma.AtLeast<{
@@ -299,6 +301,7 @@ export type TenantWhereUniqueInput = Prisma.AtLeast<{
   bookings?: Prisma.BookingListRelationFilter
   blockedSlots?: Prisma.BlockedSlotListRelationFilter
   services?: Prisma.ServiceListRelationFilter
+  customerOutreach?: Prisma.CustomerOutreachListRelationFilter
 }, "id" | "slug" | "customDomain">
 
 export type TenantOrderByWithAggregationInput = {
@@ -359,6 +362,7 @@ export type TenantCreateInput = {
   bookings?: Prisma.BookingCreateNestedManyWithoutTenantInput
   blockedSlots?: Prisma.BlockedSlotCreateNestedManyWithoutTenantInput
   services?: Prisma.ServiceCreateNestedManyWithoutTenantInput
+  customerOutreach?: Prisma.CustomerOutreachCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateInput = {
@@ -381,6 +385,7 @@ export type TenantUncheckedCreateInput = {
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutTenantInput
   blockedSlots?: Prisma.BlockedSlotUncheckedCreateNestedManyWithoutTenantInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutTenantInput
+  customerOutreach?: Prisma.CustomerOutreachUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUpdateInput = {
@@ -403,6 +408,7 @@ export type TenantUpdateInput = {
   bookings?: Prisma.BookingUpdateManyWithoutTenantNestedInput
   blockedSlots?: Prisma.BlockedSlotUpdateManyWithoutTenantNestedInput
   services?: Prisma.ServiceUpdateManyWithoutTenantNestedInput
+  customerOutreach?: Prisma.CustomerOutreachUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateInput = {
@@ -425,6 +431,7 @@ export type TenantUncheckedUpdateInput = {
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutTenantNestedInput
   blockedSlots?: Prisma.BlockedSlotUncheckedUpdateManyWithoutTenantNestedInput
   services?: Prisma.ServiceUncheckedUpdateManyWithoutTenantNestedInput
+  customerOutreach?: Prisma.CustomerOutreachUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateManyInput = {
@@ -607,6 +614,20 @@ export type TenantUpdateOneRequiredWithoutBookingsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutBookingsInput, Prisma.TenantUpdateWithoutBookingsInput>, Prisma.TenantUncheckedUpdateWithoutBookingsInput>
 }
 
+export type TenantCreateNestedOneWithoutCustomerOutreachInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutCustomerOutreachInput, Prisma.TenantUncheckedCreateWithoutCustomerOutreachInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutCustomerOutreachInput
+  connect?: Prisma.TenantWhereUniqueInput
+}
+
+export type TenantUpdateOneRequiredWithoutCustomerOutreachNestedInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutCustomerOutreachInput, Prisma.TenantUncheckedCreateWithoutCustomerOutreachInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutCustomerOutreachInput
+  upsert?: Prisma.TenantUpsertWithoutCustomerOutreachInput
+  connect?: Prisma.TenantWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutCustomerOutreachInput, Prisma.TenantUpdateWithoutCustomerOutreachInput>, Prisma.TenantUncheckedUpdateWithoutCustomerOutreachInput>
+}
+
 export type TenantCreateNestedOneWithoutServicesInput = {
   create?: Prisma.XOR<Prisma.TenantCreateWithoutServicesInput, Prisma.TenantUncheckedCreateWithoutServicesInput>
   connectOrCreate?: Prisma.TenantCreateOrConnectWithoutServicesInput
@@ -654,6 +675,7 @@ export type TenantCreateWithoutSettingsInput = {
   bookings?: Prisma.BookingCreateNestedManyWithoutTenantInput
   blockedSlots?: Prisma.BlockedSlotCreateNestedManyWithoutTenantInput
   services?: Prisma.ServiceCreateNestedManyWithoutTenantInput
+  customerOutreach?: Prisma.CustomerOutreachCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutSettingsInput = {
@@ -675,6 +697,7 @@ export type TenantUncheckedCreateWithoutSettingsInput = {
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutTenantInput
   blockedSlots?: Prisma.BlockedSlotUncheckedCreateNestedManyWithoutTenantInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutTenantInput
+  customerOutreach?: Prisma.CustomerOutreachUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutSettingsInput = {
@@ -712,6 +735,7 @@ export type TenantUpdateWithoutSettingsInput = {
   bookings?: Prisma.BookingUpdateManyWithoutTenantNestedInput
   blockedSlots?: Prisma.BlockedSlotUpdateManyWithoutTenantNestedInput
   services?: Prisma.ServiceUpdateManyWithoutTenantNestedInput
+  customerOutreach?: Prisma.CustomerOutreachUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutSettingsInput = {
@@ -733,6 +757,7 @@ export type TenantUncheckedUpdateWithoutSettingsInput = {
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutTenantNestedInput
   blockedSlots?: Prisma.BlockedSlotUncheckedUpdateManyWithoutTenantNestedInput
   services?: Prisma.ServiceUncheckedUpdateManyWithoutTenantNestedInput
+  customerOutreach?: Prisma.CustomerOutreachUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutOnboardingInput = {
@@ -754,6 +779,7 @@ export type TenantCreateWithoutOnboardingInput = {
   bookings?: Prisma.BookingCreateNestedManyWithoutTenantInput
   blockedSlots?: Prisma.BlockedSlotCreateNestedManyWithoutTenantInput
   services?: Prisma.ServiceCreateNestedManyWithoutTenantInput
+  customerOutreach?: Prisma.CustomerOutreachCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutOnboardingInput = {
@@ -775,6 +801,7 @@ export type TenantUncheckedCreateWithoutOnboardingInput = {
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutTenantInput
   blockedSlots?: Prisma.BlockedSlotUncheckedCreateNestedManyWithoutTenantInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutTenantInput
+  customerOutreach?: Prisma.CustomerOutreachUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutOnboardingInput = {
@@ -812,6 +839,7 @@ export type TenantUpdateWithoutOnboardingInput = {
   bookings?: Prisma.BookingUpdateManyWithoutTenantNestedInput
   blockedSlots?: Prisma.BlockedSlotUpdateManyWithoutTenantNestedInput
   services?: Prisma.ServiceUpdateManyWithoutTenantNestedInput
+  customerOutreach?: Prisma.CustomerOutreachUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutOnboardingInput = {
@@ -833,6 +861,7 @@ export type TenantUncheckedUpdateWithoutOnboardingInput = {
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutTenantNestedInput
   blockedSlots?: Prisma.BlockedSlotUncheckedUpdateManyWithoutTenantNestedInput
   services?: Prisma.ServiceUncheckedUpdateManyWithoutTenantNestedInput
+  customerOutreach?: Prisma.CustomerOutreachUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutUsersInput = {
@@ -854,6 +883,7 @@ export type TenantCreateWithoutUsersInput = {
   bookings?: Prisma.BookingCreateNestedManyWithoutTenantInput
   blockedSlots?: Prisma.BlockedSlotCreateNestedManyWithoutTenantInput
   services?: Prisma.ServiceCreateNestedManyWithoutTenantInput
+  customerOutreach?: Prisma.CustomerOutreachCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutUsersInput = {
@@ -875,6 +905,7 @@ export type TenantUncheckedCreateWithoutUsersInput = {
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutTenantInput
   blockedSlots?: Prisma.BlockedSlotUncheckedCreateNestedManyWithoutTenantInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutTenantInput
+  customerOutreach?: Prisma.CustomerOutreachUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutUsersInput = {
@@ -912,6 +943,7 @@ export type TenantUpdateWithoutUsersInput = {
   bookings?: Prisma.BookingUpdateManyWithoutTenantNestedInput
   blockedSlots?: Prisma.BlockedSlotUpdateManyWithoutTenantNestedInput
   services?: Prisma.ServiceUpdateManyWithoutTenantNestedInput
+  customerOutreach?: Prisma.CustomerOutreachUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutUsersInput = {
@@ -933,6 +965,7 @@ export type TenantUncheckedUpdateWithoutUsersInput = {
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutTenantNestedInput
   blockedSlots?: Prisma.BlockedSlotUncheckedUpdateManyWithoutTenantNestedInput
   services?: Prisma.ServiceUncheckedUpdateManyWithoutTenantNestedInput
+  customerOutreach?: Prisma.CustomerOutreachUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutBookingsInput = {
@@ -954,6 +987,7 @@ export type TenantCreateWithoutBookingsInput = {
   users?: Prisma.UserCreateNestedManyWithoutTenantInput
   blockedSlots?: Prisma.BlockedSlotCreateNestedManyWithoutTenantInput
   services?: Prisma.ServiceCreateNestedManyWithoutTenantInput
+  customerOutreach?: Prisma.CustomerOutreachCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutBookingsInput = {
@@ -975,6 +1009,7 @@ export type TenantUncheckedCreateWithoutBookingsInput = {
   users?: Prisma.UserUncheckedCreateNestedManyWithoutTenantInput
   blockedSlots?: Prisma.BlockedSlotUncheckedCreateNestedManyWithoutTenantInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutTenantInput
+  customerOutreach?: Prisma.CustomerOutreachUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutBookingsInput = {
@@ -1012,6 +1047,7 @@ export type TenantUpdateWithoutBookingsInput = {
   users?: Prisma.UserUpdateManyWithoutTenantNestedInput
   blockedSlots?: Prisma.BlockedSlotUpdateManyWithoutTenantNestedInput
   services?: Prisma.ServiceUpdateManyWithoutTenantNestedInput
+  customerOutreach?: Prisma.CustomerOutreachUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutBookingsInput = {
@@ -1031,6 +1067,111 @@ export type TenantUncheckedUpdateWithoutBookingsInput = {
   settings?: Prisma.TenantSettingsUncheckedUpdateOneWithoutTenantNestedInput
   onboarding?: Prisma.TenantOnboardingUncheckedUpdateOneWithoutTenantNestedInput
   users?: Prisma.UserUncheckedUpdateManyWithoutTenantNestedInput
+  blockedSlots?: Prisma.BlockedSlotUncheckedUpdateManyWithoutTenantNestedInput
+  services?: Prisma.ServiceUncheckedUpdateManyWithoutTenantNestedInput
+  customerOutreach?: Prisma.CustomerOutreachUncheckedUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantCreateWithoutCustomerOutreachInput = {
+  id?: string
+  slug: string
+  name: string
+  customDomain?: string | null
+  status?: string
+  plan?: string
+  subscriptionStatus?: string
+  trialEndsAt?: Date | string | null
+  subscriptionEndsAt?: Date | string | null
+  renewalReminderSentFor?: Date | string | null
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  settings?: Prisma.TenantSettingsCreateNestedOneWithoutTenantInput
+  onboarding?: Prisma.TenantOnboardingCreateNestedOneWithoutTenantInput
+  users?: Prisma.UserCreateNestedManyWithoutTenantInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutTenantInput
+  blockedSlots?: Prisma.BlockedSlotCreateNestedManyWithoutTenantInput
+  services?: Prisma.ServiceCreateNestedManyWithoutTenantInput
+}
+
+export type TenantUncheckedCreateWithoutCustomerOutreachInput = {
+  id?: string
+  slug: string
+  name: string
+  customDomain?: string | null
+  status?: string
+  plan?: string
+  subscriptionStatus?: string
+  trialEndsAt?: Date | string | null
+  subscriptionEndsAt?: Date | string | null
+  renewalReminderSentFor?: Date | string | null
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  settings?: Prisma.TenantSettingsUncheckedCreateNestedOneWithoutTenantInput
+  onboarding?: Prisma.TenantOnboardingUncheckedCreateNestedOneWithoutTenantInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutTenantInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutTenantInput
+  blockedSlots?: Prisma.BlockedSlotUncheckedCreateNestedManyWithoutTenantInput
+  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutTenantInput
+}
+
+export type TenantCreateOrConnectWithoutCustomerOutreachInput = {
+  where: Prisma.TenantWhereUniqueInput
+  create: Prisma.XOR<Prisma.TenantCreateWithoutCustomerOutreachInput, Prisma.TenantUncheckedCreateWithoutCustomerOutreachInput>
+}
+
+export type TenantUpsertWithoutCustomerOutreachInput = {
+  update: Prisma.XOR<Prisma.TenantUpdateWithoutCustomerOutreachInput, Prisma.TenantUncheckedUpdateWithoutCustomerOutreachInput>
+  create: Prisma.XOR<Prisma.TenantCreateWithoutCustomerOutreachInput, Prisma.TenantUncheckedCreateWithoutCustomerOutreachInput>
+  where?: Prisma.TenantWhereInput
+}
+
+export type TenantUpdateToOneWithWhereWithoutCustomerOutreachInput = {
+  where?: Prisma.TenantWhereInput
+  data: Prisma.XOR<Prisma.TenantUpdateWithoutCustomerOutreachInput, Prisma.TenantUncheckedUpdateWithoutCustomerOutreachInput>
+}
+
+export type TenantUpdateWithoutCustomerOutreachInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  customDomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  subscriptionStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  subscriptionEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  renewalReminderSentFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  settings?: Prisma.TenantSettingsUpdateOneWithoutTenantNestedInput
+  onboarding?: Prisma.TenantOnboardingUpdateOneWithoutTenantNestedInput
+  users?: Prisma.UserUpdateManyWithoutTenantNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutTenantNestedInput
+  blockedSlots?: Prisma.BlockedSlotUpdateManyWithoutTenantNestedInput
+  services?: Prisma.ServiceUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantUncheckedUpdateWithoutCustomerOutreachInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  customDomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  subscriptionStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  subscriptionEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  renewalReminderSentFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  settings?: Prisma.TenantSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  onboarding?: Prisma.TenantOnboardingUncheckedUpdateOneWithoutTenantNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutTenantNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutTenantNestedInput
   blockedSlots?: Prisma.BlockedSlotUncheckedUpdateManyWithoutTenantNestedInput
   services?: Prisma.ServiceUncheckedUpdateManyWithoutTenantNestedInput
 }
@@ -1054,6 +1195,7 @@ export type TenantCreateWithoutServicesInput = {
   users?: Prisma.UserCreateNestedManyWithoutTenantInput
   bookings?: Prisma.BookingCreateNestedManyWithoutTenantInput
   blockedSlots?: Prisma.BlockedSlotCreateNestedManyWithoutTenantInput
+  customerOutreach?: Prisma.CustomerOutreachCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutServicesInput = {
@@ -1075,6 +1217,7 @@ export type TenantUncheckedCreateWithoutServicesInput = {
   users?: Prisma.UserUncheckedCreateNestedManyWithoutTenantInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutTenantInput
   blockedSlots?: Prisma.BlockedSlotUncheckedCreateNestedManyWithoutTenantInput
+  customerOutreach?: Prisma.CustomerOutreachUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutServicesInput = {
@@ -1112,6 +1255,7 @@ export type TenantUpdateWithoutServicesInput = {
   users?: Prisma.UserUpdateManyWithoutTenantNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutTenantNestedInput
   blockedSlots?: Prisma.BlockedSlotUpdateManyWithoutTenantNestedInput
+  customerOutreach?: Prisma.CustomerOutreachUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutServicesInput = {
@@ -1133,6 +1277,7 @@ export type TenantUncheckedUpdateWithoutServicesInput = {
   users?: Prisma.UserUncheckedUpdateManyWithoutTenantNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutTenantNestedInput
   blockedSlots?: Prisma.BlockedSlotUncheckedUpdateManyWithoutTenantNestedInput
+  customerOutreach?: Prisma.CustomerOutreachUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutBlockedSlotsInput = {
@@ -1154,6 +1299,7 @@ export type TenantCreateWithoutBlockedSlotsInput = {
   users?: Prisma.UserCreateNestedManyWithoutTenantInput
   bookings?: Prisma.BookingCreateNestedManyWithoutTenantInput
   services?: Prisma.ServiceCreateNestedManyWithoutTenantInput
+  customerOutreach?: Prisma.CustomerOutreachCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutBlockedSlotsInput = {
@@ -1175,6 +1321,7 @@ export type TenantUncheckedCreateWithoutBlockedSlotsInput = {
   users?: Prisma.UserUncheckedCreateNestedManyWithoutTenantInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutTenantInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutTenantInput
+  customerOutreach?: Prisma.CustomerOutreachUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutBlockedSlotsInput = {
@@ -1212,6 +1359,7 @@ export type TenantUpdateWithoutBlockedSlotsInput = {
   users?: Prisma.UserUpdateManyWithoutTenantNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutTenantNestedInput
   services?: Prisma.ServiceUpdateManyWithoutTenantNestedInput
+  customerOutreach?: Prisma.CustomerOutreachUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutBlockedSlotsInput = {
@@ -1233,6 +1381,7 @@ export type TenantUncheckedUpdateWithoutBlockedSlotsInput = {
   users?: Prisma.UserUncheckedUpdateManyWithoutTenantNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutTenantNestedInput
   services?: Prisma.ServiceUncheckedUpdateManyWithoutTenantNestedInput
+  customerOutreach?: Prisma.CustomerOutreachUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 
@@ -1245,6 +1394,7 @@ export type TenantCountOutputType = {
   bookings: number
   blockedSlots: number
   services: number
+  customerOutreach: number
 }
 
 export type TenantCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1252,6 +1402,7 @@ export type TenantCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions
   bookings?: boolean | TenantCountOutputTypeCountBookingsArgs
   blockedSlots?: boolean | TenantCountOutputTypeCountBlockedSlotsArgs
   services?: boolean | TenantCountOutputTypeCountServicesArgs
+  customerOutreach?: boolean | TenantCountOutputTypeCountCustomerOutreachArgs
 }
 
 /**
@@ -1292,6 +1443,13 @@ export type TenantCountOutputTypeCountServicesArgs<ExtArgs extends runtime.Types
   where?: Prisma.ServiceWhereInput
 }
 
+/**
+ * TenantCountOutputType without action
+ */
+export type TenantCountOutputTypeCountCustomerOutreachArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CustomerOutreachWhereInput
+}
+
 
 export type TenantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1313,6 +1471,7 @@ export type TenantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   bookings?: boolean | Prisma.Tenant$bookingsArgs<ExtArgs>
   blockedSlots?: boolean | Prisma.Tenant$blockedSlotsArgs<ExtArgs>
   services?: boolean | Prisma.Tenant$servicesArgs<ExtArgs>
+  customerOutreach?: boolean | Prisma.Tenant$customerOutreachArgs<ExtArgs>
   _count?: boolean | Prisma.TenantCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tenant"]>
 
@@ -1372,6 +1531,7 @@ export type TenantInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   bookings?: boolean | Prisma.Tenant$bookingsArgs<ExtArgs>
   blockedSlots?: boolean | Prisma.Tenant$blockedSlotsArgs<ExtArgs>
   services?: boolean | Prisma.Tenant$servicesArgs<ExtArgs>
+  customerOutreach?: boolean | Prisma.Tenant$customerOutreachArgs<ExtArgs>
   _count?: boolean | Prisma.TenantCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TenantIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1386,6 +1546,7 @@ export type $TenantPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     bookings: Prisma.$BookingPayload<ExtArgs>[]
     blockedSlots: Prisma.$BlockedSlotPayload<ExtArgs>[]
     services: Prisma.$ServicePayload<ExtArgs>[]
+    customerOutreach: Prisma.$CustomerOutreachPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1801,6 +1962,7 @@ export interface Prisma__TenantClient<T, Null = never, ExtArgs extends runtime.T
   bookings<T extends Prisma.Tenant$bookingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$bookingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   blockedSlots<T extends Prisma.Tenant$blockedSlotsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$blockedSlotsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BlockedSlotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   services<T extends Prisma.Tenant$servicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$servicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  customerOutreach<T extends Prisma.Tenant$customerOutreachArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$customerOutreachArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CustomerOutreachPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2362,6 +2524,30 @@ export type Tenant$servicesArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.ServiceScalarFieldEnum | Prisma.ServiceScalarFieldEnum[]
+}
+
+/**
+ * Tenant.customerOutreach
+ */
+export type Tenant$customerOutreachArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CustomerOutreach
+   */
+  select?: Prisma.CustomerOutreachSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CustomerOutreach
+   */
+  omit?: Prisma.CustomerOutreachOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CustomerOutreachInclude<ExtArgs> | null
+  where?: Prisma.CustomerOutreachWhereInput
+  orderBy?: Prisma.CustomerOutreachOrderByWithRelationInput | Prisma.CustomerOutreachOrderByWithRelationInput[]
+  cursor?: Prisma.CustomerOutreachWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CustomerOutreachScalarFieldEnum | Prisma.CustomerOutreachScalarFieldEnum[]
 }
 
 /**

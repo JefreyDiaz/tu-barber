@@ -4,11 +4,13 @@ import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import PlanCard from '@/components/platform/PlanCard';
+import ShopNameConfirmModal from '@/components/platform/ShopNameConfirmModal';
 import PlatformLogo from '@/components/PlatformLogo';
 import PasswordInput from '@/components/PasswordInput';
 import { useVisualViewportInset } from '@/lib/hooks/use-visual-viewport-inset';
 import { PLAN_LIST, TRIAL_DAYS, type PlanId, isValidPlanId } from '@/lib/plans';
-import { isUsernameValid, sanitizeUsernameInput } from '@/lib/validations/username';
+import { sanitizeUsernameInput } from '@/lib/validations/username';
+import { getOnboardingFieldErrors, type OnboardingData } from '@/lib/validations/tenant';
 
 const STEPS = ['Plan', 'Barbería', 'Cuenta'] as const;
 const ROOT_DOMAIN = process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? 'tubarber.co';
@@ -17,21 +19,15 @@ function isSlugValid(slug: string): boolean {
   return slug.length >= 3 && /^[a-z0-9-]+$/.test(slug);
 }
 
-function isAccountStepValid(form: {
-  ownerName: string;
-  ownerEmail: string;
-  ownerPhone: string;
-  username: string;
-  password: string;
-}): boolean {
-  return (
-    form.ownerName.trim().length >= 2 &&
-    form.ownerEmail.includes('@') &&
-    /^\d{10}$/.test(form.ownerPhone) &&
-    isUsernameValid(form.username) &&
-    form.password.length >= 8
-  );
-}
+type AccountField = 'ownerName' | 'ownerEmail' | 'ownerPhone' | 'username' | 'password';
+
+const ACCOUNT_FIELDS: AccountField[] = [
+  'ownerName',
+  'ownerEmail',
+  'ownerPhone',
+  'username',
+  'password',
+];
 
 function RegistroWizardInner() {
   const searchParams = useSearchParams();
@@ -41,6 +37,10 @@ function RegistroWizardInner() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showShopNameConfirm, setShowShopNameConfirm] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<
+    Partial<Record<keyof OnboardingData, string>>
+  >({});
 
   const [plan, setPlan] = useState<PlanId>(
     initialPlan && isValidPlanId(initialPlan) ? initialPlan : 'negocio'
@@ -69,6 +69,39 @@ function RegistroWizardInner() {
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-|-$/g, '')
       .slice(0, 30);
+  }
+
+  function clearFieldError(field: keyof OnboardingData) {
+    setFieldErrors((prev) => {
+      if (!prev[field]) return prev;
+      const next = { ...prev };
+      delete next[field];
+      return next;
+    });
+  }
+
+  function validateForm(): boolean {
+    const errors = getOnboardingFieldErrors({ ...form, plan });
+    setFieldErrors(errors);
+
+    const firstInvalid = ACCOUNT_FIELDS.find((field) => errors[field]);
+    if (firstInvalid) {
+      requestAnimationFrame(() => {
+        document.getElementById(`field-${firstInvalid}`)?.scrollIntoView({
+          block: 'center',
+          behavior: 'smooth',
+        });
+      });
+      return false;
+    }
+
+    return true;
+  }
+
+  function handleSubmitClick() {
+    setError(null);
+    if (!validateForm()) return;
+    void handleSubmit();
   }
 
   async function handleSubmit() {
@@ -203,6 +236,7 @@ function RegistroWizardInner() {
               }}
               required
               placeholder="Ej. Luxe Cuts"
+              hint="Usa espacios si quieres separar palabras (ej. Barbería Central). Así se verá en tu página."
             />
             <div className="glass-card p-4 text-center">
               <p className="text-xs text-white/40">Vista previa URL</p>
@@ -237,43 +271,75 @@ function RegistroWizardInner() {
               <h1 className="text-2xl font-bold">Tu cuenta</h1>
               <p className="mt-2 text-sm text-white/50">Datos del dueño y acceso al panel</p>
             </div>
+            {Object.keys(fieldErrors).some((key) =>
+              ACCOUNT_FIELDS.includes(key as AccountField)
+            ) && (
+              <div className="rounded-2xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+                Revisa los campos marcados antes de enviar.
+              </div>
+            )}
             <WizardField
+              id="field-ownerName"
               label="Tu nombre"
               value={form.ownerName}
-              onChange={(v) => setForm((f) => ({ ...f, ownerName: v }))}
+              onChange={(v) => {
+                clearFieldError('ownerName');
+                setForm((f) => ({ ...f, ownerName: v }));
+              }}
               required
+              error={fieldErrors.ownerName}
             />
             <WizardField
+              id="field-ownerEmail"
               label="Email"
               type="email"
               value={form.ownerEmail}
-              onChange={(v) => setForm((f) => ({ ...f, ownerEmail: v }))}
+              onChange={(v) => {
+                clearFieldError('ownerEmail');
+                setForm((f) => ({ ...f, ownerEmail: v }));
+              }}
               required
+              error={fieldErrors.ownerEmail}
             />
             <WizardField
+              id="field-ownerPhone"
               label="Teléfono WhatsApp"
               value={form.ownerPhone}
-              onChange={(v) => setForm((f) => ({ ...f, ownerPhone: v.replace(/\D/g, '').slice(0, 10) }))}
+              onChange={(v) => {
+                clearFieldError('ownerPhone');
+                setForm((f) => ({ ...f, ownerPhone: v.replace(/\D/g, '').slice(0, 10) }));
+              }}
               required
               placeholder="3001234567"
               hint="10 dígitos sin +57"
+              error={fieldErrors.ownerPhone}
             />
             <hr className="border-white/10" />
             <WizardField
+              id="field-username"
               label="Usuario de acceso"
               value={form.username}
-              onChange={(v) => setForm((f) => ({ ...f, username: sanitizeUsernameInput(v) }))}
+              onChange={(v) => {
+                clearFieldError('username');
+                setForm((f) => ({ ...f, username: sanitizeUsernameInput(v) }));
+              }}
               required
               placeholder="mi_usuario"
               hint="Letras, números, guión (-) y guión bajo (_). Sin espacios."
+              error={fieldErrors.username}
             />
             <WizardField
+              id="field-password"
               label="Contraseña"
               type="password"
               value={form.password}
-              onChange={(v) => setForm((f) => ({ ...f, password: v }))}
+              onChange={(v) => {
+                clearFieldError('password');
+                setForm((f) => ({ ...f, password: v }));
+              }}
               required
               hint="Mínimo 8 caracteres"
+              error={fieldErrors.password}
             />
 
             <div className="glass-card p-4 text-sm text-white/60">
@@ -310,7 +376,13 @@ function RegistroWizardInner() {
           {step < STEPS.length - 1 ? (
             <button
               type="button"
-              onClick={() => setStep((s) => s + 1)}
+              onClick={() => {
+                if (step === 1) {
+                  setShowShopNameConfirm(true);
+                  return;
+                }
+                setStep((s) => s + 1);
+              }}
               disabled={step === 1 && (!form.shopName.trim() || !isSlugValid(form.slug))}
               className="btn-accent flex-[2] rounded-2xl py-3.5 text-sm font-semibold disabled:opacity-40"
             >
@@ -319,8 +391,8 @@ function RegistroWizardInner() {
           ) : (
             <button
               type="button"
-              onClick={handleSubmit}
-              disabled={loading || !isAccountStepValid(form)}
+              onClick={handleSubmitClick}
+              disabled={loading}
               className="btn-accent flex-[2] rounded-2xl py-3.5 text-sm font-semibold disabled:opacity-40"
             >
               {loading ? 'Enviando...' : 'Enviar solicitud'}
@@ -328,11 +400,25 @@ function RegistroWizardInner() {
           )}
         </div>
       </div>
+
+      {showShopNameConfirm && (
+        <ShopNameConfirmModal
+          shopName={form.shopName}
+          slug={form.slug}
+          rootDomain={ROOT_DOMAIN}
+          onEdit={() => setShowShopNameConfirm(false)}
+          onConfirm={() => {
+            setShowShopNameConfirm(false);
+            setStep(2);
+          }}
+        />
+      )}
     </div>
   );
 }
 
 function WizardField({
+  id,
   label,
   value,
   onChange,
@@ -340,7 +426,9 @@ function WizardField({
   required,
   placeholder,
   hint,
+  error,
 }: {
+  id?: string;
   label: string;
   value: string;
   onChange: (v: string) => void;
@@ -348,6 +436,7 @@ function WizardField({
   required?: boolean;
   placeholder?: string;
   hint?: string;
+  error?: string;
 }) {
   const scrollOnFocus = (target: HTMLElement) => {
     requestAnimationFrame(() => {
@@ -355,8 +444,12 @@ function WizardField({
     });
   };
 
+  const inputClassName = `glass-input w-full px-4 py-3 text-sm ${
+    error ? 'border-red-400/50 ring-1 ring-red-400/30' : ''
+  }`;
+
   return (
-    <div>
+    <div id={id}>
       <label className="mb-1.5 block text-sm font-medium text-white/80">{label}</label>
       {type === 'password' ? (
         <PasswordInput
@@ -367,6 +460,9 @@ function WizardField({
           autoComplete="new-password"
           onChange={(e) => onChange(e.target.value)}
           onFocus={(e) => scrollOnFocus(e.currentTarget)}
+          className={`${inputClassName} pr-11`}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? `${id}-error` : undefined}
         />
       ) : (
         <input
@@ -376,10 +472,18 @@ function WizardField({
           placeholder={placeholder}
           onChange={(e) => onChange(e.target.value)}
           onFocus={(e) => scrollOnFocus(e.currentTarget)}
-          className="glass-input w-full px-4 py-3 text-sm"
+          className={inputClassName}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? `${id}-error` : undefined}
         />
       )}
-      {hint && <p className="mt-1.5 text-xs text-white/40">{hint}</p>}
+      {error ? (
+        <p id={id ? `${id}-error` : undefined} className="mt-1.5 text-xs text-red-300">
+          {error}
+        </p>
+      ) : (
+        hint && <p className="mt-1.5 text-xs text-white/40">{hint}</p>
+      )}
     </div>
   );
 }

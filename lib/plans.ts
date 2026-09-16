@@ -6,6 +6,12 @@ export type SubscriptionStatus = 'none' | 'trialing' | 'active' | 'past_due' | '
 
 export const TRIAL_DAYS = 14;
 
+/** Marketing label for barber capacity — keep in sync with limits.maxBarbers */
+export function formatBarberLimitLabel(maxBarbers: number): string {
+  if (maxBarbers <= 1) return '1 barbero';
+  return `Hasta ${maxBarbers} barberos`;
+}
+
 export interface PlanDefinition {
   id: PlanId;
   name: string;
@@ -33,7 +39,7 @@ export const PLANS: Record<PlanId, PlanDefinition> = {
     priceMonthly: 59900,
     priceLabel: '$59.900',
     features: [
-      '1 barbero',
+      formatBarberLimitLabel(1),
       'Reservas online 24/7',
       'Subdominio tubarber.co',
       'Confirmaciones por WhatsApp (número de TuBarber)',
@@ -58,7 +64,7 @@ export const PLANS: Record<PlanId, PlanDefinition> = {
     priceLabel: '$109.900',
     popular: true,
     features: [
-      'Hasta 3 barberos',
+      formatBarberLimitLabel(3),
       'Reservas online 24/7',
       'Subdominio tubarber.co',
       'Confirmaciones por WhatsApp (número de TuBarber)',
@@ -82,7 +88,7 @@ export const PLANS: Record<PlanId, PlanDefinition> = {
     priceMonthly: 199900,
     priceLabel: '$199.900',
     features: [
-      'Hasta 12 barberos',
+      formatBarberLimitLabel(8),
       'Reservas online 24/7',
       'Dominio propio (mibarberia.com)',
       'Confirmaciones por WhatsApp (tu propio número)',
@@ -90,7 +96,7 @@ export const PLANS: Record<PlanId, PlanDefinition> = {
       'Panel de administración',
     ],
     limits: {
-      maxBarbers: 12,
+      maxBarbers: 8,
       customDomain: true,
       ownTwilio: true,
       fullBranding: true,

@@ -26,6 +26,23 @@ export const onboardingSchema = z.object({
   plan: z.enum(PLAN_IDS, { error: 'Plan inválido' }).default('negocio'),
 });
 
+/** Per-field errors for onboarding forms (first message per field). */
+export function getOnboardingFieldErrors(
+  data: unknown
+): Partial<Record<keyof OnboardingData, string>> {
+  const result = onboardingSchema.safeParse(data);
+  if (result.success) return {};
+
+  const errors: Partial<Record<keyof OnboardingData, string>> = {};
+  for (const issue of result.error.issues) {
+    const field = issue.path[0];
+    if (typeof field === 'string' && !(field in errors)) {
+      errors[field as keyof OnboardingData] = issue.message;
+    }
+  }
+  return errors;
+}
+
 export function formatOnboardingValidationError(
   issues: z.core.$ZodIssue[]
 ): string {

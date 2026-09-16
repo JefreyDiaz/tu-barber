@@ -56,6 +56,7 @@ export const ModelName = {
   TenantOnboarding: 'TenantOnboarding',
   User: 'User',
   Booking: 'Booking',
+  CustomerOutreach: 'CustomerOutreach',
   Service: 'Service',
   BlockedSlot: 'BlockedSlot'
 } as const
@@ -168,6 +169,19 @@ export const BookingScalarFieldEnum = {
 } as const
 
 export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
+
+
+export const CustomerOutreachScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  customerPhone: 'customerPhone',
+  outreachType: 'outreachType',
+  periodKey: 'periodKey',
+  customerName: 'customerName',
+  sentAt: 'sentAt'
+} as const
+
+export type CustomerOutreachScalarFieldEnum = (typeof CustomerOutreachScalarFieldEnum)[keyof typeof CustomerOutreachScalarFieldEnum]
 
 
 export const ServiceScalarFieldEnum = {

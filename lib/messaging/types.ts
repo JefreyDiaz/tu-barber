@@ -4,6 +4,7 @@ export interface TwilioConfig {
   whatsappFrom: string;
   contentSidBooking?: string;
   contentSidReminder?: string;
+  contentSidReengagement?: string;
 }
 
 export interface TenantTwilioSettings {

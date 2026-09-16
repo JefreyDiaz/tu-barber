@@ -389,6 +389,7 @@ export const ModelName = {
   TenantOnboarding: 'TenantOnboarding',
   User: 'User',
   Booking: 'Booking',
+  CustomerOutreach: 'CustomerOutreach',
   Service: 'Service',
   BlockedSlot: 'BlockedSlot'
 } as const
@@ -406,7 +407,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "tenant" | "tenantSettings" | "tenantOnboarding" | "user" | "booking" | "service" | "blockedSlot"
+    modelProps: "tenant" | "tenantSettings" | "tenantOnboarding" | "user" | "booking" | "customerOutreach" | "service" | "blockedSlot"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -780,6 +781,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    CustomerOutreach: {
+      payload: Prisma.$CustomerOutreachPayload<ExtArgs>
+      fields: Prisma.CustomerOutreachFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CustomerOutreachFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerOutreachPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CustomerOutreachFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerOutreachPayload>
+        }
+        findFirst: {
+          args: Prisma.CustomerOutreachFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerOutreachPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CustomerOutreachFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerOutreachPayload>
+        }
+        findMany: {
+          args: Prisma.CustomerOutreachFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerOutreachPayload>[]
+        }
+        create: {
+          args: Prisma.CustomerOutreachCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerOutreachPayload>
+        }
+        createMany: {
+          args: Prisma.CustomerOutreachCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CustomerOutreachCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerOutreachPayload>[]
+        }
+        delete: {
+          args: Prisma.CustomerOutreachDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerOutreachPayload>
+        }
+        update: {
+          args: Prisma.CustomerOutreachUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerOutreachPayload>
+        }
+        deleteMany: {
+          args: Prisma.CustomerOutreachDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CustomerOutreachUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CustomerOutreachUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerOutreachPayload>[]
+        }
+        upsert: {
+          args: Prisma.CustomerOutreachUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerOutreachPayload>
+        }
+        aggregate: {
+          args: Prisma.CustomerOutreachAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCustomerOutreach>
+        }
+        groupBy: {
+          args: Prisma.CustomerOutreachGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CustomerOutreachGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CustomerOutreachCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CustomerOutreachCountAggregateOutputType> | number
+        }
+      }
+    }
     Service: {
       payload: Prisma.$ServicePayload<ExtArgs>
       fields: Prisma.ServiceFieldRefs
@@ -1061,6 +1136,19 @@ export const BookingScalarFieldEnum = {
 export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
 
 
+export const CustomerOutreachScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  customerPhone: 'customerPhone',
+  outreachType: 'outreachType',
+  periodKey: 'periodKey',
+  customerName: 'customerName',
+  sentAt: 'sentAt'
+} as const
+
+export type CustomerOutreachScalarFieldEnum = (typeof CustomerOutreachScalarFieldEnum)[keyof typeof CustomerOutreachScalarFieldEnum]
+
+
 export const ServiceScalarFieldEnum = {
   id: 'id',
   tenantId: 'tenantId',
@@ -1312,6 +1400,7 @@ export type GlobalOmitConfig = {
   tenantOnboarding?: Prisma.TenantOnboardingOmit
   user?: Prisma.UserOmit
   booking?: Prisma.BookingOmit
+  customerOutreach?: Prisma.CustomerOutreachOmit
   service?: Prisma.ServiceOmit
   blockedSlot?: Prisma.BlockedSlotOmit
 }

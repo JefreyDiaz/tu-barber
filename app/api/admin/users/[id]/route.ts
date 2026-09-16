@@ -5,6 +5,8 @@ import { auth } from '@/lib/auth';
 import { requireApiTenant, tenantErrorStatus } from '@/lib/tenant/api-helper';
 import { assertSameTenant } from '@/lib/tenant/permissions';
 import { scopedPrisma } from '@/lib/tenant/prisma-scoped';
+import { validateBarberSlotCapacity } from '@/lib/tenant/barber-capacity';
+import { prisma } from '@/lib/prisma';
 type RouteParams = { params: Promise<{ id: string }> };
 
 async function verifyAuth(request: NextRequest) {
@@ -102,6 +104,20 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       const usernameTaken = await db.user.findFirst({ where: { username } });
       if (usernameTaken) {
         return NextResponse.json({ success: false, error: 'Ese nombre de usuario ya está en uso' }, { status: 409 });
+      }
+    }
+
+    const tenantData = await prisma.tenant.findUnique({
+      where: { id: authResult.tenantId },
+      select: { plan: true, subscriptionStatus: true, trialEndsAt: true },
+    });
+    if (tenantData) {
+      const capacity = await validateBarberSlotCapacity(db, tenantData, {
+        role,
+        existingRole: existingUser.role,
+      });
+      if (!capacity.ok) {
+        return NextResponse.json({ success: false, error: capacity.error }, { status: 403 });
       }
     }
 
