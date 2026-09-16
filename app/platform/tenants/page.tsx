@@ -24,6 +24,7 @@ interface TenantRow {
   customDomain: string | null;
   createdAt: string;
   updatedAt: string;
+  deletedAt: string | null;
   owner: { username: string; name: string; isActive: boolean; email: string | null } | null;
   onboarding?: {
     ownerName: string;
@@ -44,7 +45,15 @@ function formatDate(iso: string | null | undefined): string {
   }).format(new Date(iso));
 }
 
-function StatusBadge({ status }: { status: string }) {
+function StatusBadge({ status, deleted }: { status: string; deleted?: boolean }) {
+  if (deleted) {
+    return (
+      <span className="rounded-full border border-white/20 bg-white/10 px-2.5 py-0.5 text-xs font-medium text-white/55">
+        Eliminado
+      </span>
+    );
+  }
+
   const styles: Record<string, string> = {
     pending: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
     active: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
@@ -62,6 +71,10 @@ function StatusBadge({ status }: { status: string }) {
       {labels[status] ?? status}
     </span>
   );
+}
+
+function isDeleted(tenant: TenantRow): boolean {
+  return !!tenant.deletedAt;
 }
 
 function PlanBadge({ plan }: { plan: string }) {
@@ -232,7 +245,7 @@ function PlanSelector({
     if (value === undefined) setInternalPlan(next);
   }, [tenant.plan, value]);
 
-  if (tenant.status === 'rejected') return null;
+  if (tenant.status === 'rejected' || tenant.deletedAt) return null;
 
   return (
     <div className="h-full rounded-xl border border-white/10 bg-white/[0.03] p-4">
@@ -317,7 +330,7 @@ function TenantCard({
         >
           <div className="flex flex-wrap items-center gap-2">
             <h2 className="text-lg font-bold text-white">{tenant.name}</h2>
-            <StatusBadge status={tenant.status} />
+            <StatusBadge status={tenant.status} deleted={isDeleted(tenant)} />
             <PlanBadge plan={tenant.plan} />
             <PaymentPeriodBadge tenant={tenant} periodEnd={periodEnd} />
           </div>
@@ -390,6 +403,9 @@ function TenantCard({
                   label="Suscripción"
                   value={subLabels[tenant.subscriptionStatus] ?? tenant.subscriptionStatus}
                 />
+                {tenant.deletedAt && (
+                  <InfoCell label="Eliminado" value={formatDate(tenant.deletedAt)} />
+                )}
               </div>
 
               <div className="mt-3 flex flex-wrap gap-3 text-xs text-white/45">
@@ -402,7 +418,17 @@ function TenantCard({
             </div>
 
             <div className="flex shrink-0 flex-wrap gap-2 sm:flex-col sm:items-stretch">
-              {tenant.status === 'pending' && (
+              {isDeleted(tenant) ? (
+                <button
+                  type="button"
+                  disabled={isActing}
+                  onClick={() => onAction(tenant.id, 'restore')}
+                  className="btn-accent rounded-xl px-4 py-2 text-sm font-semibold disabled:opacity-50"
+                >
+                  Restaurar
+                </button>
+              ) : null}
+              {!isDeleted(tenant) && tenant.status === 'pending' && (
                 <>
                   <button
                     type="button"
@@ -422,7 +448,7 @@ function TenantCard({
                   </button>
                 </>
               )}
-              {tenant.status === 'active' && (
+              {!isDeleted(tenant) && tenant.status === 'active' && (
                 <>
                   {['trialing', 'active', 'past_due'].includes(tenant.subscriptionStatus) && (
                     <button
@@ -442,16 +468,44 @@ function TenantCard({
                   >
                     Suspender
                   </button>
+                  <button
+                    type="button"
+                    disabled={isActing}
+                    onClick={() => onAction(tenant.id, 'softDelete')}
+                    className="rounded-xl border border-red-400/35 bg-red-500/10 px-4 py-2 text-sm font-semibold text-red-300 hover:bg-red-500/20 disabled:opacity-50"
+                  >
+                    Eliminar
+                  </button>
                 </>
               )}
-              {tenant.status === 'suspended' && (
+              {!isDeleted(tenant) && tenant.status === 'suspended' && (
+                <>
+                  <button
+                    type="button"
+                    disabled={isActing}
+                    onClick={() => onAction(tenant.id, 'reactivate')}
+                    className="btn-accent rounded-xl px-4 py-2 text-sm font-semibold disabled:opacity-50"
+                  >
+                    Reactivar
+                  </button>
+                  <button
+                    type="button"
+                    disabled={isActing}
+                    onClick={() => onAction(tenant.id, 'softDelete')}
+                    className="rounded-xl border border-red-400/35 bg-red-500/10 px-4 py-2 text-sm font-semibold text-red-300 hover:bg-red-500/20 disabled:opacity-50"
+                  >
+                    Eliminar
+                  </button>
+                </>
+              )}
+              {!isDeleted(tenant) && tenant.status === 'rejected' && (
                 <button
                   type="button"
                   disabled={isActing}
-                  onClick={() => onAction(tenant.id, 'reactivate')}
-                  className="btn-accent rounded-xl px-4 py-2 text-sm font-semibold disabled:opacity-50"
+                  onClick={() => onAction(tenant.id, 'softDelete')}
+                  className="rounded-xl border border-red-400/35 bg-red-500/10 px-4 py-2 text-sm font-semibold text-red-300 hover:bg-red-500/20 disabled:opacity-50"
                 >
-                  Reactivar
+                  Eliminar
                 </button>
               )}
             </div>
@@ -469,7 +523,7 @@ function TenantCard({
             />
           </div>
 
-          {tenant.status === 'active' && (
+          {!isDeleted(tenant) && tenant.status === 'active' && (
             <div className="mt-5 border-t border-white/10 pt-4">
               <div className="flex items-center justify-between gap-4">
                 <div className="min-w-0 flex-1">
@@ -534,9 +588,9 @@ export default function PlatformTenantsPage() {
   const [tenants, setTenants] = useState<TenantRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [acting, setActing] = useState<string | null>(null);
-  const [filter, setFilter] = useState<'all' | 'pending' | 'active' | 'trialing' | 'suspended'>(
-    'all'
-  );
+  const [filter, setFilter] = useState<
+    'all' | 'pending' | 'active' | 'trialing' | 'suspended' | 'deleted'
+  >('all');
 
   const [loadError, setLoadError] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -570,6 +624,18 @@ export default function PlatformTenantsPage() {
   }, []);
 
   async function action(id: string, actionName: string, options?: { plan?: string }) {
+    if (actionName === 'softDelete') {
+      const tenant = tenants.find((t) => t.id === id);
+      const name = tenant?.name ?? 'esta barbería';
+      if (
+        !window.confirm(
+          `¿Eliminar "${name}"?\n\nNo se borra de la base de datos. Solo dejará de aparecer aquí y el sitio dejará de funcionar. Podrás verla en el filtro Eliminados.`
+        )
+      ) {
+        return;
+      }
+    }
+
     setActing(id);
     try {
       const res = await fetch(`/api/platform/tenants/${id}`, {
@@ -586,6 +652,8 @@ export default function PlatformTenantsPage() {
         changePlan: 'Plan actualizado correctamente',
         approve: 'Barbería aprobada correctamente',
         renew: 'Pago registrado correctamente',
+        softDelete: 'Barbería eliminada',
+        restore: 'Barbería restaurada',
       };
       toast.success(messages[actionName] ?? 'Cambios guardados correctamente');
       await load();
@@ -597,25 +665,36 @@ export default function PlatformTenantsPage() {
   }
 
   const stats = useMemo(() => {
-    const nonSuspended = tenants.filter((t) => t.status !== 'suspended');
+    const live = tenants.filter((t) => !t.deletedAt);
+    const nonSuspended = live.filter((t) => t.status !== 'suspended');
     return {
       total: nonSuspended.length,
-      active: tenants.filter((t) => t.status === 'active').length,
-      pending: tenants.filter((t) => t.status === 'pending').length,
+      active: live.filter((t) => t.status === 'active').length,
+      pending: live.filter((t) => t.status === 'pending').length,
       trialing: nonSuspended.filter((t) => t.subscriptionStatus === 'trialing').length,
-      suspended: tenants.filter((t) => t.status === 'suspended').length,
+      suspended: live.filter((t) => t.status === 'suspended').length,
+      deleted: tenants.filter((t) => t.deletedAt).length,
     };
   }, [tenants]);
 
   const filtered = useMemo(() => {
     let list: TenantRow[];
-    if (filter === 'all') list = tenants.filter((t) => t.status !== 'suspended');
-    else if (filter === 'pending') list = tenants.filter((t) => t.status === 'pending');
-    else if (filter === 'active') list = tenants.filter((t) => t.status === 'active');
-    else if (filter === 'suspended') list = tenants.filter((t) => t.status === 'suspended');
-    else {
+    if (filter === 'deleted') {
+      list = tenants.filter((t) => t.deletedAt);
+    } else if (filter === 'all') {
+      list = tenants.filter((t) => !t.deletedAt && t.status !== 'suspended');
+    } else if (filter === 'pending') {
+      list = tenants.filter((t) => !t.deletedAt && t.status === 'pending');
+    } else if (filter === 'active') {
+      list = tenants.filter((t) => !t.deletedAt && t.status === 'active');
+    } else if (filter === 'suspended') {
+      list = tenants.filter((t) => !t.deletedAt && t.status === 'suspended');
+    } else {
       list = tenants.filter(
-        (t) => t.subscriptionStatus === 'trialing' && t.status !== 'suspended'
+        (t) =>
+          !t.deletedAt &&
+          t.subscriptionStatus === 'trialing' &&
+          t.status !== 'suspended'
       );
     }
 
@@ -634,6 +713,7 @@ export default function PlatformTenantsPage() {
     { id: 'active' as const, label: 'Activos', count: stats.active },
     { id: 'trialing' as const, label: 'En prueba', count: stats.trialing },
     { id: 'suspended' as const, label: 'Suspendidos', count: stats.suspended },
+    { id: 'deleted' as const, label: 'Eliminados', count: stats.deleted },
   ];
 
   return (

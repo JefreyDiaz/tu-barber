@@ -25,7 +25,7 @@ export async function PATCH(
   const { id } = await params;
   const body = await request.json();
   const { action, rejectionNote, plan } = body as {
-    action: 'approve' | 'reject' | 'suspend' | 'reactivate' | 'renew' | 'changePlan';
+    action: 'approve' | 'reject' | 'suspend' | 'reactivate' | 'renew' | 'changePlan' | 'softDelete' | 'restore';
     rejectionNote?: string;
     plan?: string;
   };
@@ -36,6 +36,10 @@ export async function PATCH(
   });
   if (!tenant) {
     return NextResponse.json({ success: false, error: 'Tenant no encontrado' }, { status: 404 });
+  }
+
+  if (tenant.deletedAt && action !== 'restore') {
+    return NextResponse.json({ success: false, error: 'Barbería eliminada' }, { status: 400 });
   }
 
   if (action === 'approve') {
@@ -128,6 +132,19 @@ export async function PATCH(
     await prisma.tenant.update({
       where: { id },
       data: { plan },
+    });
+  } else if (action === 'softDelete') {
+    await prisma.tenant.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
+  } else if (action === 'restore') {
+    if (!tenant.deletedAt) {
+      return NextResponse.json({ success: false, error: 'La barbería no está eliminada' }, { status: 400 });
+    }
+    await prisma.tenant.update({
+      where: { id },
+      data: { deletedAt: null },
     });
   } else {
     return NextResponse.json({ success: false, error: 'Acción inválida' }, { status: 400 });

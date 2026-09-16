@@ -22,8 +22,11 @@ model Tenant {
   subscriptionEndsAt DateTime?
   renewalReminderSentFor DateTime?
   timezone           String    @default("America/Bogota")
+  deletedAt          DateTime?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  @@index([deletedAt])
 
   settings     TenantSettings?
   onboarding   TenantOnboarding?

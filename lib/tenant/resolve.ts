@@ -16,7 +16,8 @@ export interface ResolvedTenant {
   timezone: string;
 }
 
-function toResolvedTenant(t: Tenant): ResolvedTenant {
+function toResolvedTenant(t: Tenant): ResolvedTenant | null {
+  if (t.deletedAt) return null;
   return {
     id: t.id,
     slug: t.slug,
@@ -32,17 +33,20 @@ function toResolvedTenant(t: Tenant): ResolvedTenant {
 
 export async function findTenantBySlug(slug: string): Promise<ResolvedTenant | null> {
   const tenant = await prisma.tenant.findUnique({ where: { slug } });
-  return tenant ? toResolvedTenant(tenant) : null;
+  if (!tenant) return null;
+  return toResolvedTenant(tenant);
 }
 
 export async function findTenantByCustomDomain(domain: string): Promise<ResolvedTenant | null> {
   const tenant = await prisma.tenant.findUnique({ where: { customDomain: domain } });
-  return tenant ? toResolvedTenant(tenant) : null;
+  if (!tenant) return null;
+  return toResolvedTenant(tenant);
 }
 
 export async function findTenantById(id: string): Promise<ResolvedTenant | null> {
   const tenant = await prisma.tenant.findUnique({ where: { id } });
-  return tenant ? toResolvedTenant(tenant) : null;
+  if (!tenant) return null;
+  return toResolvedTenant(tenant);
 }
 
 export async function resolveTenantFromHost(

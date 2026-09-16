@@ -36,6 +36,7 @@ export type TenantMinAggregateOutputType = {
   subscriptionEndsAt: Date | null
   renewalReminderSentFor: Date | null
   timezone: string | null
+  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -52,6 +53,7 @@ export type TenantMaxAggregateOutputType = {
   subscriptionEndsAt: Date | null
   renewalReminderSentFor: Date | null
   timezone: string | null
+  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -68,6 +70,7 @@ export type TenantCountAggregateOutputType = {
   subscriptionEndsAt: number
   renewalReminderSentFor: number
   timezone: number
+  deletedAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -86,6 +89,7 @@ export type TenantMinAggregateInputType = {
   subscriptionEndsAt?: true
   renewalReminderSentFor?: true
   timezone?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -102,6 +106,7 @@ export type TenantMaxAggregateInputType = {
   subscriptionEndsAt?: true
   renewalReminderSentFor?: true
   timezone?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -118,6 +123,7 @@ export type TenantCountAggregateInputType = {
   subscriptionEndsAt?: true
   renewalReminderSentFor?: true
   timezone?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -207,6 +213,7 @@ export type TenantGroupByOutputType = {
   subscriptionEndsAt: Date | null
   renewalReminderSentFor: Date | null
   timezone: string
+  deletedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: TenantCountAggregateOutputType | null
@@ -244,6 +251,7 @@ export type TenantWhereInput = {
   subscriptionEndsAt?: Prisma.DateTimeNullableFilter<"Tenant"> | Date | string | null
   renewalReminderSentFor?: Prisma.DateTimeNullableFilter<"Tenant"> | Date | string | null
   timezone?: Prisma.StringFilter<"Tenant"> | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Tenant"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Tenant"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Tenant"> | Date | string
   settings?: Prisma.XOR<Prisma.TenantSettingsNullableScalarRelationFilter, Prisma.TenantSettingsWhereInput> | null
@@ -268,6 +276,7 @@ export type TenantOrderByWithRelationInput = {
   subscriptionEndsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   renewalReminderSentFor?: Prisma.SortOrderInput | Prisma.SortOrder
   timezone?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   settings?: Prisma.TenantSettingsOrderByWithRelationInput
@@ -295,6 +304,7 @@ export type TenantWhereUniqueInput = Prisma.AtLeast<{
   subscriptionEndsAt?: Prisma.DateTimeNullableFilter<"Tenant"> | Date | string | null
   renewalReminderSentFor?: Prisma.DateTimeNullableFilter<"Tenant"> | Date | string | null
   timezone?: Prisma.StringFilter<"Tenant"> | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Tenant"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Tenant"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Tenant"> | Date | string
   settings?: Prisma.XOR<Prisma.TenantSettingsNullableScalarRelationFilter, Prisma.TenantSettingsWhereInput> | null
@@ -319,6 +329,7 @@ export type TenantOrderByWithAggregationInput = {
   subscriptionEndsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   renewalReminderSentFor?: Prisma.SortOrderInput | Prisma.SortOrder
   timezone?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.TenantCountOrderByAggregateInput
@@ -341,6 +352,7 @@ export type TenantScalarWhereWithAggregatesInput = {
   subscriptionEndsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Tenant"> | Date | string | null
   renewalReminderSentFor?: Prisma.DateTimeNullableWithAggregatesFilter<"Tenant"> | Date | string | null
   timezone?: Prisma.StringWithAggregatesFilter<"Tenant"> | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Tenant"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Tenant"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Tenant"> | Date | string
 }
@@ -357,6 +369,7 @@ export type TenantCreateInput = {
   subscriptionEndsAt?: Date | string | null
   renewalReminderSentFor?: Date | string | null
   timezone?: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   settings?: Prisma.TenantSettingsCreateNestedOneWithoutTenantInput
@@ -381,6 +394,7 @@ export type TenantUncheckedCreateInput = {
   subscriptionEndsAt?: Date | string | null
   renewalReminderSentFor?: Date | string | null
   timezone?: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   settings?: Prisma.TenantSettingsUncheckedCreateNestedOneWithoutTenantInput
@@ -405,6 +419,7 @@ export type TenantUpdateInput = {
   subscriptionEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   renewalReminderSentFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   settings?: Prisma.TenantSettingsUpdateOneWithoutTenantNestedInput
@@ -429,6 +444,7 @@ export type TenantUncheckedUpdateInput = {
   subscriptionEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   renewalReminderSentFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   settings?: Prisma.TenantSettingsUncheckedUpdateOneWithoutTenantNestedInput
@@ -453,6 +469,7 @@ export type TenantCreateManyInput = {
   subscriptionEndsAt?: Date | string | null
   renewalReminderSentFor?: Date | string | null
   timezone?: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -469,6 +486,7 @@ export type TenantUpdateManyMutationInput = {
   subscriptionEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   renewalReminderSentFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -485,6 +503,7 @@ export type TenantUncheckedUpdateManyInput = {
   subscriptionEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   renewalReminderSentFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -501,6 +520,7 @@ export type TenantCountOrderByAggregateInput = {
   subscriptionEndsAt?: Prisma.SortOrder
   renewalReminderSentFor?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -517,6 +537,7 @@ export type TenantMaxOrderByAggregateInput = {
   subscriptionEndsAt?: Prisma.SortOrder
   renewalReminderSentFor?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -533,6 +554,7 @@ export type TenantMinOrderByAggregateInput = {
   subscriptionEndsAt?: Prisma.SortOrder
   renewalReminderSentFor?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -689,6 +711,7 @@ export type TenantCreateWithoutSettingsInput = {
   subscriptionEndsAt?: Date | string | null
   renewalReminderSentFor?: Date | string | null
   timezone?: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   onboarding?: Prisma.TenantOnboardingCreateNestedOneWithoutTenantInput
@@ -712,6 +735,7 @@ export type TenantUncheckedCreateWithoutSettingsInput = {
   subscriptionEndsAt?: Date | string | null
   renewalReminderSentFor?: Date | string | null
   timezone?: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   onboarding?: Prisma.TenantOnboardingUncheckedCreateNestedOneWithoutTenantInput
@@ -751,6 +775,7 @@ export type TenantUpdateWithoutSettingsInput = {
   subscriptionEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   renewalReminderSentFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   onboarding?: Prisma.TenantOnboardingUpdateOneWithoutTenantNestedInput
@@ -774,6 +799,7 @@ export type TenantUncheckedUpdateWithoutSettingsInput = {
   subscriptionEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   renewalReminderSentFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   onboarding?: Prisma.TenantOnboardingUncheckedUpdateOneWithoutTenantNestedInput
@@ -797,6 +823,7 @@ export type TenantCreateWithoutOnboardingInput = {
   subscriptionEndsAt?: Date | string | null
   renewalReminderSentFor?: Date | string | null
   timezone?: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   settings?: Prisma.TenantSettingsCreateNestedOneWithoutTenantInput
@@ -820,6 +847,7 @@ export type TenantUncheckedCreateWithoutOnboardingInput = {
   subscriptionEndsAt?: Date | string | null
   renewalReminderSentFor?: Date | string | null
   timezone?: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   settings?: Prisma.TenantSettingsUncheckedCreateNestedOneWithoutTenantInput
@@ -859,6 +887,7 @@ export type TenantUpdateWithoutOnboardingInput = {
   subscriptionEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   renewalReminderSentFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   settings?: Prisma.TenantSettingsUpdateOneWithoutTenantNestedInput
@@ -882,6 +911,7 @@ export type TenantUncheckedUpdateWithoutOnboardingInput = {
   subscriptionEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   renewalReminderSentFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   settings?: Prisma.TenantSettingsUncheckedUpdateOneWithoutTenantNestedInput
@@ -905,6 +935,7 @@ export type TenantCreateWithoutUsersInput = {
   subscriptionEndsAt?: Date | string | null
   renewalReminderSentFor?: Date | string | null
   timezone?: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   settings?: Prisma.TenantSettingsCreateNestedOneWithoutTenantInput
@@ -928,6 +959,7 @@ export type TenantUncheckedCreateWithoutUsersInput = {
   subscriptionEndsAt?: Date | string | null
   renewalReminderSentFor?: Date | string | null
   timezone?: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   settings?: Prisma.TenantSettingsUncheckedCreateNestedOneWithoutTenantInput
@@ -967,6 +999,7 @@ export type TenantUpdateWithoutUsersInput = {
   subscriptionEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   renewalReminderSentFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   settings?: Prisma.TenantSettingsUpdateOneWithoutTenantNestedInput
@@ -990,6 +1023,7 @@ export type TenantUncheckedUpdateWithoutUsersInput = {
   subscriptionEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   renewalReminderSentFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   settings?: Prisma.TenantSettingsUncheckedUpdateOneWithoutTenantNestedInput
@@ -1013,6 +1047,7 @@ export type TenantCreateWithoutBookingsInput = {
   subscriptionEndsAt?: Date | string | null
   renewalReminderSentFor?: Date | string | null
   timezone?: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   settings?: Prisma.TenantSettingsCreateNestedOneWithoutTenantInput
@@ -1036,6 +1071,7 @@ export type TenantUncheckedCreateWithoutBookingsInput = {
   subscriptionEndsAt?: Date | string | null
   renewalReminderSentFor?: Date | string | null
   timezone?: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   settings?: Prisma.TenantSettingsUncheckedCreateNestedOneWithoutTenantInput
@@ -1075,6 +1111,7 @@ export type TenantUpdateWithoutBookingsInput = {
   subscriptionEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   renewalReminderSentFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   settings?: Prisma.TenantSettingsUpdateOneWithoutTenantNestedInput
@@ -1098,6 +1135,7 @@ export type TenantUncheckedUpdateWithoutBookingsInput = {
   subscriptionEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   renewalReminderSentFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   settings?: Prisma.TenantSettingsUncheckedUpdateOneWithoutTenantNestedInput
@@ -1121,6 +1159,7 @@ export type TenantCreateWithoutCustomerOutreachInput = {
   subscriptionEndsAt?: Date | string | null
   renewalReminderSentFor?: Date | string | null
   timezone?: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   settings?: Prisma.TenantSettingsCreateNestedOneWithoutTenantInput
@@ -1144,6 +1183,7 @@ export type TenantUncheckedCreateWithoutCustomerOutreachInput = {
   subscriptionEndsAt?: Date | string | null
   renewalReminderSentFor?: Date | string | null
   timezone?: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   settings?: Prisma.TenantSettingsUncheckedCreateNestedOneWithoutTenantInput
@@ -1183,6 +1223,7 @@ export type TenantUpdateWithoutCustomerOutreachInput = {
   subscriptionEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   renewalReminderSentFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   settings?: Prisma.TenantSettingsUpdateOneWithoutTenantNestedInput
@@ -1206,6 +1247,7 @@ export type TenantUncheckedUpdateWithoutCustomerOutreachInput = {
   subscriptionEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   renewalReminderSentFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   settings?: Prisma.TenantSettingsUncheckedUpdateOneWithoutTenantNestedInput
@@ -1229,6 +1271,7 @@ export type TenantCreateWithoutServicesInput = {
   subscriptionEndsAt?: Date | string | null
   renewalReminderSentFor?: Date | string | null
   timezone?: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   settings?: Prisma.TenantSettingsCreateNestedOneWithoutTenantInput
@@ -1252,6 +1295,7 @@ export type TenantUncheckedCreateWithoutServicesInput = {
   subscriptionEndsAt?: Date | string | null
   renewalReminderSentFor?: Date | string | null
   timezone?: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   settings?: Prisma.TenantSettingsUncheckedCreateNestedOneWithoutTenantInput
@@ -1291,6 +1335,7 @@ export type TenantUpdateWithoutServicesInput = {
   subscriptionEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   renewalReminderSentFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   settings?: Prisma.TenantSettingsUpdateOneWithoutTenantNestedInput
@@ -1314,6 +1359,7 @@ export type TenantUncheckedUpdateWithoutServicesInput = {
   subscriptionEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   renewalReminderSentFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   settings?: Prisma.TenantSettingsUncheckedUpdateOneWithoutTenantNestedInput
@@ -1337,6 +1383,7 @@ export type TenantCreateWithoutBlockedSlotsInput = {
   subscriptionEndsAt?: Date | string | null
   renewalReminderSentFor?: Date | string | null
   timezone?: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   settings?: Prisma.TenantSettingsCreateNestedOneWithoutTenantInput
@@ -1360,6 +1407,7 @@ export type TenantUncheckedCreateWithoutBlockedSlotsInput = {
   subscriptionEndsAt?: Date | string | null
   renewalReminderSentFor?: Date | string | null
   timezone?: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   settings?: Prisma.TenantSettingsUncheckedCreateNestedOneWithoutTenantInput
@@ -1399,6 +1447,7 @@ export type TenantUpdateWithoutBlockedSlotsInput = {
   subscriptionEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   renewalReminderSentFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   settings?: Prisma.TenantSettingsUpdateOneWithoutTenantNestedInput
@@ -1422,6 +1471,7 @@ export type TenantUncheckedUpdateWithoutBlockedSlotsInput = {
   subscriptionEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   renewalReminderSentFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   settings?: Prisma.TenantSettingsUncheckedUpdateOneWithoutTenantNestedInput
@@ -1445,6 +1495,7 @@ export type TenantCreateWithoutSubscriptionPaymentsInput = {
   subscriptionEndsAt?: Date | string | null
   renewalReminderSentFor?: Date | string | null
   timezone?: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   settings?: Prisma.TenantSettingsCreateNestedOneWithoutTenantInput
@@ -1468,6 +1519,7 @@ export type TenantUncheckedCreateWithoutSubscriptionPaymentsInput = {
   subscriptionEndsAt?: Date | string | null
   renewalReminderSentFor?: Date | string | null
   timezone?: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   settings?: Prisma.TenantSettingsUncheckedCreateNestedOneWithoutTenantInput
@@ -1507,6 +1559,7 @@ export type TenantUpdateWithoutSubscriptionPaymentsInput = {
   subscriptionEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   renewalReminderSentFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   settings?: Prisma.TenantSettingsUpdateOneWithoutTenantNestedInput
@@ -1530,6 +1583,7 @@ export type TenantUncheckedUpdateWithoutSubscriptionPaymentsInput = {
   subscriptionEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   renewalReminderSentFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   settings?: Prisma.TenantSettingsUncheckedUpdateOneWithoutTenantNestedInput
@@ -1629,6 +1683,7 @@ export type TenantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   subscriptionEndsAt?: boolean
   renewalReminderSentFor?: boolean
   timezone?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   settings?: boolean | Prisma.Tenant$settingsArgs<ExtArgs>
@@ -1654,6 +1709,7 @@ export type TenantSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   subscriptionEndsAt?: boolean
   renewalReminderSentFor?: boolean
   timezone?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["tenant"]>
@@ -1670,6 +1726,7 @@ export type TenantSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   subscriptionEndsAt?: boolean
   renewalReminderSentFor?: boolean
   timezone?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["tenant"]>
@@ -1686,11 +1743,12 @@ export type TenantSelectScalar = {
   subscriptionEndsAt?: boolean
   renewalReminderSentFor?: boolean
   timezone?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type TenantOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "name" | "customDomain" | "status" | "plan" | "subscriptionStatus" | "trialEndsAt" | "subscriptionEndsAt" | "renewalReminderSentFor" | "timezone" | "createdAt" | "updatedAt", ExtArgs["result"]["tenant"]>
+export type TenantOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "name" | "customDomain" | "status" | "plan" | "subscriptionStatus" | "trialEndsAt" | "subscriptionEndsAt" | "renewalReminderSentFor" | "timezone" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["tenant"]>
 export type TenantInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   settings?: boolean | Prisma.Tenant$settingsArgs<ExtArgs>
   onboarding?: boolean | Prisma.Tenant$onboardingArgs<ExtArgs>
@@ -1729,6 +1787,7 @@ export type $TenantPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     subscriptionEndsAt: Date | null
     renewalReminderSentFor: Date | null
     timezone: string
+    deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["tenant"]>
@@ -2173,6 +2232,7 @@ export interface TenantFieldRefs {
   readonly subscriptionEndsAt: Prisma.FieldRef<"Tenant", 'DateTime'>
   readonly renewalReminderSentFor: Prisma.FieldRef<"Tenant", 'DateTime'>
   readonly timezone: Prisma.FieldRef<"Tenant", 'String'>
+  readonly deletedAt: Prisma.FieldRef<"Tenant", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Tenant", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Tenant", 'DateTime'>
 }

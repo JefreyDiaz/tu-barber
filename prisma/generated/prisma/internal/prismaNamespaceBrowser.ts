@@ -91,6 +91,7 @@ export const TenantScalarFieldEnum = {
   subscriptionEndsAt: 'subscriptionEndsAt',
   renewalReminderSentFor: 'renewalReminderSentFor',
   timezone: 'timezone',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

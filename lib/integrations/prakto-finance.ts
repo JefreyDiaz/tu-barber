@@ -51,8 +51,16 @@ export function financeMonthUtcRange(yearMonth: string): { start: Date; end: Dat
   return { start, end, startDate, endDate };
 }
 
-function isBillableTenant(tenant: { status: string; subscriptionStatus: string }): boolean {
-  return tenant.status === 'active' && BILLABLE_SUBSCRIPTION_STATUSES.has(tenant.subscriptionStatus);
+function isBillableTenant(tenant: {
+  status: string;
+  subscriptionStatus: string;
+  deletedAt: Date | null;
+}): boolean {
+  return (
+    !tenant.deletedAt &&
+    tenant.status === 'active' &&
+    BILLABLE_SUBSCRIPTION_STATUSES.has(tenant.subscriptionStatus)
+  );
 }
 
 export async function registerSubscriptionPayment(input: {
@@ -83,7 +91,7 @@ export async function getPraktoFinanceReport(yearMonth?: string) {
 
   const [tenants, payments] = await Promise.all([
     prisma.tenant.findMany({
-      where: { status: { not: 'rejected' } },
+      where: { status: { not: 'rejected' }, deletedAt: null },
       orderBy: { name: 'asc' },
       include: {
         onboarding: {
@@ -116,6 +124,7 @@ export async function getPraktoFinanceReport(yearMonth?: string) {
       planName: plan.name,
       priceMonthly: plan.priceMonthly,
       status: tenant.status,
+      deletedAt: tenant.deletedAt?.toISOString() ?? null,
       subscriptionStatus: tenant.subscriptionStatus,
       trialEndsAt: tenant.trialEndsAt?.toISOString() ?? null,
       subscriptionEndsAt: tenant.subscriptionEndsAt?.toISOString() ?? null,

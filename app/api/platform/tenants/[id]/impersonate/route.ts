@@ -19,11 +19,15 @@ export async function POST(
 
   const tenant = await prisma.tenant.findUnique({
     where: { id },
-    select: { id: true, slug: true, status: true },
+    select: { id: true, slug: true, status: true, deletedAt: true },
   });
 
   if (!tenant) {
     return NextResponse.json({ success: false, error: 'Tenant no encontrado' }, { status: 404 });
+  }
+
+  if (tenant.deletedAt) {
+    return NextResponse.json({ success: false, error: 'Barbería eliminada' }, { status: 400 });
   }
 
   if (tenant.status !== 'active') {
