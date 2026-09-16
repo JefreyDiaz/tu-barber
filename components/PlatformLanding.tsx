@@ -186,7 +186,7 @@ export default function PlatformLanding({
         {/* Final CTA */}
         <section className="py-6">
           <div className="glass-card-strong p-6 text-center">
-            <h2 className="text-xl font-bold">¿Listo para digitalizar tu barbería?</h2>
+            <h2 className="text-xl font-bold">¿Listo para evolucionar tu barbería?</h2>
             <p className="mt-2 text-sm text-white/55">
               Regístrate en 2 minutos. Te activamos en pocas horas.
             </p>

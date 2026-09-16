@@ -30,7 +30,7 @@ alwaysApply: true
 
 ## Planes y suscripción
 
-- Planes: `emprendedor` ($39.900), `negocio` ($89.900), `cadena` ($129.900) — ver `lib/plans.ts`
+- Planes: `emprendedor` (1 barbero, $69.900), `negocio` (2 barberos, $129.900), `cadena` (5 barberos, $249.900) — ver `lib/plans.ts`
 - Trial Negocio 14 días al aprobar tenant (`subscriptionStatus: trialing`)
 - Dominio propio solo plan Cadena; subdominio en Emprendedor y Negocio
 - Twilio WhatsApp: config en `TenantSettings`; plan Basic usa credenciales plataforma (`TWILIO_*`)
