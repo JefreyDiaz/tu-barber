@@ -36,6 +36,17 @@ interface BrandingUploadFieldProps {
   previewClassName?: string;
 }
 
+type BrandingApiResponse = {
+  success?: boolean;
+  error?: string;
+  data?: {
+    url?: string;
+    signedUrl?: string;
+    path?: string;
+    token?: string;
+  };
+};
+
 export default function BrandingUploadField({
   kind,
   currentUrl,
@@ -55,33 +66,60 @@ export default function BrandingUploadField({
     setPreview(currentUrl ?? null);
   }, [currentUrl]);
 
+  async function parseJsonResponse(res: Response) {
+    const text = await res.text();
+    if (!text) return { json: {} as BrandingApiResponse, text };
+    try {
+      return { json: JSON.parse(text) as BrandingApiResponse, text };
+    } catch {
+      if (res.status === 413) {
+        throw new Error(
+          'El archivo es demasiado grande para el servidor. Comprime el video a menos de 4 MB o usa una imagen.'
+        );
+      }
+      throw new Error(
+        'El servidor no pudo procesar la subida. Si es un video, comprímelo o intenta de nuevo en unos minutos.'
+      );
+    }
+  }
+
   async function uploadFile(file: File) {
     setUploading(true);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('kind', kind);
-
-      const res = await fetch(tenantApiUrl('/api/admin/upload/branding'), {
+      const signRes = await fetch(tenantApiUrl('/api/admin/upload/branding/sign'), {
         method: 'POST',
-        body: formData,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ kind, contentType: file.type, size: file.size }),
       });
-
-      const text = await res.text();
-      let json: { success?: boolean; error?: string; data?: { url: string } } = {};
-      if (text) {
-        try {
-          json = JSON.parse(text) as typeof json;
-        } catch {
-          throw new Error('El servidor rechazó el archivo. Si es un video grande, reinicia el servidor de desarrollo.');
-        }
+      const { json: signJson } = await parseJsonResponse(signRes);
+      if (!signRes.ok || !signJson.success || !signJson.data?.signedUrl || !signJson.data.path) {
+        throw new Error(signJson.error ?? 'No se pudo preparar la subida');
       }
 
-      if (!res.ok || !json.success || !json.data?.url) {
-        throw new Error(json.error ?? 'Error al subir');
+      const storageRes = await fetch(signJson.data.signedUrl, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': file.type,
+          ...(signJson.data.token ? { 'x-upsert': 'true' } : {}),
+        },
+        body: file,
+      });
+      if (!storageRes.ok) {
+        throw new Error('Error al subir el archivo al almacenamiento. Comprueba el tamaño (máx. 15 MB).');
       }
-      setPreview(json.data.url);
-      await onUploaded(json.data.url);
+
+      const completeRes = await fetch(tenantApiUrl('/api/admin/upload/branding/complete'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ kind, path: signJson.data.path }),
+      });
+      const { json: completeJson } = await parseJsonResponse(completeRes);
+      if (!completeRes.ok || !completeJson.success || !completeJson.data?.url) {
+        throw new Error(completeJson.error ?? 'Error al guardar');
+      }
+
+      setPreview(completeJson.data.url);
+      await onUploaded(completeJson.data.url);
       toast.success('Archivo guardado correctamente');
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Error al subir archivo';

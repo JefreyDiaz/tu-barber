@@ -77,6 +77,92 @@ async function removeStaleBrandingFiles(
   await supabase.storage.from(BUCKET).remove(stalePaths);
 }
 
+export function validateBrandingUploadMeta(
+  kind: 'logo' | 'background',
+  contentType: string,
+  size: number
+): { ext: string; maxBytes: number } {
+  const isLogo = kind === 'logo';
+  const allowed = isLogo ? BRANDING_IMAGE_TYPES : new Set([...BRANDING_IMAGE_TYPES, ...BRANDING_VIDEO_TYPES]);
+  const maxBytes = isLogo ? BRANDING_IMAGE_MAX : BRANDING_VIDEO_MAX;
+
+  if (!allowed.has(contentType)) {
+    throw new Error(
+      isLogo
+        ? 'Formato no permitido. Usa JPG, PNG o WebP.'
+        : 'Formato no permitido. Usa JPG, PNG, WebP, MP4 o WebM.'
+    );
+  }
+  if (size > maxBytes) {
+    throw new Error(isLogo ? 'La imagen no puede superar 2 MB.' : 'El archivo no puede superar 15 MB.');
+  }
+
+  const ext =
+    contentType === 'image/png'
+      ? 'png'
+      : contentType === 'image/webp'
+        ? 'webp'
+        : contentType === 'video/webm'
+          ? 'webm'
+          : contentType === 'video/mp4'
+            ? 'mp4'
+            : 'jpg';
+
+  return { ext, maxBytes };
+}
+
+function brandingStoragePath(tenantId: string, kind: 'logo' | 'background', ext: string): string {
+  return `${tenantId}/branding/${kind}.${ext}`;
+}
+
+/** Signed upload URL so the browser sends the file straight to Supabase (bypasses Vercel 4.5 MB limit). */
+export async function createBrandingSignedUpload(
+  tenantId: string,
+  kind: 'logo' | 'background',
+  contentType: string,
+  size: number
+) {
+  const { ext } = validateBrandingUploadMeta(kind, contentType, size);
+  const path = brandingStoragePath(tenantId, kind, ext);
+  const supabase = getSupabaseAdmin();
+
+  const { data, error } = await supabase.storage.from(BUCKET).createSignedUploadUrl(path, { upsert: true });
+  if (error || !data) {
+    throw new Error(error?.message ?? 'No se pudo preparar la subida');
+  }
+
+  const { data: publicData } = supabase.storage.from(BUCKET).getPublicUrl(path);
+
+  return {
+    path,
+    token: data.token,
+    signedUrl: data.signedUrl,
+    publicUrl: publicData.publicUrl,
+  };
+}
+
+export async function finalizeBrandingUpload(
+  tenantId: string,
+  kind: 'logo' | 'background',
+  path: string
+): Promise<string> {
+  const expectedPrefix = `${tenantId}/branding/${kind}.`;
+  if (!path.startsWith(expectedPrefix)) {
+    throw new Error('Ruta de archivo inválida');
+  }
+
+  const ext = path.slice(expectedPrefix.length);
+  if (!BRANDING_EXTENSIONS.includes(ext as (typeof BRANDING_EXTENSIONS)[number])) {
+    throw new Error('Extensión de archivo inválida');
+  }
+
+  const supabase = getSupabaseAdmin();
+  await removeStaleBrandingFiles(supabase, tenantId, kind, ext);
+
+  const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
+  return withCacheBuster(data.publicUrl);
+}
+
 export async function uploadTenantBrandingAsset(
   tenantId: string,
   kind: 'logo' | 'background',
