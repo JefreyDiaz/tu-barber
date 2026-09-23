@@ -63,8 +63,17 @@ export default function BrandingUploadField({
   const [cropFile, setCropFile] = useState<File | null>(null);
 
   useEffect(() => {
-    setPreview(currentUrl ?? null);
+    setPreview((prev) => {
+      if (prev?.startsWith('blob:')) URL.revokeObjectURL(prev);
+      return currentUrl ?? null;
+    });
   }, [currentUrl]);
+
+  useEffect(() => {
+    return () => {
+      if (preview?.startsWith('blob:')) URL.revokeObjectURL(preview);
+    };
+  }, [preview]);
 
   async function parseJsonResponse(res: Response) {
     const text = await res.text();
@@ -118,7 +127,10 @@ export default function BrandingUploadField({
         throw new Error(completeJson.error ?? 'Error al guardar');
       }
 
-      setPreview(completeJson.data.url);
+      setPreview((prev) => {
+        if (prev?.startsWith('blob:')) URL.revokeObjectURL(prev);
+        return completeJson.data!.url!;
+      });
       await onUploaded(completeJson.data.url);
       toast.success('Archivo guardado correctamente');
     } catch (err) {
@@ -143,6 +155,12 @@ export default function BrandingUploadField({
       setCropFile(file);
       return;
     }
+
+    const localPreview = URL.createObjectURL(file);
+    setPreview((prev) => {
+      if (prev?.startsWith('blob:')) URL.revokeObjectURL(prev);
+      return localPreview;
+    });
 
     await uploadFile(file);
   }
@@ -176,7 +194,16 @@ export default function BrandingUploadField({
           >
             {preview ? (
               isVideo ? (
-                <video src={preview} className="h-full w-full object-cover" muted playsInline />
+                <video
+                  key={preview}
+                  src={preview}
+                  className="absolute inset-0 h-full w-full object-cover"
+                  muted
+                  playsInline
+                  autoPlay
+                  loop
+                  preload="auto"
+                />
               ) : (
                 <Image key={preview} src={preview} alt="" fill className="object-cover" unoptimized />
               )
